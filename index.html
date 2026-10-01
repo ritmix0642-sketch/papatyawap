@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Mobil Sohbet</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #10131a;
+    color: white;
+}
+
+.header {
+    background: #191e29;
+    padding: 18px;
+    text-align: center;
+    font-size: 22px;
+    font-weight: bold;
+    border-bottom: 1px solid #303746;
+}
+
+.online {
+    font-size: 13px;
+    color: #45e889;
+    margin-top: 5px;
+}
+
+.chat {
+    height: calc(100vh - 145px);
+    overflow-y: auto;
+    padding: 15px;
+}
+
+.message {
+    margin-bottom: 14px;
+}
+
+.username {
+    font-size: 13px;
+    color: #5eb5ff;
+    font-weight: bold;
+}
+
+.text {
+    display: inline-block;
+    background: #202633;
+    padding: 10px 13px;
+    border-radius: 12px;
+    margin-top: 4px;
+    max-width: 85%;
+}
+
+.input-area {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: #191e29;
+    padding: 10px;
+    display: flex;
+    gap: 8px;
+    border-top: 1px solid #303746;
+}
+
+input {
+    flex: 1;
+    padding: 13px;
+    border: none;
+    border-radius: 10px;
+    outline: none;
+    background: #272e3b;
+    color: white;
+}
+
+button {
+    border: none;
+    background: #4d8cff;
+    color: white;
+    padding: 0 18px;
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #3977e8;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    💬 MOBİL SOHBET
+    <div class="online">🟢 Şu anda sohbettesin</div>
+</div>
+
+<div class="chat" id="chat">
+
+    <div class="message">
+        <div class="username">Sistem</div>
+        <div class="text">
+            👋 Sohbetimize hoş geldin!
+        </div>
+    </div>
+
+    <div class="message">
+        <div class="username">Sistem</div>
+        <div class="text">
+            💬 Bir sonraki aşamada gerçek zamanlı sohbeti bağlayacağız.
+        </div>
+    </div>
+
+</div>
+
+<div class="input-area">
+
+    <input
+        type="text"
+        id="messageInput"
+        placeholder="Mesajınızı yazın..."
+        onkeydown="if(event.key==='Enter') sendMessage()"
+    >
+
+    <button onclick="sendMessage()">➤</button>
+
+</div>
+
+<script>
+
+function sendMessage() {
+
+    const input = document.getElementById("messageInput");
+    const message = input.value.trim();
+
+    if (message === "") {
+        return;
+    }
+
+    const chat = document.getElementById("chat");
+
+    const messageBox = document.createElement("div");
+    messageBox.className = "message";
+
+    messageBox.innerHTML = `
+        <div class="username">Sen</div>
+        <div class="text">${message}</div>
+    `;
+
+    chat.appendChild(messageBox);
+
+    input.value = "";
+
+    chat.scrollTop = chat.scrollHeight;
+}
+
+</script>
+
+</body>
+</html>
