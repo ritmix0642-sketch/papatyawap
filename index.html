@@ -1,4 +1,5 @@
  <!DOCTYPE html>
+
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
@@ -6,6 +7,7 @@
 <title>Mobil Sohbet</title>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 
 <style>
@@ -117,6 +119,7 @@ body {
 
 .message {
     margin-bottom: 16px;
+    position: relative;
 }
 
 .username {
@@ -124,6 +127,13 @@ body {
     font-size: 13px;
     font-weight: bold;
     margin-bottom: 4px;
+}
+
+.message-info {
+    font-size: 10px;
+    color: #7f899b;
+    margin-left: 5px;
+    font-weight: normal;
 }
 
 .bubble {
@@ -146,6 +156,15 @@ body {
 .my-message .bubble {
     background: #315b9f;
     border-radius: 14px 5px 14px 14px;
+}
+
+.delete-btn {
+    border: none;
+    background: transparent;
+    color: #ff6b6b;
+    cursor: pointer;
+    font-size: 11px;
+    margin-left: 5px;
 }
 
 .input-area {
@@ -182,6 +201,40 @@ body {
     color: white;
     border-radius: 10px;
     font-size: 18px;
+    cursor: pointer;
+}
+
+.emoji-btn {
+    width: 42px;
+    height: 42px;
+    border: none;
+    background: #272e3b;
+    color: white;
+    border-radius: 10px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.emoji-panel {
+    display: none;
+    position: fixed;
+    bottom: 70px;
+    left: 8px;
+    right: 8px;
+    background: #1b2130;
+    border: 1px solid #343c4d;
+    border-radius: 14px;
+    padding: 12px;
+    z-index: 10;
+    text-align: center;
+}
+
+.emoji-panel button {
+    border: none;
+    background: transparent;
+    font-size: 25px;
+    padding: 6px;
+    cursor: pointer;
 }
 
 @media (min-width:700px) {
@@ -195,84 +248,120 @@ body {
         left: 50%;
         transform: translateX(-50%);
     }
+
+    .emoji-panel {
+        max-width: 700px;
+        left: 50%;
+        right: auto;
+        width: 700px;
+        transform: translateX(-50%);
+    }
 }
 </style>
+
 </head>
 
 <body>
 
 <div class="login" id="login">
 
-    <div class="login-box">
+```
+<div class="login-box">
 
-        <div class="logo">💬</div>
+    <div class="logo">💬</div>
 
-        <h1>Mobil Sohbet</h1>
+    <h1>Mobil Sohbet</h1>
 
-        <div class="subtitle">
-            Sohbete katılmak için kullanıcı adını yaz
-        </div>
-
-        <input
-            id="usernameInput"
-            maxlength="20"
-            placeholder="Kullanıcı adın..."
-        >
-
-        <button onclick="enterChat()">
-            SOHBETE GİR
-        </button>
-
+    <div class="subtitle">
+        Sohbete katılmak için kullanıcı adını yaz
     </div>
 
-</div>
+    <input
+        id="usernameInput"
+        maxlength="20"
+        placeholder="Kullanıcı adın..."
+        onkeydown="loginEnter(event)"
+    >
 
+    <button onclick="enterChat()">
+        SOHBETE GİR
+    </button>
+
+</div>
+```
+
+</div>
 
 <div class="chat-page" id="chatPage">
 
-    <div class="header">
+```
+<div class="header">
 
-        <div>
-            <div class="header-title">
-                💬 Mobil Sohbet
-            </div>
+    <div>
 
-            <div class="online">
-                🟢 Gerçek zamanlı sohbet
-            </div>
+        <div class="header-title">
+            💬 Mobil Sohbet
         </div>
 
-        <button class="logout" onclick="logout()">
-            Çıkış
-        </button>
+        <div class="online" id="onlineText">
+            🟢 0 kişi çevrimiçi
+        </div>
 
     </div>
 
-
-    <div class="chat" id="chat"></div>
-
-
-    <div class="input-area">
-
-        <input
-            class="message-input"
-            id="messageInput"
-            placeholder="Mesaj yaz..."
-            onkeydown="handleEnter(event)"
-        >
-
-        <button class="send" onclick="sendMessage()">
-            ➤
-        </button>
-
-    </div>
+    <button class="logout" onclick="logout()">
+        Çıkış
+    </button>
 
 </div>
 
 
+<div class="chat" id="chat"></div>
+
+
+<div class="emoji-panel" id="emojiPanel">
+
+    <button onclick="addEmoji('😀')">😀</button>
+    <button onclick="addEmoji('😂')">😂</button>
+    <button onclick="addEmoji('😍')">😍</button>
+    <button onclick="addEmoji('😘')">😘</button>
+    <button onclick="addEmoji('❤️')">❤️</button>
+    <button onclick="addEmoji('🔥')">🔥</button>
+    <button onclick="addEmoji('👍')">👍</button>
+    <button onclick="addEmoji('👏')">👏</button>
+    <button onclick="addEmoji('😎')">😎</button>
+    <button onclick="addEmoji('🥰')">🥰</button>
+    <button onclick="addEmoji('😉')">😉</button>
+    <button onclick="addEmoji('🎉')">🎉</button>
+
+</div>
+
+
+<div class="input-area">
+
+    <button class="emoji-btn" onclick="toggleEmoji()">
+        😊
+    </button>
+
+    <input
+        class="message-input"
+        id="messageInput"
+        placeholder="Mesaj yaz..."
+        onkeydown="handleEnter(event)"
+    >
+
+    <button class="send" onclick="sendMessage()">
+        ➤
+    </button>
+
+</div>
+```
+
+</div>
+
 <script>
 
-/* FIREBASE AYARLARI */
+/* FIREBASE */
 
 const firebaseConfig = {
     apiKey: "AIzaSyDJ9zkgu_2ZLcD_ObEYwnFfSu6QffN9VQI",
@@ -289,127 +378,4 @@ firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 
 let username = "";
-
-
-/* SOHBETE GİR */
-
-function enterChat() {
-
-    const input =
-        document.getElementById("usernameInput");
-
-    const name = input.value.trim();
-
-    if (!name) {
-        alert("Lütfen kullanıcı adını yaz.");
-        return;
-    }
-
-    username = name;
-
-    document.getElementById("login").style.display = "none";
-    document.getElementById("chatPage").style.display = "block";
-
-    loadMessages();
-}
-
-
-/* MESAJLARI DİNLE */
-
-function loadMessages() {
-
-    const chat =
-        document.getElementById("chat");
-
-    database.ref("messages").on("value", function(snapshot) {
-
-        chat.innerHTML = "";
-
-        snapshot.forEach(function(child) {
-
-            const message = child.val();
-
-            const box =
-                document.createElement("div");
-
-            box.className = "message";
-
-            if (message.username === username) {
-                box.classList.add("my-message");
-            }
-
-            const user =
-                document.createElement("div");
-
-            user.className = "username";
-            user.textContent = message.username;
-
-            const bubble =
-                document.createElement("div");
-
-            bubble.className = "bubble";
-            bubble.textContent = message.text;
-
-            box.appendChild(user);
-            box.appendChild(bubble);
-
-            chat.appendChild(box);
-        });
-
-        chat.scrollTop = chat.scrollHeight;
-    });
-}
-
-
-/* MESAJ GÖNDER */
-
-function sendMessage() {
-
-    const input =
-        document.getElementById("messageInput");
-
-    const text = input.value.trim();
-
-    if (!text || !username) {
-        return;
-    }
-
-    database.ref("messages").push({
-
-        username: username,
-
-        text: text,
-
-        timestamp: Date.now()
-
-    });
-
-    input.value = "";
-
-    input.focus();
-}
-
-
-/* ENTER */
-
-function handleEnter(event) {
-
-    if (event.key === "Enter") {
-        sendMessage();
-    }
-
-}
-
-
-/* ÇIKIŞ */
-
-function logout() {
-
-    location.reload();
-
-}
-
-</script>
-
-</body>
-</html>
+let userKey = "";
