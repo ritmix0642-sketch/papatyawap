@@ -4,13 +4,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mobil Sohbet</title>
+
+<title>Ritmix Sohbet</title>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 
 <style>
+
 * {
     box-sizing: border-box;
 }
@@ -18,82 +20,69 @@
 body {
     margin: 0;
     font-family: Arial, sans-serif;
-    background: #0f1117;
+    background: #10131b;
     color: white;
 }
 
-.login {
-    min-height: 100vh;
+#login {
+    height: 100vh;
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
     padding: 20px;
-    background: linear-gradient(135deg,#101522,#171d2d);
 }
 
 .login-box {
     width: 100%;
-    max-width: 400px;
-    background: #1b2130;
-    padding: 30px 24px;
-    border-radius: 20px;
+    max-width: 380px;
+    background: #1c2230;
+    padding: 30px;
+    border-radius: 18px;
     text-align: center;
 }
 
-.logo {
-    font-size: 50px;
-}
-
 .login-box h1 {
-    margin: 10px 0;
-}
-
-.subtitle {
-    color: #9da7ba;
-    margin-bottom: 25px;
+    margin-bottom: 10px;
 }
 
 .login-box input {
     width: 100%;
-    padding: 15px;
-    border: 1px solid #343c4d;
+    padding: 14px;
+    margin-top: 15px;
+    border: 0;
+    border-radius: 10px;
     background: #11151e;
     color: white;
-    border-radius: 12px;
     font-size: 16px;
-    outline: none;
 }
 
 .login-box button {
     width: 100%;
-    margin-top: 12px;
-    padding: 15px;
-    border: none;
-    border-radius: 12px;
+    padding: 14px;
+    margin-top: 10px;
+    border: 0;
+    border-radius: 10px;
     background: #4d8cff;
     color: white;
     font-weight: bold;
     cursor: pointer;
 }
 
-.chat-page {
+#chatPage {
     display: none;
     height: 100vh;
-    overflow: hidden;
 }
 
 .header {
     height: 70px;
-    background: #191e29;
+    background: #1a1f2b;
+    padding: 12px 15px;
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    padding: 0 15px;
-    border-bottom: 1px solid #303746;
+    align-items: center;
 }
 
-.header-title {
-    font-size: 18px;
+.title {
     font-weight: bold;
 }
 
@@ -104,22 +93,21 @@ body {
 }
 
 .logout {
-    border: none;
-    background: #292f3d;
+    background: #303746;
+    border: 0;
     color: white;
     padding: 9px 12px;
     border-radius: 8px;
-    cursor: pointer;
 }
 
-.chat {
+#chat {
     height: calc(100vh - 135px);
     overflow-y: auto;
-    padding: 18px 14px;
+    padding: 15px;
 }
 
 .message {
-    margin-bottom: 16px;
+    margin-bottom: 15px;
 }
 
 .username {
@@ -129,42 +117,31 @@ body {
     margin-bottom: 4px;
 }
 
-.message-info {
-    color: #7f899b;
+.time {
+    color: #777f90;
     font-size: 10px;
-    font-weight: normal;
-    margin-left: 6px;
+    margin-left: 5px;
 }
 
 .bubble {
     display: inline-block;
-    max-width: 85%;
-    background: #202633;
-    padding: 11px 13px;
+    background: #222936;
+    padding: 10px 13px;
     border-radius: 5px 14px 14px 14px;
-    word-wrap: break-word;
+    max-width: 85%;
+    word-break: break-word;
 }
 
-.my-message {
+.mine {
     text-align: right;
 }
 
-.my-message .username {
+.mine .username {
     color: #70e6a0;
 }
 
-.my-message .bubble {
+.mine .bubble {
     background: #315b9f;
-    border-radius: 14px 5px 14px 14px;
-}
-
-.delete-btn {
-    border: none;
-    background: transparent;
-    color: #ff6b6b;
-    cursor: pointer;
-    font-size: 10px;
-    margin-left: 5px;
 }
 
 .input-area {
@@ -173,19 +150,16 @@ body {
     left: 0;
     width: 100%;
     height: 65px;
-    background: #191e29;
-    border-top: 1px solid #303746;
+    background: #1a1f2b;
+    padding: 10px;
     display: flex;
-    align-items: center;
-    gap: 7px;
-    padding: 9px;
+    gap: 8px;
 }
 
-.message-input {
+#messageInput {
     flex: 1;
-    height: 42px;
-    border: none;
-    outline: none;
+    border: 0;
+    outline: 0;
     border-radius: 10px;
     background: #272e3b;
     color: white;
@@ -193,91 +167,39 @@ body {
     font-size: 15px;
 }
 
-.send,
-.emoji-btn {
-    width: 45px;
-    height: 42px;
-    border: none;
+.send {
+    width: 48px;
+    border: 0;
+    border-radius: 10px;
     background: #4d8cff;
     color: white;
-    border-radius: 10px;
     font-size: 18px;
-    cursor: pointer;
 }
 
-.emoji-btn {
-    background: #272e3b;
-}
-
-.emoji-panel {
-    display: none;
-    position: fixed;
-    bottom: 70px;
-    left: 8px;
-    right: 8px;
-    background: #1b2130;
-    border: 1px solid #343c4d;
-    border-radius: 14px;
-    padding: 10px;
-    text-align: center;
-    z-index: 100;
-}
-
-.emoji-panel button {
-    border: none;
-    background: transparent;
-    font-size: 25px;
-    padding: 6px;
-    cursor: pointer;
-}
-
-@media (min-width:700px) {
-    .chat {
-        max-width: 700px;
-        margin: auto;
-    }
-
-    .input-area {
-        max-width: 700px;
-        left: 50%;
-        transform: translateX(-50%);
-    }
-
-    .emoji-panel {
-        max-width: 700px;
-        left: 50%;
-        right: auto;
-        width: 700px;
-        transform: translateX(-50%);
-    }
-}
 </style>
 
 </head>
 
 <body>
 
-<div class="login" id="login">
+<div id="login">
 
 ```
 <div class="login-box">
 
-    <div class="logo">💬</div>
+    <div style="font-size:50px;">💬</div>
 
-    <h1>Mobil Sohbet</h1>
+    <h1>Ritmix Sohbet</h1>
 
-    <div class="subtitle">
-        Sohbete katılmak için kullanıcı adını yaz
-    </div>
+    <p>Sohbete katılmak için kullanıcı adını yaz</p>
 
     <input
         id="usernameInput"
         maxlength="20"
         placeholder="Kullanıcı adın..."
-        onkeydown="loginEnter(event)"
     >
 
-    <button onclick="enterChat()">
+    <button id="loginButton">
         SOHBETE GİR
     </button>
 
@@ -286,15 +208,15 @@ body {
 
 </div>
 
-<div class="chat-page" id="chatPage">
+<div id="chatPage">
 
 ```
 <div class="header">
 
     <div>
 
-        <div class="header-title">
-            💬 Mobil Sohbet
+        <div class="title">
+            💬 Ritmix Sohbet
         </div>
 
         <div class="online" id="onlineText">
@@ -303,45 +225,24 @@ body {
 
     </div>
 
-    <button class="logout" onclick="logout()">
+    <button class="logout" id="logoutButton">
         Çıkış
     </button>
 
 </div>
 
-<div class="chat" id="chat"></div>
 
-<div class="emoji-panel" id="emojiPanel">
+<div id="chat"></div>
 
-    <button onclick="addEmoji('😀')">😀</button>
-    <button onclick="addEmoji('😂')">😂</button>
-    <button onclick="addEmoji('😍')">😍</button>
-    <button onclick="addEmoji('😘')">😘</button>
-    <button onclick="addEmoji('❤️')">❤️</button>
-    <button onclick="addEmoji('🔥')">🔥</button>
-    <button onclick="addEmoji('👍')">👍</button>
-    <button onclick="addEmoji('👏')">👏</button>
-    <button onclick="addEmoji('😎')">😎</button>
-    <button onclick="addEmoji('🥰')">🥰</button>
-    <button onclick="addEmoji('😉')">😉</button>
-    <button onclick="addEmoji('🎉')">🎉</button>
-
-</div>
 
 <div class="input-area">
 
-    <button class="emoji-btn" onclick="toggleEmoji()">
-        😊
-    </button>
-
     <input
-        class="message-input"
         id="messageInput"
         placeholder="Mesaj yaz..."
-        onkeydown="handleEnter(event)"
     >
 
-    <button class="send" onclick="sendMessage()">
+    <button class="send" id="sendButton">
         ➤
     </button>
 
@@ -351,8 +252,6 @@ body {
 </div>
 
 <script>
-
-/* FIREBASE AYARLARI */
 
 const firebaseConfig = {
     apiKey: "AIzaSyDJ9zkgu_2ZLcD_ObEYwnFfSu6QffN9VQI",
@@ -374,140 +273,108 @@ let userKey = "";
 
 /* GİRİŞ */
 
-function enterChat() {
+document.getElementById("loginButton").addEventListener("click", enterChat);
 
-    const input =
-        document.getElementById("usernameInput");
-
-    const name =
-        input.value.trim();
-
-    if (!name) {
-        alert("Lütfen kullanıcı adını yaz.");
-        return;
-    }
-
-    username = name;
-
-    document.getElementById("login").style.display = "none";
-    document.getElementById("chatPage").style.display = "block";
-
-    loadMessages();
-    createOnlineUser();
-
-    document.getElementById("messageInput").focus();
-}
-
-
-function loginEnter(event) {
+document.getElementById("usernameInput").addEventListener("keydown", function(event) {
 
     if (event.key === "Enter") {
         enterChat();
     }
 
+});
+
+
+function enterChat() {
+
+    const input = document.getElementById("usernameInput");
+
+    const name = input.value.trim();
+
+    if (name === "") {
+
+        alert("Lütfen kullanıcı adını yaz.");
+
+        return;
+
+    }
+
+    username = name;
+
+    document.getElementById("login").style.display = "none";
+
+    document.getElementById("chatPage").style.display = "block";
+
+    listenMessages();
+
+    setOnline();
+
 }
 
 
-/* MESAJLAR */
+/* MESAJLARI DİNLE */
 
-function loadMessages() {
-
-    const chat =
-        document.getElementById("chat");
+function listenMessages() {
 
     database.ref("messages").on("value", function(snapshot) {
 
+        const chat = document.getElementById("chat");
+
         chat.innerHTML = "";
 
-        snapshot.forEach(function(child) {
+        snapshot.forEach(function(item) {
 
-            const message =
-                child.val();
+            const message = item.val();
 
-            const box =
-                document.createElement("div");
+            const box = document.createElement("div");
 
             box.className = "message";
 
             if (message.username === username) {
-                box.classList.add("my-message");
+                box.classList.add("mine");
             }
 
 
-            const user =
-                document.createElement("div");
+            const user = document.createElement("div");
 
             user.className = "username";
 
-            user.textContent =
-                message.username || "Misafir";
+            user.textContent = message.username;
 
 
             if (message.timestamp) {
 
-                const info =
-                    document.createElement("span");
+                const time = document.createElement("span");
 
-                info.className =
-                    "message-info";
+                time.className = "time";
 
-                const date =
-                    new Date(message.timestamp);
-
-                info.textContent =
-                    "• " +
-                    date.toLocaleTimeString("tr-TR", {
+                time.textContent =
+                    new Date(message.timestamp)
+                    .toLocaleTimeString("tr-TR", {
                         hour: "2-digit",
                         minute: "2-digit"
                     });
 
-                user.appendChild(info);
+                user.appendChild(time);
+
             }
 
 
-            if (message.username === username) {
+            const bubble = document.createElement("div");
 
-                const deleteButton =
-                    document.createElement("button");
+            bubble.className = "bubble";
 
-                deleteButton.className =
-                    "delete-btn";
-
-                deleteButton.textContent =
-                    "Sil";
-
-                deleteButton.onclick =
-                    function() {
-
-                        if (confirm("Bu mesaj silinsin mi?")) {
-                            child.ref.remove();
-                        }
-
-                    };
-
-                user.appendChild(deleteButton);
-            }
-
-
-            const bubble =
-                document.createElement("div");
-
-            bubble.className =
-                "bubble";
-
-            bubble.textContent =
-                message.text || "";
+            bubble.textContent = message.text;
 
 
             box.appendChild(user);
+
             box.appendChild(bubble);
 
             chat.appendChild(box);
 
         });
 
-        chat.scrollTop =
-            chat.scrollHeight;
+        chat.scrollTop = chat.scrollHeight;
 
     });
 
@@ -516,15 +383,26 @@ function loadMessages() {
 
 /* MESAJ GÖNDER */
 
+document.getElementById("sendButton").addEventListener("click", sendMessage);
+
+document.getElementById("messageInput").addEventListener("keydown", function(event) {
+
+    if (event.key === "Enter") {
+
+        sendMessage();
+
+    }
+
+});
+
+
 function sendMessage() {
 
-    const input =
-        document.getElementById("messageInput");
+    const input = document.getElementById("messageInput");
 
-    const text =
-        input.value.trim();
+    const text = input.value.trim();
 
-    if (!text || !username) {
+    if (text === "" || username === "") {
         return;
     }
 
@@ -542,48 +420,31 @@ function sendMessage() {
 
     input.focus();
 
-    closeEmoji();
-}
-
-
-function handleEnter(event) {
-
-    if (event.key === "Enter") {
-
-        event.preventDefault();
-
-        sendMessage();
-
-    }
-
 }
 
 
 /* ONLINE KULLANICI */
 
-function createOnlineUser() {
+function setOnline() {
 
-    const ref =
-        database.ref("onlineUsers").push();
+    const ref = database.ref("onlineUsers").push();
 
-    userKey =
-        ref.key;
+    userKey = ref.key;
 
     ref.set({
 
         username: username,
 
-        joinedAt:
-            firebase.database.ServerValue.TIMESTAMP
+        timestamp: firebase.database.ServerValue.TIMESTAMP
 
     });
 
     ref.onDisconnect().remove();
 
+
     database.ref("onlineUsers").on("value", function(snapshot) {
 
-        const count =
-            snapshot.numChildren();
+        const count = snapshot.numChildren();
 
         document.getElementById("onlineText").textContent =
             "🟢 " + count + " kişi çevrimiçi";
@@ -593,45 +454,9 @@ function createOnlineUser() {
 }
 
 
-/* EMOJİ */
-
-function toggleEmoji() {
-
-    const panel =
-        document.getElementById("emojiPanel");
-
-    if (panel.style.display === "block") {
-        panel.style.display = "none";
-    } else {
-        panel.style.display = "block";
-    }
-
-}
-
-
-function addEmoji(emoji) {
-
-    const input =
-        document.getElementById("messageInput");
-
-    input.value += emoji;
-
-    input.focus();
-
-}
-
-
-function closeEmoji() {
-
-    document.getElementById("emojiPanel").style.display =
-        "none";
-
-}
-
-
 /* ÇIKIŞ */
 
-function logout() {
+document.getElementById("logoutButton").addEventListener("click", function() {
 
     if (userKey) {
 
@@ -640,17 +465,6 @@ function logout() {
     }
 
     location.reload();
-
-}
-
-
-window.addEventListener("beforeunload", function() {
-
-    if (userKey) {
-
-        database.ref("onlineUsers/" + userKey).remove();
-
-    }
 
 });
 
