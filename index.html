@@ -1277,8 +1277,53 @@ function startVoiceListeners() {
     console.log("SES SİSTEMİ ÇALIŞIYOR");
 }
 
-</script>document.getElementById("voiceButton").addEventListener("click", async function () {
+</script>const voiceButton = document.getElementById("voiceButton");
 
+let microphoneStream = null;
+
+voiceButton.addEventListener("click", async function () {
+
+    if (microphoneStream) {
+
+        microphoneStream.getTracks().forEach(function(track) {
+            track.stop();
+        });
+
+        microphoneStream = null;
+
+        voiceButton.textContent = "🎤 Sesli Sohbet";
+        voiceButton.style.background = "#45a86b";
+
+        return;
+    }
+
+    try {
+
+        microphoneStream =
+            await navigator.mediaDevices.getUserMedia({
+                audio: true,
+                video: false
+            });
+
+        voiceButton.textContent = "🔴 Sesi Kapat";
+        voiceButton.style.background = "#d9534f";
+
+        console.log("🎤 Mikrofon aktif");
+
+    } catch (error) {
+
+        console.error("Mikrofon hatası:", error);
+
+        alert(
+            "Mikrofon açılamadı.\n\n" +
+            error.name +
+            "\n" +
+            error.message
+        );
+
+    }
+
+});
     try {
 
         const stream = await navigator.mediaDevices.getUserMedia({
