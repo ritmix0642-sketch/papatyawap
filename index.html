@@ -1055,7 +1055,237 @@ document
 );
 
 
-</script>
+</script>/* =========================
+   SESLİ SOHBET
+========================= */
+
+let localStream = null;
+let peerConnection = null;
+let voiceRoomKey = null;
+let isMuted = false;
+
+const voiceConfig = {
+    iceServers: [
+        {
+            urls: "stun:stun.l.google.com:19302"
+        }
+    ]
+};
+
+
+document
+.getElementById("voiceButton")
+.addEventListener("click", startVoice);
+
+
+document
+.getElementById("closeVoiceButton")
+.addEventListener("click", leaveVoice);
+
+
+document
+.getElementById("muteButton")
+.addEventListener("click", toggleMute);
+
+
+async function startVoice() {
+
+    try {
+
+        localStream =
+            await navigator.mediaDevices.getUserMedia({
+                audio: true,
+                video: false
+            });
+
+        document.getElementById("voicePanel")
+            .style.display = "block";
+
+        document.getElementById("voiceUsers")
+            .textContent =
+            "🎤 Mikrofon açık — bağlantı bekleniyor...";
+
+        createVoiceConnection();
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "Mikrofon erişimi gerekiyor. Tarayıcıdan mikrofon iznini ver."
+        );
+
+    }
+
+}
+
+
+function createVoiceConnection() {
+
+    peerConnection =
+        new RTCPeerConnection(voiceConfig);
+
+
+    localStream
+        .getTracks()
+        .forEach(function(track) {
+
+            peerConnection.addTrack(
+                track,
+                localStream
+            );
+
+        });
+
+
+    peerConnection.ontrack =
+        function(event) {
+
+            const audio =
+                document.getElementById(
+                    "remoteAudio"
+                );
+
+            audio.srcObject =
+                event.streams[0];
+
+        };
+
+
+    peerConnection.onicecandidate =
+        function(event) {
+
+            if (
+                event.candidate &&
+                voiceRoomKey
+            ) {
+
+                database
+                .ref(
+                    "calls/" +
+                    voiceRoomKey +
+                    "/candidates"
+                )
+                .push(
+                    event.candidate.toJSON()
+                );
+
+            }
+
+        };
+
+
+    database
+    .ref("calls")
+    .push({
+
+        username:
+            username,
+
+        createdAt:
+            Date.now()
+
+    })
+    .then(function(snapshot) {
+
+        voiceRoomKey =
+            snapshot.key;
+
+        document.getElementById(
+            "voiceUsers"
+        ).textContent =
+            "🟢 " +
+            username +
+            " sesli odada";
+
+    });
+
+}
+
+
+function toggleMute() {
+
+    if (!localStream) {
+        return;
+    }
+
+
+    const audioTracks =
+        localStream.getAudioTracks();
+
+
+    audioTracks.forEach(function(track) {
+
+        track.enabled =
+            !track.enabled;
+
+    });
+
+
+    isMuted =
+        !isMuted;
+
+
+    document.getElementById(
+        "muteButton"
+    ).textContent =
+        isMuted
+        ? "🎙️ Mikrofonu Aç"
+        : "🔇 Mikrofonu Kapat";
+
+}
+
+
+function leaveVoice() {
+
+    if (localStream) {
+
+        localStream
+        .getTracks()
+        .forEach(function(track) {
+
+            track.stop();
+
+        });
+
+    }
+
+
+    if (peerConnection) {
+
+        peerConnection.close();
+
+        peerConnection =
+            null;
+
+    }
+
+
+    if (voiceRoomKey) {
+
+        database
+        .ref(
+            "calls/" +
+            voiceRoomKey
+        )
+        .remove();
+
+    }
+
+
+    localStream =
+        null;
+
+    voiceRoomKey =
+        null;
+
+
+    document.getElementById(
+        "voicePanel"
+    ).style.display =
+        "none";
+
+}
 
 </body><div class="voice-panel" id="voicePanel">
 
