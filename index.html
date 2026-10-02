@@ -1277,7 +1277,29 @@ function startVoiceListeners() {
     console.log("SES SİSTEMİ ÇALIŞIYOR");
 }
 
-</script>
+</script>document.getElementById("voiceButton").addEventListener("click", async function () {
+
+    try {
+
+        const stream = await navigator.mediaDevices.getUserMedia({
+            audio: true
+        });
+
+        alert("🎤 Mikrofon açıldı! Sesli görüşme için mikrofon hazır.");
+
+        stream.getTracks().forEach(track => {
+            track.stop();
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert("Mikrofon açılamadı: " + error.message);
+
+    }
+
+});
 
 </body>
 </html>
