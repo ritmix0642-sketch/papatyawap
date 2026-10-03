@@ -1,15 +1,24 @@
  <!DOCTYPE html>
 <html lang="tr">
+
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
 <title>Ritmix Sohbet</title>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 
 <style>
-*{box-sizing:border-box}
+
+*{
+    box-sizing:border-box;
+}
 
 body{
     margin:0;
@@ -17,6 +26,8 @@ body{
     background:#0f1117;
     color:white;
 }
+
+/* GİRİŞ */
 
 #login{
     min-height:100vh;
@@ -71,6 +82,8 @@ body{
     cursor:pointer;
 }
 
+/* SOHBET */
+
 #chatPage{
     display:none;
     height:100vh;
@@ -78,13 +91,14 @@ body{
 }
 
 .header{
-    height:70px;
+    min-height:70px;
     background:#191e29;
     display:flex;
     align-items:center;
     justify-content:space-between;
-    padding:0 15px;
+    padding:10px 15px;
     border-bottom:1px solid #303746;
+    gap:10px;
 }
 
 .header-title{
@@ -102,6 +116,13 @@ body{
     color:#9da7ba;
     font-size:11px;
     margin-top:3px;
+    max-width:500px;
+}
+
+.header-buttons{
+    display:flex;
+    align-items:center;
+    gap:7px;
 }
 
 .logout{
@@ -112,6 +133,22 @@ body{
     border-radius:8px;
     cursor:pointer;
 }
+
+.voice-button{
+    border:none;
+    background:#45a86b;
+    color:white;
+    padding:9px 12px;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.voice-button.active{
+    background:#d9534f;
+}
+
+/* MESAJLAR */
 
 .chat{
     height:calc(100vh - 135px);
@@ -169,6 +206,8 @@ body{
     margin-left:7px;
 }
 
+/* MESAJ GİRİŞİ */
+
 .input-area{
     position:fixed;
     bottom:0;
@@ -206,25 +245,77 @@ body{
     cursor:pointer;
 }
 
+/* SES DURUMU */
+
+#voiceStatus{
+    display:none;
+    position:fixed;
+    bottom:75px;
+    left:50%;
+    transform:translateX(-50%);
+    background:#202633;
+    color:#fff;
+    padding:10px 16px;
+    border-radius:20px;
+    font-size:13px;
+    z-index:20;
+}
+
+@media(max-width:600px){
+
+    .header{
+        padding:8px;
+    }
+
+    .header-title{
+        font-size:15px;
+    }
+
+    .voice-button,
+    .logout{
+        padding:8px;
+        font-size:11px;
+    }
+
+    .online-users{
+        max-width:220px;
+        white-space:nowrap;
+        overflow:hidden;
+        text-overflow:ellipsis;
+    }
+
+}
+
 @media(min-width:700px){
+
     .input-area{
         max-width:800px;
         left:50%;
         transform:translateX(-50%);
     }
+
 }
+
 </style>
+
 </head>
 
 <body>
+
+
+<!-- GİRİŞ -->
 
 <div id="login">
 
     <div class="login-box">
 
-        <div class="logo">💬</div>
+        <div class="logo">
+            💬
+        </div>
 
-        <h1>Ritmix Sohbet</h1>
+        <h1>
+            Ritmix Sohbet
+        </h1>
 
         <div class="subtitle">
             Sohbete katılmak için kullanıcı adını yaz
@@ -244,6 +335,9 @@ body{
     </div>
 
 </div>
+
+
+<!-- SOHBET -->
 
 <div id="chatPage">
 
@@ -271,32 +365,33 @@ body{
 
         </div>
 
-        <button
-            class="logout"
-            id="logoutButton"
-        >
-            Çıkış
-        </button><button
-    id="voiceButton"
-    style="
-        margin-left:8px;
-        padding:9px 12px;
-        border:0;
-        border-radius:8px;
-        background:#45a86b;
-        color:white;
-        cursor:pointer;
-    "
->
-    🎤 Sesli Sohbet
-</button>
+
+        <div class="header-buttons">
+
+            <button
+                class="voice-button"
+                id="voiceButton"
+            >
+                🎤 Sesli Sohbet
+            </button>
+
+            <button
+                class="logout"
+                id="logoutButton"
+            >
+                Çıkış
+            </button>
+
+        </div>
 
     </div>
+
 
     <div
         class="chat"
         id="chat"
     ></div>
+
 
     <div class="input-area">
 
@@ -318,65 +413,150 @@ body{
 
 </div>
 
+
+<div id="voiceStatus">
+    🎤 Sesli bağlantı hazırlanıyor...
+</div>
+
+
+<audio
+    id="remoteAudio"
+    autoplay
+    playsinline
+></audio>
+
+
 <script>
 
+/* =========================
+   FIREBASE
+========================= */
+
 const firebaseConfig = {
-    apiKey: "AIzaSyDJ9zkgu_2ZLcD_ObEYwnFfSu6QffN9VQI",
-    authDomain: "papatyawap.firebaseapp.com",
-    databaseURL: "https://papatyawap-cdf7b-default-rtdb.firebaseio.com",
-    projectId: "papatyawap",
-    storageBucket: "papatyawap.firebasestorage.app",
-    messagingSenderId: "29357315689",
-    appId: "1:29357315689:web:78864218c204d291f734f8"
+
+    apiKey:
+    "AIzaSyDJ9zkgu_2ZLcD_ObEYwnFfSu6QffN9VQI",
+
+    authDomain:
+    "papatyawap.firebaseapp.com",
+
+    databaseURL:
+    "https://papatyawap-cdf7b-default-rtdb.firebaseio.com",
+
+    projectId:
+    "papatyawap",
+
+    storageBucket:
+    "papatyawap.firebasestorage.app",
+
+    messagingSenderId:
+    "29357315689",
+
+    appId:
+    "1:29357315689:web:78864218c204d291f734f8"
+
 };
+
 
 firebase.initializeApp(firebaseConfig);
 
-const database = firebase.database();
+const database =
+    firebase.database();
+
+
+/* =========================
+   DEĞİŞKENLER
+========================= */
 
 let username = "";
+
 let userKey = "";
 
+let localStream = null;
 
-/* GİRİŞ */
+let peerConnections = {};
+
+let voiceActive = false;
+
+let voiceListenerStarted = false;
+
+
+/* WEBRTC */
+
+const rtcConfig = {
+
+    iceServers:[
+        {
+            urls:"stun:stun.l.google.com:19302"
+        },
+        {
+            urls:"stun:stun1.l.google.com:19302"
+        }
+    ]
+
+};
+
+
+/* =========================
+   GİRİŞ
+========================= */
 
 function enterChat(){
 
     const input =
-        document.getElementById("usernameInput");
+        document.getElementById(
+            "usernameInput"
+        );
 
     const name =
         input.value.trim();
 
+
     if(!name){
 
-        alert("Lütfen kullanıcı adını yaz.");
+        alert(
+            "Lütfen kullanıcı adını yaz."
+        );
 
         input.focus();
 
         return;
+
     }
 
-    username = name;
 
-    document.getElementById("login").style.display = "none";
+    username =
+        name;
 
-    document.getElementById("chatPage").style.display = "block";
+
+    document.getElementById(
+        "login"
+    ).style.display =
+        "none";
+
+
+    document.getElementById(
+        "chatPage"
+    ).style.display =
+        "block";
+
 
     loadMessages();
 
     setOnline();
+
 }
 
 
-/* BUTON */
+document.getElementById(
+    "loginButton"
+).onclick =
+    enterChat;
 
-document.getElementById("loginButton").onclick = enterChat;
 
-
-/* ENTER */
-
-document.getElementById("usernameInput").onkeydown =
+document.getElementById(
+    "usernameInput"
+).onkeydown =
 function(event){
 
     if(event.key === "Enter"){
@@ -388,114 +568,179 @@ function(event){
 };
 
 
-/* MESAJLAR */
+/* =========================
+   MESAJLAR
+========================= */
 
 function loadMessages(){
 
     database
     .ref("messages")
-    .on("value",function(snapshot){
+    .on(
+        "value",
+        function(snapshot){
 
-        const chat =
-            document.getElementById("chat");
+            const chat =
+                document.getElementById(
+                    "chat"
+                );
 
-        chat.innerHTML = "";
 
-        snapshot.forEach(function(child){
+            chat.innerHTML = "";
 
-            const message =
-                child.val();
 
-            const box =
-                document.createElement("div");
+            snapshot.forEach(
+                function(child){
 
-            box.className = "message";
+                    const message =
+                        child.val();
 
-            if(message.username === username){
 
-                box.classList.add("my-message");
+                    const box =
+                        document.createElement(
+                            "div"
+                        );
 
-            }
 
-            const user =
-                document.createElement("div");
+                    box.className =
+                        "message";
 
-            user.className = "username";
 
-            user.textContent =
-                message.username;
+                    if(
+                        message.username
+                        === username
+                    ){
 
-            if(message.timestamp){
+                        box.classList.add(
+                            "my-message"
+                        );
 
-                const time =
-                    document.createElement("span");
+                    }
 
-                time.className = "time";
 
-                time.textContent =
-                    new Date(
-                        message.timestamp
-                    ).toLocaleTimeString(
-                        "tr-TR",
-                        {
-                            hour:"2-digit",
-                            minute:"2-digit"
-                        }
+                    const user =
+                        document.createElement(
+                            "div"
+                        );
+
+
+                    user.className =
+                        "username";
+
+
+                    user.textContent =
+                        message.username;
+
+
+                    if(message.timestamp){
+
+                        const time =
+                            document.createElement(
+                                "span"
+                            );
+
+
+                        time.className =
+                            "time";
+
+
+                        time.textContent =
+                            new Date(
+                                message.timestamp
+                            ).toLocaleTimeString(
+                                "tr-TR",
+                                {
+                                    hour:"2-digit",
+                                    minute:"2-digit"
+                                }
+                            );
+
+
+                        user.appendChild(
+                            time
+                        );
+
+                    }
+
+
+                    if(
+                        message.username
+                        === username
+                    ){
+
+                        const deleteButton =
+                            document.createElement(
+                                "button"
+                            );
+
+
+                        deleteButton.className =
+                            "delete";
+
+
+                        deleteButton.textContent =
+                            "Sil";
+
+
+                        deleteButton.onclick =
+                        function(){
+
+                            child.ref.remove();
+
+                        };
+
+
+                        user.appendChild(
+                            deleteButton
+                        );
+
+                    }
+
+
+                    const bubble =
+                        document.createElement(
+                            "div"
+                        );
+
+
+                    bubble.className =
+                        "bubble";
+
+
+                    bubble.textContent =
+                        message.text;
+
+
+                    box.appendChild(
+                        user
                     );
 
-                user.appendChild(time);
-            }
+
+                    box.appendChild(
+                        bubble
+                    );
 
 
-            if(message.username === username){
+                    chat.appendChild(
+                        box
+                    );
 
-                const deleteButton =
-                    document.createElement("button");
-
-                deleteButton.className =
-                    "delete";
-
-                deleteButton.textContent =
-                    "Sil";
-
-                deleteButton.onclick =
-                function(){
-
-                    child.ref.remove();
-
-                };
-
-                user.appendChild(
-                    deleteButton
-                );
-            }
+                }
+            );
 
 
-            const bubble =
-                document.createElement("div");
+            chat.scrollTop =
+                chat.scrollHeight;
 
-            bubble.className =
-                "bubble";
+        }
+    );
 
-            bubble.textContent =
-                message.text;
-
-            box.appendChild(user);
-
-            box.appendChild(bubble);
-
-            chat.appendChild(box);
-
-        });
-
-        chat.scrollTop =
-            chat.scrollHeight;
-
-    });
 }
 
 
-/* MESAJ GÖNDER */
+/* =========================
+   MESAJ GÖNDER
+========================= */
 
 function sendMessage(){
 
@@ -504,35 +749,48 @@ function sendMessage(){
             "messageInput"
         );
 
+
     const text =
         input.value.trim();
 
-    if(!text || !username){
+
+    if(
+        !text ||
+        !username
+    ){
 
         return;
+
     }
+
 
     database
     .ref("messages")
     .push({
 
-        username:username,
+        username:
+            username,
 
-        text:text,
+        text:
+            text,
 
-        timestamp:Date.now()
+        timestamp:
+            Date.now()
 
     });
+
 
     input.value = "";
 
     input.focus();
+
 }
 
 
 document.getElementById(
     "sendButton"
-).onclick = sendMessage;
+).onclick =
+    sendMessage;
 
 
 document.getElementById(
@@ -551,7 +809,9 @@ function(event){
 };
 
 
-/* ÇEVRİMİÇİ */
+/* =========================
+   ÇEVRİMİÇİ
+========================= */
 
 function setOnline(){
 
@@ -560,233 +820,270 @@ function setOnline(){
         .ref("onlineUsers")
         .push();
 
-    userKey = ref.key;
+
+    userKey =
+        ref.key;
+
 
     ref.set({
 
-        username:username,
+        username:
+            username,
 
         timestamp:
             firebase.database.ServerValue.TIMESTAMP
 
     });
 
+
     ref.onDisconnect().remove();
 
 
     database
     .ref("onlineUsers")
-    .on("value",function(snapshot){
+    .on(
+        "value",
+        function(snapshot){
 
-        const count =
-            snapshot.numChildren();
-
-        document.getElementById(
-            "onlineText"
-        ).textContent =
-            "🟢 " +
-            count +
-            " kişi çevrimiçi";
+            const count =
+                snapshot.numChildren();
 
 
-        const names = [];
-
-        snapshot.forEach(function(child){
-
-            const user =
-                child.val();
-
-            if(user && user.username){
-
-                names.push(user.username);
-
-            }
-
-        });
+            document.getElementById(
+                "onlineText"
+            ).textContent =
+                "🟢 " +
+                count +
+                " kişi çevrimiçi";
 
 
-        document.getElementById(
-            "onlineUsersText"
-        ).textContent =
-            names.length
-            ? "👥 " + names.join(", ")
-            : "👥 Kimse yok";
+            const names = [];
 
-    });
+
+            snapshot.forEach(
+                function(child){
+
+                    const user =
+                        child.val();
+
+
+                    if(
+                        user &&
+                        user.username
+                    ){
+
+                        names.push(
+                            user.username
+                        );
+
+                    }
+
+                }
+            );
+
+
+            document.getElementById(
+                "onlineUsersText"
+            ).textContent =
+                names.length
+                ?
+                "👥 " +
+                names.join(", ")
+                :
+                "👥 Kimse yok";
+
+        }
+    );
+
 }
 
 
-/* ÇIKIŞ */
+/* =========================
+   SESLİ SOHBET
+========================= */
 
-document.getElementById(
-    "logoutButton"
-).onclick =
-function(){
+function showVoiceStatus(text){
 
-    if(userKey){
+    const status =
+        document.getElementById(
+            "voiceStatus"
+        );
 
-        database
-        .ref(
-            "onlineUsers/" +
-            userKey
-        )
-        .remove();
 
-    }
+    status.textContent =
+        text;
 
-    location.reload();
 
-};
-function startVoiceListeners() {
-    console.log("SES SİSTEMİ ÇALIŞIYOR");
+    status.style.display =
+        "block";
+
 }
-</script><script>
 
-    /* burada mevcut kodların */
 
-    document.getElementById("voiceButton").onclick = async function() {
+function hideVoiceStatus(){
 
-        try {
+    document.getElementById(
+        "voiceStatus"
+    ).style.display =
+        "none";
 
-            const stream =
-                await navigator.mediaDevices.getUserMedia({
-                    audio: true
-                });
+}
 
-            alert("🎤 MİKROFON ÇALIŞIYOR");
 
-            stream.getTracks().forEach(function(track) {
-                track.stop();
+/* MİKROFONU AÇ */
+
+async function startVoiceChat(){
+
+    try{
+
+        showVoiceStatus(
+            "🎤 Mikrofon açılıyor..."
+        );
+
+
+        localStream =
+            await navigator
+            .mediaDevices
+            .getUserMedia({
+
+                audio:true,
+
+                video:false
+
             });
 
-        } catch(error) {
 
-            alert(
-                "Mikrofon hatası: " +
-                error.name +
-                " - " +
-                error.message
+        voiceActive =
+            true;
+
+
+        const button =
+            document.getElementById(
+                "voiceButton"
             );
+
+
+        button.textContent =
+            "🔴 Sesi Kapat";
+
+
+        button.classList.add(
+            "active"
+        );
+
+
+        startVoiceListener();
+
+
+        showVoiceStatus(
+            "🎤 Sesli sohbet aktif"
+        );
+
+
+        /* MEVCUT ÇAĞRILARI KONTROL ET */
+
+        const callsSnapshot =
+            await database
+            .ref("calls")
+            .once("value");
+
+
+        let foundCall =
+            false;
+
+
+        callsSnapshot.forEach(
+            function(child){
+
+                const call =
+                    child.val();
+
+
+                if(
+                    call &&
+                    call.receiver === username
+                ){
+
+                    foundCall =
+                        true;
+
+
+                    answerCall(
+                        child.key,
+                        call
+                    );
+
+                }
+
+            }
+        );
+
+
+        /* BAŞKA KULLANICI VARSA ÇAĞRI BAŞLAT */
+
+        if(!foundCall){
+
+            await createCall();
 
         }
 
-    };
+    }
+    catch(error){
 
-</script>
+        console.error(
+            "Mikrofon hatası:",
+            error
+        );
 
-</body>
-</html>document.getElementById("voiceButton").onclick = async function() {
-
-    try {
-
-        const stream =
-            await navigator.mediaDevices.getUserMedia({
-                audio: true
-            });
-
-        alert("🎤 MİKROFON ÇALIŞIYOR");
-
-        stream.getTracks().forEach(function(track) {
-            track.stop();
-        });
-
-    } catch(error) {
 
         alert(
-            "Mikrofon hatası: " +
+            "Mikrofon açılamadı:\n\n" +
             error.name +
-            " - " +
+            "\n" +
             error.message
         );
 
     }
 
-};/* =========================
-   SESLİ SOHBET
-========================= */
-
-let localStream = null;
-let peerConnections = {};
-let callListenersStarted = false;
-
-const rtcConfig = {
-    iceServers: [
-        {
-            urls: "stun:stun.l.google.com:19302"
-        },
-        {
-            urls: "stun:stun1.l.google.com:19302"
-        }
-    ]
-};
+}
 
 
-/* SESLİ SOHBET BUTONU */
+/* SES BUTONU */
 
-document.getElementById("voiceButton").onclick =
+document.getElementById(
+    "voiceButton"
+).onclick =
 async function(){
 
-    try {
+    if(voiceActive){
 
-        if(localStream){
+        stopVoiceChat();
 
-            stopVoiceChat();
+    }
+    else{
 
-            return;
-
-        }
-
-
-        localStream =
-            await navigator.mediaDevices.getUserMedia({
-                audio:true,
-                video:false
-            });
-
-
-        this.textContent =
-            "🔴 Sesi Kapat";
-
-
-        this.style.background =
-            "#d9534f";
-
-
-        startVoiceListeners();
-
-
-        await createVoiceCall();
-
-
-        alert(
-            "🎤 Mikrofon açıldı.\n\n" +
-            "Diğer kişi de 🎤 Sesli Sohbet butonuna basarsa sesli bağlantı kurulacaktır."
-        );
-
-
-    } catch(error){
-
-        console.error(error);
-
-        alert(
-            "Mikrofon açılamadı.\n\n" +
-            "Tarayıcı mikrofon izni vermen gerekiyor."
-        );
+        await startVoiceChat();
 
     }
 
 };
 
 
-/* DİĞER KULLANICILARIN ÇAĞRILARINI DİNLE */
+/* =========================
+   ÇAĞRI DİNLE
+========================= */
 
-function startVoiceListeners(){
+function startVoiceListener(){
 
-    if(callListenersStarted){
+    if(voiceListenerStarted){
+
         return;
+
     }
 
-    callListenersStarted = true;
+
+    voiceListenerStarted =
+        true;
 
 
     database
@@ -798,35 +1095,49 @@ function startVoiceListeners(){
             const call =
                 snapshot.val();
 
+
             const callId =
                 snapshot.key;
 
 
             if(!call){
+
                 return;
+
             }
 
 
             if(
                 call.caller === username
             ){
+
                 return;
+
             }
 
 
             if(
-                call.receiver
-                &&
                 call.receiver !== username
             ){
+
                 return;
+
             }
 
 
             if(
                 peerConnections[callId]
             ){
+
                 return;
+
+            }
+
+
+            if(!voiceActive){
+
+                return;
+
             }
 
 
@@ -841,9 +1152,18 @@ function startVoiceListeners(){
 }
 
 
-/* ÇAĞRI OLUŞTUR */
+/* =========================
+   ÇAĞRI BAŞLAT
+========================= */
 
-async function createVoiceCall(){
+async function createCall(){
+
+    if(!localStream){
+
+        return;
+
+    }
+
 
     const usersSnapshot =
         await database
@@ -851,7 +1171,8 @@ async function createVoiceCall(){
         .once("value");
 
 
-    let otherUser = null;
+    let otherUser =
+        null;
 
 
     usersSnapshot.forEach(
@@ -862,12 +1183,9 @@ async function createVoiceCall(){
 
 
             if(
-                user
-                &&
-                user.username
-                &&
-                user.username !== username
-                &&
+                user &&
+                user.username &&
+                user.username !== username &&
                 !otherUser
             ){
 
@@ -882,11 +1200,12 @@ async function createVoiceCall(){
 
     if(!otherUser){
 
-        alert(
-            "Şu anda başka çevrimiçi kullanıcı yok."
+        showVoiceStatus(
+            "🎤 Mikrofon açık - başka kullanıcı bekleniyor"
         );
 
         return;
+
     }
 
 
@@ -927,8 +1246,31 @@ async function createVoiceCall(){
     pc.ontrack =
     function(event){
 
-        playRemoteAudio(
-            event.streams[0]
+        const audio =
+            document.getElementById(
+                "remoteAudio"
+            );
+
+
+        audio.srcObject =
+            event.streams[0];
+
+
+        audio.play()
+        .catch(
+            function(error){
+
+                console.log(
+                    "Audio play:",
+                    error
+                );
+
+            }
+        );
+
+
+        showVoiceStatus(
+            "🔊 Ses bağlantısı kuruldu"
         );
 
     };
@@ -974,11 +1316,13 @@ async function createVoiceCall(){
             otherUser,
 
         offer:{
+
             type:
                 offer.type,
 
             sdp:
                 offer.sdp
+
         },
 
         created:
@@ -1002,8 +1346,7 @@ async function createVoiceCall(){
 
 
             if(
-                answer
-                &&
+                answer &&
                 !pc.currentRemoteDescription
             ){
 
@@ -1043,9 +1386,12 @@ async function createVoiceCall(){
                         )
                     );
 
-                }catch(error){
+                }
+                catch(error){
 
-                    console.log(error);
+                    console.log(
+                        error
+                    );
 
                 }
 
@@ -1057,14 +1403,19 @@ async function createVoiceCall(){
 }
 
 
-/* GELEN ÇAĞRIYI CEVAPLA */
+/* =========================
+   ÇAĞRIYI CEVAPLA
+========================= */
 
 async function answerCall(
     callId,
     call
 ){
 
-    if(!localStream){
+    if(
+        !localStream ||
+        !voiceActive
+    ){
 
         return;
 
@@ -1098,8 +1449,30 @@ async function answerCall(
     pc.ontrack =
     function(event){
 
-        playRemoteAudio(
-            event.streams[0]
+        const audio =
+            document.getElementById(
+                "remoteAudio"
+            );
+
+
+        audio.srcObject =
+            event.streams[0];
+
+
+        audio.play()
+        .catch(
+            function(error){
+
+                console.log(
+                    error
+                );
+
+            }
+        );
+
+
+        showVoiceStatus(
+            "🔊 Ses bağlantısı kuruldu"
         );
 
     };
@@ -1184,9 +1557,12 @@ async function answerCall(
                         )
                     );
 
-                }catch(error){
+                }
+                catch(error){
 
-                    console.log(error);
+                    console.log(
+                        error
+                    );
 
                 }
 
@@ -1198,57 +1574,15 @@ async function answerCall(
 }
 
 
-/* KARŞI TARAFIN SESİNİ ÇAL */
-
-function playRemoteAudio(
-    stream
-){
-
-    let audio =
-        document.getElementById(
-            "remoteAudio"
-        );
-
-
-    if(!audio){
-
-        audio =
-            document.createElement(
-                "audio"
-            );
-
-        audio.id =
-            "remoteAudio";
-
-        audio.autoplay =
-            true;
-
-        document.body.appendChild(
-            audio
-        );
-
-    }
-
-
-    audio.srcObject =
-        stream;
-
-
-    audio.play()
-    .catch(
-        function(error){
-
-            console.log(error);
-
-        }
-    );
-
-}
-
-
-/* SESLİ GÖRÜŞMEYİ KAPAT */
+/* =========================
+   SESLİ SOHBETİ KAPAT
+========================= */
 
 function stopVoiceChat(){
+
+    voiceActive =
+        false;
+
 
     if(localStream){
 
@@ -1262,6 +1596,7 @@ function stopVoiceChat(){
             }
         );
 
+
         localStream =
             null;
 
@@ -1273,8 +1608,16 @@ function stopVoiceChat(){
     ).forEach(
         function(id){
 
-            peerConnections[id]
-            .close();
+            try{
+
+                peerConnections[id].close();
+
+            }
+            catch(error){
+
+                console.log(error);
+
+            }
 
         }
     );
@@ -1282,6 +1625,36 @@ function stopVoiceChat(){
 
     peerConnections = {};
 
+
+    const audio =
+        document.getElementById(
+            "remoteAudio"
+        );
+
+
+    audio.srcObject =
+        null;
+
+
+    const button =
+        document.getElementById(
+            "voiceButton"
+        );
+
+
+    button.textContent =
+        "🎤 Sesli Sohbet";
+
+
+    button.classList.remove(
+        "active"
+    );
+
+
+    hideVoiceStatus();
+
+
+    /* KENDİ ÇAĞRILARIMIZI TEMİZLE */
 
     database
     .ref("calls")
@@ -1297,11 +1670,9 @@ function stopVoiceChat(){
 
 
                     if(
-                        call
-                        &&
+                        call &&
                         (
-                            call.caller === username
-                            ||
+                            call.caller === username ||
                             call.receiver === username
                         )
                     ){
@@ -1316,126 +1687,39 @@ function stopVoiceChat(){
         }
     );
 
-
-    const button =
-        document.getElementById(
-            "voiceButton"
-        );
-
-
-    button.textContent =
-        "🎤 Sesli Sohbet";
-
-
-    button.style.background =
-        "#45a86b";
-
 }
 
-</body>
-</html>
-function startVoiceListeners() {
-    console.log("SES SİSTEMİ ÇALIŞIYOR");
-}
 
-</script>const voiceButton = document.getElementById("voiceButton");
+/* =========================
+   ÇIKIŞ
+========================= */
 
-let microphoneStream = null;
+document.getElementById(
+    "logoutButton"
+).onclick =
+function(){
 
-voiceButton.addEventListener("click", async function () {
+    stopVoiceChat();
 
-    if (microphoneStream) {
 
-        microphoneStream.getTracks().forEach(function(track) {
-            track.stop();
-        });
+    if(userKey){
 
-        microphoneStream = null;
-
-        voiceButton.textContent = "🎤 Sesli Sohbet";
-        voiceButton.style.background = "#45a86b";
-
-        return;
-    }
-
-    try {
-
-        microphoneStream =
-            await navigator.mediaDevices.getUserMedia({
-                audio: true,
-                video: false
-            });
-
-        voiceButton.textContent = "🔴 Sesi Kapat";
-        voiceButton.style.background = "#d9534f";
-
-        console.log("🎤 Mikrofon aktif");
-
-    } catch (error) {
-
-        console.error("Mikrofon hatası:", error);
-
-        alert(
-            "Mikrofon açılamadı.\n\n" +
-            error.name +
-            "\n" +
-            error.message
-        );
+        database
+        .ref(
+            "onlineUsers/" +
+            userKey
+        )
+        .remove();
 
     }
 
-});
-    try {
 
-        const stream = await navigator.mediaDevices.getUserMedia({
-            audio: true
-        });
+    location.reload();
 
-        alert("🎤 Mikrofon açıldı! Sesli görüşme için mikrofon hazır.");
+};
 
-        stream.getTracks().forEach(track => {
-            track.stop();
-        });
-
-    } catch (error) {
-
-        console.error(error);
-
-        alert("Mikrofon açılamadı: " + error.message);
-
-    }
-
-});
-<script>
-document.getElementById("voiceButton").addEventListener("click", async function () {
-
-    try {
-
-        const stream = await navigator.mediaDevices.getUserMedia({
-            audio: true
-        });
-
-        alert("🎤 MİKROFON ÇALIŞIYOR");
-
-        stream.getTracks().forEach(function(track) {
-            track.stop();
-        });
-
-    } catch (error) {
-
-        alert(
-            "Mikrofon hatası: " +
-            error.name +
-            " - " +
-            error.message
-        );
-
-    }
-
-});
 </script>
 
 </body>
-</html>
-</body>
+
 </html>
