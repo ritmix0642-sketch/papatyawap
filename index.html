@@ -1,22 +1,15 @@
- ```html
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="tr">
-
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Ritmix Sohbet</title>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 
 <style>
-
-*{
-    box-sizing:border-box;
-}
+*{box-sizing:border-box}
 
 body{
     margin:0;
@@ -24,10 +17,6 @@ body{
     background:#0f1117;
     color:white;
 }
-
-/* =========================
-   GİRİŞ
-========================= */
 
 #login{
     min-height:100vh;
@@ -82,10 +71,6 @@ body{
     cursor:pointer;
 }
 
-/* =========================
-   SOHBET
-========================= */
-
 #chatPage{
     display:none;
     height:100vh;
@@ -93,14 +78,13 @@ body{
 }
 
 .header{
-    min-height:70px;
+    height:70px;
     background:#191e29;
     display:flex;
     align-items:center;
     justify-content:space-between;
-    padding:10px 15px;
+    padding:0 15px;
     border-bottom:1px solid #303746;
-    gap:10px;
 }
 
 .header-title{
@@ -118,40 +102,16 @@ body{
     color:#9da7ba;
     font-size:11px;
     margin-top:3px;
-    max-width:500px;
 }
 
-.header-buttons{
-    display:flex;
-    align-items:center;
-    gap:7px;
-}
-
-.logout,
-.voice-button{
+.logout{
     border:none;
+    background:#292f3d;
     color:white;
     padding:9px 12px;
     border-radius:8px;
     cursor:pointer;
-    font-weight:bold;
 }
-
-.logout{
-    background:#292f3d;
-}
-
-.voice-button{
-    background:#45a86b;
-}
-
-.voice-button.active{
-    background:#d9534f;
-}
-
-/* =========================
-   MESAJLAR
-========================= */
 
 .chat{
     height:calc(100vh - 135px);
@@ -209,10 +169,6 @@ body{
     margin-left:7px;
 }
 
-/* =========================
-   MESAJ GİRİŞİ
-========================= */
-
 .input-area{
     position:fixed;
     bottom:0;
@@ -250,68 +206,17 @@ body{
     cursor:pointer;
 }
 
-/* =========================
-   SES DURUMU
-========================= */
-
-#voiceStatus{
-    display:none;
-    position:fixed;
-    bottom:75px;
-    left:50%;
-    transform:translateX(-50%);
-    background:#202633;
-    color:white;
-    padding:10px 16px;
-    border-radius:20px;
-    font-size:13px;
-    z-index:20;
-}
-
-@media(max-width:600px){
-
-    .header{
-        padding:8px;
-    }
-
-    .header-title{
-        font-size:15px;
-    }
-
-    .voice-button,
-    .logout{
-        padding:8px;
-        font-size:11px;
-    }
-
-    .online-users{
-        max-width:220px;
-        white-space:nowrap;
-        overflow:hidden;
-        text-overflow:ellipsis;
-    }
-
-}
-
 @media(min-width:700px){
-
     .input-area{
         max-width:800px;
         left:50%;
         transform:translateX(-50%);
     }
-
 }
-
 </style>
-
 </head>
 
 <body>
-
-<!-- =========================
-     GİRİŞ
-========================= -->
 
 <div id="login">
 
@@ -340,11 +245,6 @@ body{
 
 </div>
 
-
-<!-- =========================
-     SOHBET
-========================= -->
-
 <div id="chatPage">
 
     <div class="header">
@@ -355,42 +255,35 @@ body{
                 💬 Ritmix Sohbet
             </div>
 
-            <div class="online" id="onlineText">
+            <div
+                class="online"
+                id="onlineText"
+            >
                 🟢 0 kişi çevrimiçi
             </div>
 
-            <div class="online-users" id="onlineUsersText">
+            <div
+                class="online-users"
+                id="onlineUsersText"
+            >
                 👥 Kimse yok
             </div>
 
         </div>
 
-        <div class="header-buttons">
-
-            <button
-                class="voice-button"
-                id="voiceButton"
-            >
-                🎤 Sesli Sohbet
-            </button>
-
-            <button
-                class="logout"
-                id="logoutButton"
-            >
-                Çıkış
-            </button>
-
-        </div>
+        <button
+            class="logout"
+            id="logoutButton"
+        >
+            Çıkış
+        </button>
 
     </div>
-
 
     <div
         class="chat"
         id="chat"
     ></div>
-
 
     <div class="input-area">
 
@@ -402,4 +295,337 @@ body{
         >
 
         <button
-```
+            class="send"
+            id="sendButton"
+        >
+            ➤
+        </button>
+
+    </div>
+
+</div>
+
+<script>
+
+const firebaseConfig = {
+    apiKey: "AIzaSyDJ9zkgu_2ZLcD_ObEYwnFfSu6QffN9VQI",
+    authDomain: "papatyawap.firebaseapp.com",
+    databaseURL: "https://papatyawap-cdf7b-default-rtdb.firebaseio.com",
+    projectId: "papatyawap",
+    storageBucket: "papatyawap.firebasestorage.app",
+    messagingSenderId: "29357315689",
+    appId: "1:29357315689:web:78864218c204d291f734f8"
+};
+
+firebase.initializeApp(firebaseConfig);
+
+const database = firebase.database();
+
+let username = "";
+let userKey = "";
+
+
+/* GİRİŞ */
+
+function enterChat(){
+
+    const input =
+        document.getElementById("usernameInput");
+
+    const name =
+        input.value.trim();
+
+    if(!name){
+
+        alert("Lütfen kullanıcı adını yaz.");
+
+        input.focus();
+
+        return;
+    }
+
+    username = name;
+
+    document.getElementById("login").style.display = "none";
+
+    document.getElementById("chatPage").style.display = "block";
+
+    loadMessages();
+
+    setOnline();
+}
+
+
+/* BUTON */
+
+document.getElementById("loginButton").onclick = enterChat;
+
+
+/* ENTER */
+
+document.getElementById("usernameInput").onkeydown =
+function(event){
+
+    if(event.key === "Enter"){
+
+        enterChat();
+
+    }
+
+};
+
+
+/* MESAJLAR */
+
+function loadMessages(){
+
+    database
+    .ref("messages")
+    .on("value",function(snapshot){
+
+        const chat =
+            document.getElementById("chat");
+
+        chat.innerHTML = "";
+
+        snapshot.forEach(function(child){
+
+            const message =
+                child.val();
+
+            const box =
+                document.createElement("div");
+
+            box.className = "message";
+
+            if(message.username === username){
+
+                box.classList.add("my-message");
+
+            }
+
+            const user =
+                document.createElement("div");
+
+            user.className = "username";
+
+            user.textContent =
+                message.username;
+
+            if(message.timestamp){
+
+                const time =
+                    document.createElement("span");
+
+                time.className = "time";
+
+                time.textContent =
+                    new Date(
+                        message.timestamp
+                    ).toLocaleTimeString(
+                        "tr-TR",
+                        {
+                            hour:"2-digit",
+                            minute:"2-digit"
+                        }
+                    );
+
+                user.appendChild(time);
+            }
+
+
+            if(message.username === username){
+
+                const deleteButton =
+                    document.createElement("button");
+
+                deleteButton.className =
+                    "delete";
+
+                deleteButton.textContent =
+                    "Sil";
+
+                deleteButton.onclick =
+                function(){
+
+                    child.ref.remove();
+
+                };
+
+                user.appendChild(
+                    deleteButton
+                );
+            }
+
+
+            const bubble =
+                document.createElement("div");
+
+            bubble.className =
+                "bubble";
+
+            bubble.textContent =
+                message.text;
+
+            box.appendChild(user);
+
+            box.appendChild(bubble);
+
+            chat.appendChild(box);
+
+        });
+
+        chat.scrollTop =
+            chat.scrollHeight;
+
+    });
+}
+
+
+/* MESAJ GÖNDER */
+
+function sendMessage(){
+
+    const input =
+        document.getElementById(
+            "messageInput"
+        );
+
+    const text =
+        input.value.trim();
+
+    if(!text || !username){
+
+        return;
+    }
+
+    database
+    .ref("messages")
+    .push({
+
+        username:username,
+
+        text:text,
+
+        timestamp:Date.now()
+
+    });
+
+    input.value = "";
+
+    input.focus();
+}
+
+
+document.getElementById(
+    "sendButton"
+).onclick = sendMessage;
+
+
+document.getElementById(
+    "messageInput"
+).onkeydown =
+function(event){
+
+    if(event.key === "Enter"){
+
+        event.preventDefault();
+
+        sendMessage();
+
+    }
+
+};
+
+
+/* ÇEVRİMİÇİ */
+
+function setOnline(){
+
+    const ref =
+        database
+        .ref("onlineUsers")
+        .push();
+
+    userKey = ref.key;
+
+    ref.set({
+
+        username:username,
+
+        timestamp:
+            firebase.database.ServerValue.TIMESTAMP
+
+    });
+
+    ref.onDisconnect().remove();
+
+
+    database
+    .ref("onlineUsers")
+    .on("value",function(snapshot){
+
+        const count =
+            snapshot.numChildren();
+
+        document.getElementById(
+            "onlineText"
+        ).textContent =
+            "🟢 " +
+            count +
+            " kişi çevrimiçi";
+
+
+        const names = [];
+
+        snapshot.forEach(function(child){
+
+            const user =
+                child.val();
+
+            if(user && user.username){
+
+                names.push(user.username);
+
+            }
+
+        });
+
+
+        document.getElementById(
+            "onlineUsersText"
+        ).textContent =
+            names.length
+            ? "👥 " + names.join(", ")
+            : "👥 Kimse yok";
+
+    });
+}
+
+
+/* ÇIKIŞ */
+
+document.getElementById(
+    "logoutButton"
+).onclick =
+function(){
+
+    if(userKey){
+
+        database
+        .ref(
+            "onlineUsers/" +
+            userKey
+        )
+        .remove();
+
+    }
+
+    location.reload();
+
+};
+
+</script>
+
+</body>
+</html>
