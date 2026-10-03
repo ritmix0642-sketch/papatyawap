@@ -640,7 +640,33 @@ function(){
 function startVoiceListeners() {
     console.log("SES SİSTEMİ ÇALIŞIYOR");
 }
-</script>/* =========================
+</script>document.getElementById("voiceButton").onclick = async function() {
+
+    try {
+
+        const stream =
+            await navigator.mediaDevices.getUserMedia({
+                audio: true
+            });
+
+        alert("🎤 MİKROFON ÇALIŞIYOR");
+
+        stream.getTracks().forEach(function(track) {
+            track.stop();
+        });
+
+    } catch(error) {
+
+        alert(
+            "Mikrofon hatası: " +
+            error.name +
+            " - " +
+            error.message
+        );
+
+    }
+
+};/* =========================
    SESLİ SOHBET
 ========================= */
 
