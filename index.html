@@ -1964,5 +1964,823 @@ function setOnline(){
    SES DURUMU
 ========================= */
 
-function showVoiceSta
+function showVoiceStatus(text){
+
+    const status =
+        document.getElementById(
+            "voiceStatus"
+        );
+
+
+    status.textContent =
+        text;
+
+
+    status.style.display =
+        "block";
+
+}
+
+
+function hideVoiceStatus(){
+
+    document.getElementById(
+        "voiceStatus"
+    ).style.display =
+        "none";
+
+}
+
+
+/* =========================
+   MİKROFONU AÇ
+========================= */
+
+async function startVoiceChat(){
+
+    try{
+
+        showVoiceStatus(
+            "🎤 Mikrofon açılıyor..."
+        );
+
+
+        localStream =
+            await navigator
+            .mediaDevices
+            .getUserMedia({
+
+                audio:true,
+
+                video:false
+
+            });
+
+
+        voiceActive =
+            true;
+
+
+        const button =
+            document.getElementById(
+                "voiceButton"
+            );
+
+
+        button.textContent =
+            "🔴 Sesi Kapat";
+
+
+        button.classList.add(
+            "active"
+        );
+
+
+        startVoiceListener();
+
+
+        showVoiceStatus(
+            "🎤 Sesli sohbet aktif"
+        );
+
+
+        const callsSnapshot =
+            await database
+            .ref("calls")
+            .once("value");
+
+
+        let foundCall =
+            false;
+
+
+        callsSnapshot.forEach(
+            function(child){
+
+                const call =
+                    child.val();
+
+
+                if(
+                    call &&
+                    call.receiver === username
+                ){
+
+                    foundCall =
+                        true;
+
+
+                    answerCall(
+                        child.key,
+                        call
+                    );
+
+                }
+
+            }
+        );
+
+
+        if(!foundCall){
+
+            await createCall();
+
+        }
+
+    }
+    catch(error){
+
+        console.error(
+            "Mikrofon hatası:",
+            error
+        );
+
+
+        alert(
+            "Mikrofon açılamadı:\n\n" +
+            error.name +
+            "\n" +
+            error.message
+        );
+
+    }
+
+}
+
+
+/* =========================
+   SES BUTONU
+========================= */
+
+document.getElementById(
+    "voiceButton"
+).onclick =
+async function(){
+
+    if(voiceActive){
+
+        stopVoiceChat();
+
+    }
+    else{
+
+        await startVoiceChat();
+
+    }
+
+};
+
+
+/* =========================
+   ÇAĞRI DİNLE
+========================= */
+
+function startVoiceListener(){
+
+    if(voiceListenerStarted){
+
+        return;
+
+    }
+
+
+    voiceListenerStarted =
+        true;
+
+
+    database
+    .ref("calls")
+    .on(
+        "child_added",
+        async function(snapshot){
+
+            const call =
+                snapshot.val();
+
+
+            const callId =
+                snapshot.key;
+
+
+            if(!call){
+
+                return;
+
+            }
+
+
+            if(
+                call.caller === username
+            ){
+
+                return;
+
+            }
+
+
+            if(
+                call.receiver !== username
+            ){
+
+                return;
+
+            }
+
+
+            if(
+                peerConnections[callId]
+            ){
+
+                return;
+
+            }
+
+
+            if(!voiceActive){
+
+                return;
+
+            }
+
+
+            await answerCall(
+                callId,
+                call
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================
+   ÇAĞRI BAŞLAT
+========================= */
+
+async function createCall(){
+
+    if(!localStream){
+
+        return;
+
+    }
+
+
+    const usersSnapshot =
+        await database
+        .ref("onlineUsers")
+        .once("value");
+
+
+    let otherUser =
+        null;
+
+
+    usersSnapshot.forEach(
+        function(child){
+
+            const user =
+                child.val();
+
+
+            if(
+                user &&
+                user.username &&
+                user.username !== username &&
+                !otherUser
+            ){
+
+                otherUser =
+                    user.username;
+
+            }
+
+        }
+    );
+
+
+    if(!otherUser){
+
+        showVoiceStatus(
+            "🎤 Mikrofon açık - başka kullanıcı bekleniyor"
+        );
+
+        return;
+
+    }
+
+
+    const callRef =
+        database
+        .ref("calls")
+        .push();
+
+
+    const callId =
+        callRef.key;
+
+
+    const pc =
+        new RTCPeerConnection(
+            rtcConfig
+        );
+
+
+    peerConnections[callId] =
+        pc;
+
+
+    localStream
+    .getTracks()
+    .forEach(
+        function(track){
+
+            pc.addTrack(
+                track,
+                localStream
+            );
+
+        }
+    );
+
+
+    pc.ontrack =
+    function(event){
+
+        const audio =
+            document.getElementById(
+                "remoteAudio"
+            );
+
+
+        audio.srcObject =
+            event.streams[0];
+
+
+        audio.play()
+        .catch(
+            function(error){
+
+                console.log(
+                    "Audio play:",
+                    error
+                );
+
+            }
+        );
+
+
+        showVoiceStatus(
+            "🔊 Ses bağlantısı kuruldu"
+        );
+
+    };
+
+
+    pc.onicecandidate =
+    function(event){
+
+        if(
+            event.candidate
+        ){
+
+            database
+            .ref(
+                "calls/" +
+                callId +
+                "/callerCandidates"
+            )
+            .push(
+                event.candidate.toJSON()
+            );
+
+        }
+
+    };
+
+
+    const offer =
+        await pc.createOffer();
+
+
+    await pc.setLocalDescription(
+        offer
+    );
+
+
+    await callRef.set({
+
+        caller:
+            username,
+
+        receiver:
+            otherUser,
+
+        offer:{
+
+            type:
+                offer.type,
+
+            sdp:
+                offer.sdp
+
+        },
+
+        created:
+            Date.now()
+
+    });
+
+
+    database
+    .ref(
+        "calls/" +
+        callId +
+        "/answer"
+    )
+    .on(
+        "value",
+        async function(snapshot){
+
+            const answer =
+                snapshot.val();
+
+
+            if(
+                answer &&
+                !pc.currentRemoteDescription
+            ){
+
+                await pc.setRemoteDescription(
+                    new RTCSessionDescription(
+                        answer
+                    )
+                );
+
+            }
+
+        }
+    );
+
+
+    database
+    .ref(
+        "calls/" +
+        callId +
+        "/receiverCandidates"
+    )
+    .on(
+        "child_added",
+        async function(snapshot){
+
+            const candidate =
+                snapshot.val();
+
+
+            if(candidate){
+
+                try{
+
+                    await pc.addIceCandidate(
+                        new RTCIceCandidate(
+                            candidate
+                        )
+                    );
+
+                }
+                catch(error){
+
+                    console.log(
+                        error
+                    );
+
+                }
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =========================
+   ÇAĞRIYI CEVAPLA
+========================= */
+
+async function answerCall(
+    callId,
+    call
+){
+
+    if(
+        !localStream ||
+        !voiceActive
+    ){
+
+        return;
+
+    }
+
+
+    const pc =
+        new RTCPeerConnection(
+            rtcConfig
+        );
+
+
+    peerConnections[callId] =
+        pc;
+
+
+    localStream
+    .getTracks()
+    .forEach(
+        function(track){
+
+            pc.addTrack(
+                track,
+                localStream
+            );
+
+        }
+    );
+
+
+    pc.ontrack =
+    function(event){
+
+        const audio =
+            document.getElementById(
+                "remoteAudio"
+            );
+
+
+        audio.srcObject =
+            event.streams[0];
+
+
+        audio.play()
+        .catch(
+            function(error){
+
+                console.log(
+                    error
+                );
+
+            }
+        );
+
+
+        showVoiceStatus(
+            "🔊 Ses bağlantısı kuruldu"
+        );
+
+    };
+
+
+    pc.onicecandidate =
+    function(event){
+
+        if(
+            event.candidate
+        ){
+
+            database
+            .ref(
+                "calls/" +
+                callId +
+                "/receiverCandidates"
+            )
+            .push(
+                event.candidate.toJSON()
+            );
+
+        }
+
+    };
+
+
+    await pc.setRemoteDescription(
+        new RTCSessionDescription(
+            call.offer
+        )
+    );
+
+
+    const answer =
+        await pc.createAnswer();
+
+
+    await pc.setLocalDescription(
+        answer
+    );
+
+
+    await database
+    .ref(
+        "calls/" +
+        callId +
+        "/answer"
+    )
+    .set({
+
+        type:
+            answer.type,
+
+        sdp:
+            answer.sdp
+
+    });
+
+
+    database
+    .ref(
+        "calls/" +
+        callId +
+        "/callerCandidates"
+    )
+    .on(
+        "child_added",
+        async function(snapshot){
+
+            const candidate =
+                snapshot.val();
+
+
+            if(candidate){
+
+                try{
+
+                    await pc.addIceCandidate(
+                        new RTCIceCandidate(
+                            candidate
+                        )
+                    );
+
+                }
+                catch(error){
+
+                    console.log(
+                        error
+                    );
+
+                }
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =========================
+   SESLİ SOHBETİ KAPAT
+========================= */
+
+function stopVoiceChat(){
+
+    voiceActive =
+        false;
+
+
+    if(localStream){
+
+        localStream
+        .getTracks()
+        .forEach(
+            function(track){
+
+                track.stop();
+
+            }
+        );
+
+
+        localStream =
+            null;
+
+    }
+
+
+    Object.keys(
+        peerConnections
+    ).forEach(
+        function(id){
+
+            try{
+
+                peerConnections[id].close();
+
+            }
+            catch(error){
+
+                console.log(error);
+
+            }
+
+        }
+    );
+
+
+    peerConnections = {};
+
+
+    const audio =
+        document.getElementById(
+            "remoteAudio"
+        );
+
+
+    audio.srcObject =
+        null;
+
+
+    const button =
+        document.getElementById(
+            "voiceButton"
+        );
+
+
+    button.textContent =
+        "🎤 Sesli Sohbet";
+
+
+    button.classList.remove(
+        "active"
+    );
+
+
+    hideVoiceStatus();
+
+
+    database
+    .ref("calls")
+    .once(
+        "value",
+        function(snapshot){
+
+            snapshot.forEach(
+                function(child){
+
+                    const call =
+                        child.val();
+
+
+                    if(
+                        call &&
+                        (
+                            call.caller === username ||
+                            call.receiver === username
+                        )
+                    ){
+
+                        child.ref.remove();
+
+                    }
+
+                }
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================
+   ÇIKIŞ
+========================= */
+
+document.getElementById(
+    "logoutButton"
+).onclick =
+function(){
+
+    stopVoiceChat();
+
+
+    if(userKey){
+
+        database
+        .ref(
+            "onlineUsers/" +
+            userKey
+        )
+        .remove();
+
+    }
+
+
+    location.reload();
+
+};
+
+</script>
+
+</body>
+
+</html>
 ```
