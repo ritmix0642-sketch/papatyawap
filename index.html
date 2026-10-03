@@ -38,21 +38,26 @@ body{
 
 #login{
     min-height:100vh;
+
     display:flex;
     align-items:center;
     justify-content:center;
+
     padding:20px;
 }
 
 .login-box{
     width:100%;
     max-width:420px;
+
     padding:38px 28px;
+
     text-align:center;
 
     background:rgba(22,27,49,.85);
 
     border:1px solid rgba(255,255,255,.10);
+
     border-radius:28px;
 
     box-shadow:
@@ -91,7 +96,9 @@ body{
 .subtitle{
     margin-top:9px;
     margin-bottom:28px;
+
     color:#9da7c5;
+
     font-size:14px;
 }
 
@@ -102,11 +109,13 @@ body{
     padding:0 17px;
 
     border:1px solid rgba(255,255,255,.10);
+
     border-radius:15px;
 
     outline:none;
 
     background:rgba(5,8,20,.65);
+
     color:white;
 
     font-size:16px;
@@ -146,7 +155,9 @@ body{
 
 #chatPage{
     display:none;
+
     height:100vh;
+
     overflow:hidden;
 }
 
@@ -159,7 +170,9 @@ body{
     min-height:76px;
 
     display:flex;
+
     align-items:center;
+
     justify-content:space-between;
 
     padding:10px 18px;
@@ -181,25 +194,33 @@ body{
 
 .online{
     margin-top:5px;
+
     color:#48ee92;
+
     font-size:12px;
 }
 
 .online-users{
     margin-top:4px;
+
     color:#8993b1;
+
     font-size:11px;
 
     max-width:500px;
 
     white-space:nowrap;
+
     overflow:hidden;
+
     text-overflow:ellipsis;
 }
 
 .header-buttons{
     display:flex;
+
     align-items:center;
+
     gap:8px;
 }
 
@@ -260,6 +281,7 @@ body{
     color:#72a9ff;
 
     font-size:12px;
+
     font-weight:bold;
 }
 
@@ -313,28 +335,6 @@ body{
         17px 7px 17px 17px;
 }
 
-
-/* GIF */
-
-.message-gif{
-    display:block;
-
-    max-width:260px;
-    max-height:260px;
-
-    width:auto;
-    height:auto;
-
-    margin-top:4px;
-
-    border-radius:14px;
-
-    object-fit:cover;
-}
-
-
-/* SİL */
-
 .delete{
     border:0;
 
@@ -347,6 +347,33 @@ body{
     cursor:pointer;
 
     margin-left:7px;
+}
+
+
+/* =========================
+   GIF MESAJI
+========================= */
+
+.chat-gif{
+
+    display:block;
+
+    width:100%;
+
+    max-width:280px;
+
+    max-height:280px;
+
+    object-fit:contain;
+
+    border-radius:14px;
+
+    margin-top:5px;
+
+    cursor:pointer;
+
+    box-shadow:
+        0 5px 20px rgba(0,0,0,.25);
 }
 
 
@@ -386,50 +413,15 @@ body{
 
 
 /* =========================
-   ARAÇ BUTONLARI
-========================= */
-
-.tool-button{
-
-    width:43px;
-    height:43px;
-
-    flex-shrink:0;
-
-    border:1px solid rgba(255,255,255,.10);
-
-    border-radius:12px;
-
-    background:
-        rgba(255,255,255,.08);
-
-    color:white;
-
-    font-size:21px;
-
-    cursor:pointer;
-
-    transition:.15s;
-}
-
-.tool-button:hover{
-    transform:scale(1.05);
-}
-
-.tool-button.active{
-    background:
-        linear-gradient(135deg,#665cff,#00bfff);
-}
-
-
-/* =========================
    RENKLER
 ========================= */
 
 .color-buttons{
 
     display:flex;
+
     align-items:center;
+
     gap:4px;
 }
 
@@ -455,7 +447,9 @@ body{
 }
 
 .color-button.selected{
-    border:3px solid white;
+
+    border:
+        3px solid white;
 
     box-shadow:
         0 0 8px rgba(255,255,255,.7);
@@ -483,6 +477,253 @@ body{
 
 .color-red{
     background:#ff6262;
+}
+
+
+/* =========================
+   EMOJI BUTONU
+========================= */
+
+.emoji-button,
+.gif-button{
+
+    width:43px;
+    height:44px;
+
+    flex-shrink:0;
+
+    border:1px solid rgba(255,255,255,.08);
+
+    border-radius:13px;
+
+    background:#252c45;
+
+    color:white;
+
+    cursor:pointer;
+
+    font-size:20px;
+
+    font-weight:bold;
+}
+
+.gif-button{
+    font-size:13px;
+}
+
+
+/* =========================
+   EMOJI PANELİ
+========================= */
+
+#emojiPanel{
+
+    display:none;
+
+    position:fixed;
+
+    bottom:82px;
+
+    left:50%;
+
+    transform:translateX(-50%);
+
+    width:min(360px,94vw);
+
+    padding:12px;
+
+    background:
+        rgba(20,25,45,.98);
+
+    border:
+        1px solid rgba(255,255,255,.10);
+
+    border-radius:18px;
+
+    box-shadow:
+        0 15px 50px rgba(0,0,0,.45);
+
+    z-index:50;
+}
+
+.emoji-title{
+
+    color:#9da7c5;
+
+    font-size:12px;
+
+    margin-bottom:8px;
+}
+
+.emoji-grid{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(8,1fr);
+
+    gap:5px;
+
+    max-height:230px;
+
+    overflow-y:auto;
+}
+
+.emoji-item{
+
+    border:0;
+
+    background:transparent;
+
+    color:white;
+
+    font-size:25px;
+
+    padding:5px;
+
+    border-radius:8px;
+
+    cursor:pointer;
+}
+
+.emoji-item:hover{
+
+    background:
+        rgba(255,255,255,.08);
+
+}
+
+
+/* =========================
+   GIF PANELİ
+========================= */
+
+#gifPanel{
+
+    display:none;
+
+    position:fixed;
+
+    bottom:82px;
+
+    left:50%;
+
+    transform:translateX(-50%);
+
+    width:min(500px,95vw);
+
+    max-height:450px;
+
+    padding:13px;
+
+    background:
+        rgba(20,25,45,.98);
+
+    border:
+        1px solid rgba(255,255,255,.10);
+
+    border-radius:18px;
+
+    box-shadow:
+        0 15px 50px rgba(0,0,0,.5);
+
+    z-index:50;
+}
+
+.gif-search{
+
+    display:flex;
+
+    gap:7px;
+
+    margin-bottom:10px;
+}
+
+.gif-search input{
+
+    flex:1;
+
+    min-width:0;
+
+    height:42px;
+
+    border:1px solid rgba(255,255,255,.10);
+
+    border-radius:11px;
+
+    outline:none;
+
+    padding:0 12px;
+
+    background:#11172b;
+
+    color:white;
+
+    font-size:14px;
+}
+
+.gif-search button{
+
+    width:75px;
+
+    border:0;
+
+    border-radius:11px;
+
+    background:
+        linear-gradient(135deg,#665cff,#00bfff);
+
+    color:white;
+
+    font-weight:bold;
+
+    cursor:pointer;
+}
+
+.gif-results{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(3,1fr);
+
+    gap:7px;
+
+    max-height:350px;
+
+    overflow-y:auto;
+}
+
+.gif-result{
+
+    width:100%;
+
+    height:105px;
+
+    object-fit:cover;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+    background:#11172b;
+}
+
+.gif-result:hover{
+
+    transform:scale(1.03);
+
+}
+
+.gif-info{
+
+    text-align:center;
+
+    color:#77819d;
+
+    font-size:10px;
+
+    margin-top:8px;
 }
 
 
@@ -547,155 +788,6 @@ body{
 
 
 /* =========================
-   EMOJI PANEL
-========================= */
-
-#emojiPanel{
-
-    display:none;
-
-    position:fixed;
-
-    left:10px;
-    bottom:85px;
-
-    width:310px;
-
-    max-height:300px;
-
-    padding:12px;
-
-    overflow-y:auto;
-
-    background:
-        rgba(20,25,45,.98);
-
-    border:
-        1px solid rgba(255,255,255,.12);
-
-    border-radius:18px;
-
-    box-shadow:
-        0 15px 50px rgba(0,0,0,.45);
-
-    z-index:50;
-}
-
-.emoji-grid{
-
-    display:grid;
-
-    grid-template-columns:
-        repeat(8,1fr);
-
-    gap:5px;
-}
-
-.emoji-item{
-
-    border:0;
-
-    background:transparent;
-
-    color:white;
-
-    font-size:24px;
-
-    padding:5px;
-
-    border-radius:8px;
-
-    cursor:pointer;
-}
-
-.emoji-item:hover{
-    background:rgba(255,255,255,.10);
-}
-
-
-/* =========================
-   GIF PANEL
-========================= */
-
-#gifPanel{
-
-    display:none;
-
-    position:fixed;
-
-    left:60px;
-    bottom:85px;
-
-    width:330px;
-
-    max-height:330px;
-
-    padding:12px;
-
-    overflow-y:auto;
-
-    background:
-        rgba(20,25,45,.98);
-
-    border:
-        1px solid rgba(255,255,255,.12);
-
-    border-radius:18px;
-
-    box-shadow:
-        0 15px 50px rgba(0,0,0,.45);
-
-    z-index:50;
-}
-
-.gif-title{
-
-    font-size:13px;
-
-    color:#aeb7d1;
-
-    margin-bottom:10px;
-
-    font-weight:bold;
-}
-
-.gif-grid{
-
-    display:grid;
-
-    grid-template-columns:
-        repeat(2,1fr);
-
-    gap:8px;
-}
-
-.gif-item{
-
-    width:100%;
-
-    height:120px;
-
-    object-fit:cover;
-
-    border-radius:12px;
-
-    cursor:pointer;
-
-    border:
-        2px solid transparent;
-
-    transition:.15s;
-}
-
-.gif-item:hover{
-
-    transform:scale(1.03);
-
-    border-color:#6675ff;
-}
-
-
-/* =========================
    SES DURUMU
 ========================= */
 
@@ -740,6 +832,7 @@ body{
 
     .header{
         min-height:70px;
+
         padding:8px 10px;
     }
 
@@ -750,6 +843,7 @@ body{
     .voice-button,
     .logout{
         padding:8px 10px;
+
         font-size:11px;
     }
 
@@ -768,22 +862,37 @@ body{
 
     .input-area{
         min-height:70px;
-        padding:8px;
+
+        padding:7px;
+
         gap:5px;
     }
 
     .color-buttons{
-        display:none;
+        gap:2px;
     }
 
-    .tool-button{
-        width:39px;
-        height:39px;
-        font-size:19px;
+    .color-button{
+        width:18px;
+        height:18px;
+    }
+
+    .emoji-button,
+    .gif-button{
+
+        width:38px;
+        height:42px;
+
+        font-size:18px;
+    }
+
+    .gif-button{
+        font-size:11px;
     }
 
     .message-input{
         height:42px;
+
         font-size:14px;
     }
 
@@ -792,19 +901,14 @@ body{
         height:42px;
     }
 
-    #emojiPanel{
-        left:5px;
-        bottom:78px;
-        width:calc(100% - 10px);
+    .gif-results{
+
+        grid-template-columns:
+            repeat(2,1fr);
     }
 
-    #gifPanel{
-        left:5px;
-        bottom:78px;
-        width:calc(100% - 10px);
-    }
+    .gif-result{
 
-    .gif-item{
         height:110px;
     }
 
@@ -813,6 +917,7 @@ body{
 @media(min-width:700px){
 
     .input-area{
+
         max-width:850px;
 
         left:50%;
@@ -824,6 +929,20 @@ body{
             18px 18px 0 0;
     }
 
+}
+
+
+/* GIFY ATTRIBUTION */
+
+.giphy-logo{
+
+    text-align:center;
+
+    margin-top:6px;
+
+    font-size:9px;
+
+    color:#69738e;
 }
 
 </style>
@@ -876,8 +995,6 @@ body{
 
 <div id="chatPage">
 
-
-    <!-- ÜST BAR -->
 
     <div class="header">
 
@@ -933,31 +1050,9 @@ body{
     ></div>
 
 
-    <!-- MESAJ ALANI -->
+    <!-- MESAJ GİRİŞ -->
 
     <div class="input-area">
-
-
-        <!-- EMOJI -->
-
-        <button
-            class="tool-button"
-            id="emojiButton"
-            title="Emoji"
-        >
-            😀
-        </button>
-
-
-        <!-- GIF -->
-
-        <button
-            class="tool-button"
-            id="gifButton"
-            title="GIF"
-        >
-            GIF
-        </button>
 
 
         <!-- RENKLER -->
@@ -1003,7 +1098,29 @@ body{
         </div>
 
 
-        <!-- MESAJ -->
+        <!-- EMOJI -->
+
+        <button
+            class="emoji-button"
+            id="emojiButton"
+            title="Emoji"
+        >
+            😊
+        </button>
+
+
+        <!-- GIF -->
+
+        <button
+            class="gif-button"
+            id="gifButton"
+            title="GIF gönder"
+        >
+            GIF
+        </button>
+
+
+        <!-- INPUT -->
 
         <input
             class="message-input"
@@ -1033,72 +1150,11 @@ body{
 
 <div id="emojiPanel">
 
-    <div class="emoji-grid">
-
-        <button class="emoji-item">😀</button>
-        <button class="emoji-item">😂</button>
-        <button class="emoji-item">🤣</button>
-        <button class="emoji-item">😊</button>
-        <button class="emoji-item">😍</button>
-        <button class="emoji-item">🥰</button>
-        <button class="emoji-item">😘</button>
-        <button class="emoji-item">😎</button>
-
-        <button class="emoji-item">🤩</button>
-        <button class="emoji-item">😜</button>
-        <button class="emoji-item">😏</button>
-        <button class="emoji-item">🙃</button>
-        <button class="emoji-item">😉</button>
-        <button class="emoji-item">😇</button>
-        <button class="emoji-item">🤗</button>
-        <button class="emoji-item">🤭</button>
-
-        <button class="emoji-item">🥳</button>
-        <button class="emoji-item">😢</button>
-        <button class="emoji-item">😭</button>
-        <button class="emoji-item">😡</button>
-        <button class="emoji-item">🤬</button>
-        <button class="emoji-item">😱</button>
-        <button class="emoji-item">😴</button>
-        <button class="emoji-item">🤔</button>
-
-        <button class="emoji-item">❤️</button>
-        <button class="emoji-item">🧡</button>
-        <button class="emoji-item">💛</button>
-        <button class="emoji-item">💚</button>
-        <button class="emoji-item">💙</button>
-        <button class="emoji-item">💜</button>
-        <button class="emoji-item">🖤</button>
-        <button class="emoji-item">🤍</button>
-
-        <button class="emoji-item">💕</button>
-        <button class="emoji-item">💖</button>
-        <button class="emoji-item">💗</button>
-        <button class="emoji-item">💓</button>
-        <button class="emoji-item">💞</button>
-        <button class="emoji-item">💘</button>
-        <button class="emoji-item">💝</button>
-        <button class="emoji-item">💋</button>
-
-        <button class="emoji-item">👍</button>
-        <button class="emoji-item">👎</button>
-        <button class="emoji-item">👏</button>
-        <button class="emoji-item">🙌</button>
-        <button class="emoji-item">👌</button>
-        <button class="emoji-item">✌️</button>
-        <button class="emoji-item">🤝</button>
-        <button class="emoji-item">🙏</button>
-
-        <button class="emoji-item">🔥</button>
-        <button class="emoji-item">✨</button>
-        <button class="emoji-item">⭐</button>
-        <button class="emoji-item">💯</button>
-        <button class="emoji-item">🎉</button>
-        <button class="emoji-item">🎊</button>
-        <button class="emoji-item">🎵</button>
-        <button class="emoji-item">🎶</button>
-
+    <div class="emoji-title">
+        Emoji seç
     </div>
+
+    <div class="emoji-grid" id="emojiGrid"></div>
 
 </div>
 
@@ -1109,60 +1165,34 @@ body{
 
 <div id="gifPanel">
 
-    <div class="gif-title">
-        🎬 GIF seç
+    <div class="gif-search">
+
+        <input
+            id="gifSearchInput"
+            placeholder="GIF ara... örn: aşk, komik, merhaba"
+            maxlength="50"
+            autocomplete="off"
+        >
+
+        <button id="gifSearchButton">
+            Ara
+        </button>
+
     </div>
 
-    <div class="gif-grid">
+
+    <div
+        class="gif-results"
+        id="gifResults"
+    ></div>
 
 
-        <img
-            class="gif-item"
-            src="https://media.giphy.com/media/111ebonMs90YLu/giphy.gif"
-            data-gif="https://media.giphy.com/media/111ebonMs90YLu/giphy.gif"
-            alt="GIF"
-        >
+    <div class="gif-info">
+        GIF seçmek için üzerine dokun
+    </div>
 
-
-        <img
-            class="gif-item"
-            src="https://media.giphy.com/media/26BRBKqUiq586bRVm/giphy.gif"
-            data-gif="https://media.giphy.com/media/26BRBKqUiq586bRVm/giphy.gif"
-            alt="GIF"
-        >
-
-
-        <img
-            class="gif-item"
-            src="https://media.giphy.com/media/3o7TKF1fSIs1R19B8k/giphy.gif"
-            data-gif="https://media.giphy.com/media/3o7TKF1fSIs1R19B8k/giphy.gif"
-            alt="GIF"
-        >
-
-
-        <img
-            class="gif-item"
-            src="https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif"
-            data-gif="https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif"
-            alt="GIF"
-        >
-
-
-        <img
-            class="gif-item"
-            src="https://media.giphy.com/media/10dU7AN7xsi1c4/giphy.gif"
-            data-gif="https://media.giphy.com/media/10dU7AN7xsi1c4/giphy.gif"
-            alt="GIF"
-        >
-
-
-        <img
-            class="gif-item"
-            src="https://media.giphy.com/media/111ebonMs90YLu/giphy.gif"
-            data-gif="https://media.giphy.com/media/111ebonMs90YLu/giphy.gif"
-            alt="GIF"
-        >
-
+    <div class="giphy-logo">
+        Powered by GIPHY
     </div>
 
 </div>
@@ -1175,8 +1205,6 @@ body{
 </div>
 
 
-<!-- KARŞI TARAF SESİ -->
-
 <audio
     id="remoteAudio"
     autoplay
@@ -1187,9 +1215,27 @@ body{
 <script>
 
 
-/* =========================
+/* =====================================================
+   GIPHY AYARI
+===================================================== */
+
+/*
+   BURAYA KENDİ GIPHY API KEY'İNİ YAZ.
+
+   ÖRNEK:
+
+   const GIPHY_API_KEY =
+       "abcd123456789";
+
+*/
+
+const GIPHY_API_KEY =
+    "BURAYA_GIPHY_API_KEY";
+
+
+/* =====================================================
    FIREBASE
-========================= */
+===================================================== */
 
 const firebaseConfig = {
 
@@ -1226,9 +1272,9 @@ const database =
     firebase.database();
 
 
-/* =========================
+/* =====================================================
    DEĞİŞKENLER
-========================= */
+===================================================== */
 
 let username = "";
 
@@ -1246,9 +1292,9 @@ let selectedMessageColor =
     "#ffffff";
 
 
-/* =========================
+/* =====================================================
    WEBRTC
-========================= */
+===================================================== */
 
 const rtcConfig = {
 
@@ -1269,190 +1315,9 @@ const rtcConfig = {
 };
 
 
-/* =========================
-   EMOJI
-========================= */
-
-const emojiButton =
-    document.getElementById(
-        "emojiButton"
-    );
-
-const emojiPanel =
-    document.getElementById(
-        "emojiPanel"
-    );
-
-
-emojiButton.onclick =
-function(event){
-
-    event.stopPropagation();
-
-    gifPanel.style.display =
-        "none";
-
-    emojiPanel.style.display =
-        emojiPanel.style.display === "block"
-        ? "none"
-        : "block";
-
-};
-
-
-document
-.querySelectorAll(".emoji-item")
-.forEach(
-    function(button){
-
-        button.onclick =
-        function(){
-
-            const input =
-                document.getElementById(
-                    "messageInput"
-                );
-
-            const emoji =
-                this.textContent;
-
-
-            input.value += emoji;
-
-            input.focus();
-
-        };
-
-    }
-);
-
-
-/* =========================
-   GIF
-========================= */
-
-const gifButton =
-    document.getElementById(
-        "gifButton"
-    );
-
-const gifPanel =
-    document.getElementById(
-        "gifPanel"
-    );
-
-
-gifButton.onclick =
-function(event){
-
-    event.stopPropagation();
-
-    emojiPanel.style.display =
-        "none";
-
-    gifPanel.style.display =
-        gifPanel.style.display === "block"
-        ? "none"
-        : "block";
-
-};
-
-
-/* GIF SEÇ */
-
-document
-.querySelectorAll(".gif-item")
-.forEach(
-    function(gif){
-
-        gif.onclick =
-        function(){
-
-            const gifUrl =
-                this.dataset.gif;
-
-
-            sendGif(
-                gifUrl
-            );
-
-
-            gifPanel.style.display =
-                "none";
-
-        };
-
-    }
-);
-
-
-/* GIF GÖNDER */
-
-function sendGif(gifUrl){
-
-    if(!username){
-        return;
-    }
-
-
-    database
-    .ref("messages")
-    .push({
-
-        username:
-            username,
-
-        type:
-            "gif",
-
-        gif:
-            gifUrl,
-
-        color:
-            selectedMessageColor,
-
-        timestamp:
-            Date.now()
-
-    });
-
-}
-
-
-/* PANEL DIŞINA TIKLAMA */
-
-document.addEventListener(
-    "click",
-    function(event){
-
-        if(
-            !emojiPanel.contains(event.target) &&
-            event.target !== emojiButton
-        ){
-
-            emojiPanel.style.display =
-                "none";
-
-        }
-
-
-        if(
-            !gifPanel.contains(event.target) &&
-            event.target !== gifButton
-        ){
-
-            gifPanel.style.display =
-                "none";
-
-        }
-
-    }
-);
-
-
-/* =========================
+/* =====================================================
    RENK SEÇME
-========================= */
+===================================================== */
 
 document
 .querySelectorAll(".color-button")
@@ -1491,9 +1356,412 @@ document
 );
 
 
-/* =========================
+/* =====================================================
+   EMOJİLER
+===================================================== */
+
+const emojis = [
+
+    "😀","😃","😄","😁","😆","😅","😂","🤣",
+    "😊","😇","🙂","🙃","😉","😌","😍","🥰",
+    "😘","😗","😙","😚","😋","😛","😝","😜",
+    "🤪","🤨","🧐","🤓","😎","🤩","🥳","😏",
+    "😒","😞","😔","😟","😕","🙁","☹️","😣",
+    "😖","😫","😩","🥺","😢","😭","😤","😠",
+    "😡","🤬","🤯","😳","🥵","🥶","😱","😨",
+    "😰","😥","😓","🤗","🤔","🫣","🤭","🤫",
+    "🤥","😶","😐","😑","😬","🙄","😯","😦",
+    "😧","😮","😲","🥱","😴","🤤","😪","😵",
+    "🤐","🥴","🤢","🤮","🤧","😷","🤒","🤕",
+    "❤️","🧡","💛","💚","💙","💜","🖤","🤍",
+    "🤎","💔","💕","💞","💓","💗","💖","💘",
+    "💝","💟","❣️","💋","🔥","✨","⭐","🌟",
+    "💯","🎉","🎊","🎂","🥳","👏","👍","👎",
+    "👌","✌️","🤞","🤟","🤘","🤙","💪","🙏",
+    "👋","🙌","🤝","❤️‍🔥","🤣","😂","😎","🥰"
+
+];
+
+
+const emojiGrid =
+    document.getElementById(
+        "emojiGrid"
+    );
+
+
+emojis.forEach(
+    function(emoji){
+
+        const button =
+            document.createElement(
+                "button"
+            );
+
+
+        button.className =
+            "emoji-item";
+
+
+        button.textContent =
+            emoji;
+
+
+        button.onclick =
+        function(){
+
+            const input =
+                document.getElementById(
+                    "messageInput"
+                );
+
+
+            input.value += emoji;
+
+            input.focus();
+
+        };
+
+
+        emojiGrid.appendChild(
+            button
+        );
+
+    }
+);
+
+
+/* =====================================================
+   EMOJİ PANELİ AÇ/KAPAT
+===================================================== */
+
+document.getElementById(
+    "emojiButton"
+).onclick =
+function(event){
+
+    event.stopPropagation();
+
+    const panel =
+        document.getElementById(
+            "emojiPanel"
+        );
+
+
+    const gifPanel =
+        document.getElementById(
+            "gifPanel"
+        );
+
+
+    gifPanel.style.display =
+        "none";
+
+
+    panel.style.display =
+        panel.style.display === "block"
+        ? "none"
+        : "block";
+
+};
+
+
+/* =====================================================
+   GIF PANELİ
+===================================================== */
+
+document.getElementById(
+    "gifButton"
+).onclick =
+function(event){
+
+    event.stopPropagation();
+
+    const panel =
+        document.getElementById(
+            "gifPanel"
+        );
+
+
+    const emojiPanel =
+        document.getElementById(
+            "emojiPanel"
+        );
+
+
+    emojiPanel.style.display =
+        "none";
+
+
+    panel.style.display =
+        panel.style.display === "block"
+        ? "none"
+        : "block";
+
+
+    if(panel.style.display === "block"){
+
+        document.getElementById(
+            "gifSearchInput"
+        ).focus();
+
+    }
+
+};
+
+
+/* =====================================================
+   GIF ARAMA
+===================================================== */
+
+async function searchGIFs(){
+
+    const input =
+        document.getElementById(
+            "gifSearchInput"
+        );
+
+
+    const query =
+        input.value.trim();
+
+
+    const results =
+        document.getElementById(
+            "gifResults"
+        );
+
+
+    if(!query){
+
+        results.innerHTML =
+            "<div style='grid-column:1/-1;text-align:center;color:#77819d;padding:20px;'>GIF aramak için bir kelime yaz.</div>";
+
+        return;
+
+    }
+
+
+    if(
+        !GIPHY_API_KEY ||
+        GIPHY_API_KEY ===
+        "BURAYA_GIPHY_API_KEY"
+    ){
+
+        results.innerHTML =
+            "<div style='grid-column:1/-1;text-align:center;color:#ff6977;padding:20px;'>Önce GIPHY API anahtarını koda eklemelisin.</div>";
+
+        return;
+
+    }
+
+
+    results.innerHTML =
+        "<div style='grid-column:1/-1;text-align:center;color:#77819d;padding:20px;'>🔍 GIF aranıyor...</div>";
+
+
+    try{
+
+        const url =
+            "https://api.giphy.com/v1/gifs/search" +
+            "?api_key=" +
+            encodeURIComponent(
+                GIPHY_API_KEY
+            ) +
+            "&q=" +
+            encodeURIComponent(
+                query
+            ) +
+            "&limit=18" +
+            "&rating=g" +
+            "&lang=tr";
+
+
+        const response =
+            await fetch(url);
+
+
+        if(!response.ok){
+
+            throw new Error(
+                "GIPHY API hatası: " +
+                response.status
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        results.innerHTML = "";
+
+
+        if(
+            !data.data ||
+            !data.data.length
+        ){
+
+            results.innerHTML =
+                "<div style='grid-column:1/-1;text-align:center;color:#77819d;padding:20px;'>😕 GIF bulunamadı.</div>";
+
+            return;
+
+        }
+
+
+        data.data.forEach(
+            function(gif){
+
+                const image =
+                    document.createElement(
+                        "img"
+                    );
+
+
+                image.className =
+                    "gif-result";
+
+
+                const imageUrl =
+                    gif.images &&
+                    gif.images.fixed_width &&
+                    gif.images.fixed_width.url;
+
+
+                const originalUrl =
+                    gif.images &&
+                    gif.images.original &&
+                    gif.images.original.url;
+
+
+                if(!imageUrl){
+
+                    return;
+
+                }
+
+
+                image.src =
+                    imageUrl;
+
+
+                image.loading =
+                    "lazy";
+
+
+                image.alt =
+                    gif.title || "GIF";
+
+
+                image.onclick =
+                function(){
+
+                    sendGIF(
+                        originalUrl ||
+                        imageUrl
+                    );
+
+                };
+
+
+                results.appendChild(
+                    image
+                );
+
+            }
+        );
+
+    }
+    catch(error){
+
+        console.error(
+            "GIF arama hatası:",
+            error
+        );
+
+
+        results.innerHTML =
+            "<div style='grid-column:1/-1;text-align:center;color:#ff6977;padding:20px;'>GIF aranırken hata oluştu.</div>";
+
+    }
+
+}
+
+
+document.getElementById(
+    "gifSearchButton"
+).onclick =
+    searchGIFs;
+
+
+document.getElementById(
+    "gifSearchInput"
+).onkeydown =
+function(event){
+
+    if(event.key === "Enter"){
+
+        event.preventDefault();
+
+        searchGIFs();
+
+    }
+
+};
+
+
+/* =====================================================
+   GIF GÖNDER
+===================================================== */
+
+function sendGIF(
+    gifUrl
+){
+
+    if(
+        !username ||
+        !gifUrl
+    ){
+
+        return;
+
+    }
+
+
+    database
+    .ref("messages")
+    .push({
+
+        username:
+            username,
+
+        type:
+            "gif",
+
+        gif:
+            gifUrl,
+
+        color:
+            selectedMessageColor,
+
+        timestamp:
+            Date.now()
+
+    });
+
+
+    document.getElementById(
+        "gifPanel"
+    ).style.display =
+        "none";
+
+}
+
+
+/* =====================================================
    GİRİŞ
-========================= */
+===================================================== */
 
 function enterChat(){
 
@@ -1563,9 +1831,9 @@ function(event){
 };
 
 
-/* =========================
+/* =====================================================
    MESAJLARI YÜKLE
-========================= */
+===================================================== */
 
 function loadMessages(){
 
@@ -1592,7 +1860,9 @@ function loadMessages(){
 
 
                     if(!message){
+
                         return;
+
                     }
 
 
@@ -1618,7 +1888,7 @@ function loadMessages(){
                     }
 
 
-                    /* KULLANICI */
+                    /* KULLANICI ADI */
 
                     const user =
                         document.createElement(
@@ -1703,7 +1973,7 @@ function loadMessages(){
                     }
 
 
-                    /* MESAJ BALONU */
+                    /* MESAJ KUTUSU */
 
                     const bubble =
                         document.createElement(
@@ -1715,46 +1985,62 @@ function loadMessages(){
                         "bubble";
 
 
-                    /* NORMAL MESAJ */
-
-                    if(
-                        message.type !== "gif"
-                    ){
-
-                        bubble.textContent =
-                            message.text || "";
-
-                    }
-
-
-                    /* GIF MESAJ */
+                    /* =====================
+                       GIF MESAJI
+                    ===================== */
 
                     if(
                         message.type === "gif" &&
                         message.gif
                     ){
 
-                        const image =
+                        const gifImage =
                             document.createElement(
                                 "img"
                             );
 
 
-                        image.src =
+                        gifImage.className =
+                            "chat-gif";
+
+
+                        gifImage.src =
                             message.gif;
 
 
-                        image.className =
-                            "message-gif";
-
-
-                        image.alt =
+                        gifImage.alt =
                             "GIF";
 
 
+                        gifImage.loading =
+                            "lazy";
+
+
+                        gifImage.onclick =
+                        function(){
+
+                            window.open(
+                                message.gif,
+                                "_blank"
+                            );
+
+                        };
+
+
                         bubble.appendChild(
-                            image
+                            gifImage
                         );
+
+                    }
+
+                    /* =====================
+                       NORMAL MESAJ
+                    ===================== */
+
+                    else{
+
+                        bubble.textContent =
+                            message.text || "";
 
                     }
 
@@ -1773,9 +2059,11 @@ function loadMessages(){
                         user
                     );
 
+
                     box.appendChild(
                         bubble
                     );
+
 
                     chat.appendChild(
                         box
@@ -1794,9 +2082,9 @@ function loadMessages(){
 }
 
 
-/* =========================
-   MESAJ GÖNDER
-========================= */
+/* =====================================================
+   NORMAL MESAJ GÖNDER
+===================================================== */
 
 function sendMessage(){
 
@@ -1871,9 +2159,9 @@ function(event){
 };
 
 
-/* =========================
+/* =====================================================
    ÇEVRİMİÇİ
-========================= */
+===================================================== */
 
 function setOnline(){
 
@@ -1960,9 +2248,9 @@ function setOnline(){
 }
 
 
-/* =========================
+/* =====================================================
    SES DURUMU
-========================= */
+===================================================== */
 
 function showVoiceStatus(text){
 
@@ -1992,9 +2280,9 @@ function hideVoiceStatus(){
 }
 
 
-/* =========================
-   MİKROFONU AÇ
-========================= */
+/* =====================================================
+   SESLİ SOHBETİ BAŞLAT
+===================================================== */
 
 async function startVoiceChat(){
 
@@ -2108,9 +2396,9 @@ async function startVoiceChat(){
 }
 
 
-/* =========================
+/* =====================================================
    SES BUTONU
-========================= */
+===================================================== */
 
 document.getElementById(
     "voiceButton"
@@ -2131,9 +2419,9 @@ async function(){
 };
 
 
-/* =========================
+/* =====================================================
    ÇAĞRI DİNLE
-========================= */
+===================================================== */
 
 function startVoiceListener(){
 
@@ -2214,9 +2502,9 @@ function startVoiceListener(){
 }
 
 
-/* =========================
+/* =====================================================
    ÇAĞRI BAŞLAT
-========================= */
+===================================================== */
 
 async function createCall(){
 
@@ -2465,9 +2753,9 @@ async function createCall(){
 }
 
 
-/* =========================
+/* =====================================================
    ÇAĞRIYI CEVAPLA
-========================= */
+===================================================== */
 
 async function answerCall(
     callId,
@@ -2636,9 +2924,9 @@ async function answerCall(
 }
 
 
-/* =========================
+/* =====================================================
    SESLİ SOHBETİ KAPAT
-========================= */
+===================================================== */
 
 function stopVoiceChat(){
 
@@ -2677,7 +2965,9 @@ function stopVoiceChat(){
             }
             catch(error){
 
-                console.log(error);
+                console.log(
+                    error
+                );
 
             }
 
@@ -2750,9 +3040,65 @@ function stopVoiceChat(){
 }
 
 
-/* =========================
+/* =====================================================
+   PANEL DIŞINA TIKLAYINCA KAPAT
+===================================================== */
+
+document.addEventListener(
+    "click",
+    function(event){
+
+        const emojiPanel =
+            document.getElementById(
+                "emojiPanel"
+            );
+
+        const gifPanel =
+            document.getElementById(
+                "gifPanel"
+            );
+
+        const emojiButton =
+            document.getElementById(
+                "emojiButton"
+            );
+
+        const gifButton =
+            document.getElementById(
+                "gifButton"
+            );
+
+
+        if(
+            emojiPanel.style.display === "block" &&
+            !emojiPanel.contains(event.target) &&
+            event.target !== emojiButton
+        ){
+
+            emojiPanel.style.display =
+                "none";
+
+        }
+
+
+        if(
+            gifPanel.style.display === "block" &&
+            !gifPanel.contains(event.target) &&
+            event.target !== gifButton
+        ){
+
+            gifPanel.style.display =
+                "none";
+
+        }
+
+    }
+);
+
+
+/* =====================================================
    ÇIKIŞ
-========================= */
+===================================================== */
 
 document.getElementById(
     "logoutButton"
