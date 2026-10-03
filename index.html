@@ -1,15 +1,22 @@
-  <!DOCTYPE html>
+ ```html
+<!DOCTYPE html>
 <html lang="tr">
+
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Ritmix Sohbet</title>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 
 <style>
-*{box-sizing:border-box}
+
+*{
+    box-sizing:border-box;
+}
 
 body{
     margin:0;
@@ -17,6 +24,10 @@ body{
     background:#0f1117;
     color:white;
 }
+
+/* =========================
+   GİRİŞ
+========================= */
 
 #login{
     min-height:100vh;
@@ -71,6 +82,10 @@ body{
     cursor:pointer;
 }
 
+/* =========================
+   SOHBET
+========================= */
+
 #chatPage{
     display:none;
     height:100vh;
@@ -78,13 +93,14 @@ body{
 }
 
 .header{
-    height:70px;
+    min-height:70px;
     background:#191e29;
     display:flex;
     align-items:center;
     justify-content:space-between;
-    padding:0 15px;
+    padding:10px 15px;
     border-bottom:1px solid #303746;
+    gap:10px;
 }
 
 .header-title{
@@ -102,16 +118,40 @@ body{
     color:#9da7ba;
     font-size:11px;
     margin-top:3px;
+    max-width:500px;
 }
 
-.logout{
+.header-buttons{
+    display:flex;
+    align-items:center;
+    gap:7px;
+}
+
+.logout,
+.voice-button{
     border:none;
-    background:#292f3d;
     color:white;
     padding:9px 12px;
     border-radius:8px;
     cursor:pointer;
+    font-weight:bold;
 }
+
+.logout{
+    background:#292f3d;
+}
+
+.voice-button{
+    background:#45a86b;
+}
+
+.voice-button.active{
+    background:#d9534f;
+}
+
+/* =========================
+   MESAJLAR
+========================= */
 
 .chat{
     height:calc(100vh - 135px);
@@ -169,6 +209,10 @@ body{
     margin-left:7px;
 }
 
+/* =========================
+   MESAJ GİRİŞİ
+========================= */
+
 .input-area{
     position:fixed;
     bottom:0;
@@ -206,17 +250,68 @@ body{
     cursor:pointer;
 }
 
+/* =========================
+   SES DURUMU
+========================= */
+
+#voiceStatus{
+    display:none;
+    position:fixed;
+    bottom:75px;
+    left:50%;
+    transform:translateX(-50%);
+    background:#202633;
+    color:white;
+    padding:10px 16px;
+    border-radius:20px;
+    font-size:13px;
+    z-index:20;
+}
+
+@media(max-width:600px){
+
+    .header{
+        padding:8px;
+    }
+
+    .header-title{
+        font-size:15px;
+    }
+
+    .voice-button,
+    .logout{
+        padding:8px;
+        font-size:11px;
+    }
+
+    .online-users{
+        max-width:220px;
+        white-space:nowrap;
+        overflow:hidden;
+        text-overflow:ellipsis;
+    }
+
+}
+
 @media(min-width:700px){
+
     .input-area{
         max-width:800px;
         left:50%;
         transform:translateX(-50%);
     }
+
 }
+
 </style>
+
 </head>
 
 <body>
+
+<!-- =========================
+     GİRİŞ
+========================= -->
 
 <div id="login">
 
@@ -245,6 +340,11 @@ body{
 
 </div>
 
+
+<!-- =========================
+     SOHBET
+========================= -->
+
 <div id="chatPage">
 
     <div class="header">
@@ -255,35 +355,42 @@ body{
                 💬 Ritmix Sohbet
             </div>
 
-            <div
-                class="online"
-                id="onlineText"
-            >
+            <div class="online" id="onlineText">
                 🟢 0 kişi çevrimiçi
             </div>
 
-            <div
-                class="online-users"
-                id="onlineUsersText"
-            >
+            <div class="online-users" id="onlineUsersText">
                 👥 Kimse yok
             </div>
 
         </div>
 
-        <button
-            class="logout"
-            id="logoutButton"
-        >
-            Çıkış
-        </button>
+        <div class="header-buttons">
+
+            <button
+                class="voice-button"
+                id="voiceButton"
+            >
+                🎤 Sesli Sohbet
+            </button>
+
+            <button
+                class="logout"
+                id="logoutButton"
+            >
+                Çıkış
+            </button>
+
+        </div>
 
     </div>
+
 
     <div
         class="chat"
         id="chat"
     ></div>
+
 
     <div class="input-area">
 
@@ -305,39 +412,113 @@ body{
 
 </div>
 
+
+<div id="voiceStatus">
+    🎤 Sesli bağlantı hazırlanıyor...
+</div>
+
+
+<audio
+    id="remoteAudio"
+    autoplay
+    playsinline
+></audio>
+
+
 <script>
 
+/* =====================================================
+   FIREBASE
+===================================================== */
+
 const firebaseConfig = {
-    apiKey: "AIzaSyDJ9zkgu_2ZLcD_ObEYwnFfSu6QffN9VQI",
-    authDomain: "papatyawap.firebaseapp.com",
-    databaseURL: "https://papatyawap-cdf7b-default-rtdb.firebaseio.com",
-    projectId: "papatyawap",
-    storageBucket: "papatyawap.firebasestorage.app",
-    messagingSenderId: "29357315689",
-    appId: "1:29357315689:web:78864218c204d291f734f8"
+
+    apiKey:
+        "AIzaSyDJ9zkgu_2ZLcD_ObEYwnFfSu6QffN9VQI",
+
+    authDomain:
+        "papatyawap.firebaseapp.com",
+
+    databaseURL:
+        "https://papatyawap-default-rtdb.firebaseio.com",
+
+    projectId:
+        "papatyawap",
+
+    storageBucket:
+        "papatyawap.firebasestorage.app",
+
+    messagingSenderId:
+        "29357315689",
+
+    appId:
+        "1:29357315689:web:78864218c204d291f734f8"
+
 };
 
 firebase.initializeApp(firebaseConfig);
 
 const database = firebase.database();
 
+
+/* =====================================================
+   DEĞİŞKENLER
+===================================================== */
+
 let username = "";
 let userKey = "";
 
+let localStream = null;
 
-/* GİRİŞ */
+let peerConnections = {};
+
+let voiceActive = false;
+
+let voiceListenerStarted = false;
+
+
+/* =====================================================
+   WEBRTC
+===================================================== */
+
+const rtcConfig = {
+
+    iceServers: [
+
+        {
+            urls:
+                "stun:stun.l.google.com:19302"
+        },
+
+        {
+            urls:
+                "stun:stun1.l.google.com:19302"
+        }
+
+    ]
+
+};
+
+
+/* =====================================================
+   GİRİŞ
+===================================================== */
 
 function enterChat(){
 
     const input =
-        document.getElementById("usernameInput");
+        document.getElementById(
+            "usernameInput"
+        );
 
     const name =
         input.value.trim();
 
     if(!name){
 
-        alert("Lütfen kullanıcı adını yaz.");
+        alert(
+            "Lütfen kullanıcı adını yaz."
+        );
 
         input.focus();
 
@@ -346,25 +527,29 @@ function enterChat(){
 
     username = name;
 
-    document.getElementById("login").style.display = "none";
+    document.getElementById(
+        "login"
+    ).style.display = "none";
 
-    document.getElementById("chatPage").style.display = "block";
+    document.getElementById(
+        "chatPage"
+    ).style.display = "block";
 
     loadMessages();
 
     setOnline();
+
 }
 
 
-/* BUTON */
+document.getElementById(
+    "loginButton"
+).onclick = enterChat;
 
-document.getElementById("loginButton").onclick = enterChat;
 
-
-/* ENTER */
-
-document.getElementById("usernameInput").onkeydown =
-function(event){
+document.getElementById(
+    "usernameInput"
+).onkeydown = function(event){
 
     if(event.key === "Enter"){
 
@@ -375,114 +560,155 @@ function(event){
 };
 
 
-/* MESAJLAR */
+/* =====================================================
+   MESAJLAR
+===================================================== */
 
 function loadMessages(){
 
     database
-    .ref("messages")
-    .on("value",function(snapshot){
+        .ref("messages")
+        .on(
+            "value",
+            function(snapshot){
 
-        const chat =
-            document.getElementById("chat");
-
-        chat.innerHTML = "";
-
-        snapshot.forEach(function(child){
-
-            const message =
-                child.val();
-
-            const box =
-                document.createElement("div");
-
-            box.className = "message";
-
-            if(message.username === username){
-
-                box.classList.add("my-message");
-
-            }
-
-            const user =
-                document.createElement("div");
-
-            user.className = "username";
-
-            user.textContent =
-                message.username;
-
-            if(message.timestamp){
-
-                const time =
-                    document.createElement("span");
-
-                time.className = "time";
-
-                time.textContent =
-                    new Date(
-                        message.timestamp
-                    ).toLocaleTimeString(
-                        "tr-TR",
-                        {
-                            hour:"2-digit",
-                            minute:"2-digit"
-                        }
+                const chat =
+                    document.getElementById(
+                        "chat"
                     );
 
-                user.appendChild(time);
-            }
+                chat.innerHTML = "";
 
+                snapshot.forEach(
+                    function(child){
 
-            if(message.username === username){
+                        const message =
+                            child.val();
 
-                const deleteButton =
-                    document.createElement("button");
+                        const box =
+                            document.createElement(
+                                "div"
+                            );
 
-                deleteButton.className =
-                    "delete";
+                        box.className =
+                            "message";
 
-                deleteButton.textContent =
-                    "Sil";
+                        if(
+                            message.username ===
+                            username
+                        ){
 
-                deleteButton.onclick =
-                function(){
+                            box.classList.add(
+                                "my-message"
+                            );
 
-                    child.ref.remove();
+                        }
 
-                };
+                        const user =
+                            document.createElement(
+                                "div"
+                            );
 
-                user.appendChild(
-                    deleteButton
+                        user.className =
+                            "username";
+
+                        user.textContent =
+                            message.username;
+
+                        if(message.timestamp){
+
+                            const time =
+                                document.createElement(
+                                    "span"
+                                );
+
+                            time.className =
+                                "time";
+
+                            time.textContent =
+                                new Date(
+                                    message.timestamp
+                                ).toLocaleTimeString(
+                                    "tr-TR",
+                                    {
+                                        hour:
+                                            "2-digit",
+                                        minute:
+                                            "2-digit"
+                                    }
+                                );
+
+                            user.appendChild(
+                                time
+                            );
+
+                        }
+
+                        if(
+                            message.username ===
+                            username
+                        ){
+
+                            const deleteButton =
+                                document.createElement(
+                                    "button"
+                                );
+
+                            deleteButton.className =
+                                "delete";
+
+                            deleteButton.textContent =
+                                "Sil";
+
+                            deleteButton.onclick =
+                                function(){
+
+                                    child.ref.remove();
+
+                                };
+
+                            user.appendChild(
+                                deleteButton
+                            );
+
+                        }
+
+                        const bubble =
+                            document.createElement(
+                                "div"
+                            );
+
+                        bubble.className =
+                            "bubble";
+
+                        bubble.textContent =
+                            message.text;
+
+                        box.appendChild(user);
+
+                        box.appendChild(
+                            bubble
+                        );
+
+                        chat.appendChild(
+                            box
+                        );
+
+                    }
                 );
+
+                chat.scrollTop =
+                    chat.scrollHeight;
+
             }
+        );
 
-
-            const bubble =
-                document.createElement("div");
-
-            bubble.className =
-                "bubble";
-
-            bubble.textContent =
-                message.text;
-
-            box.appendChild(user);
-
-            box.appendChild(bubble);
-
-            chat.appendChild(box);
-
-        });
-
-        chat.scrollTop =
-            chat.scrollHeight;
-
-    });
 }
 
 
-/* MESAJ GÖNDER */
+/* =====================================================
+   MESAJ GÖNDER
+===================================================== */
 
 function sendMessage(){
 
@@ -494,26 +720,34 @@ function sendMessage(){
     const text =
         input.value.trim();
 
-    if(!text || !username){
+    if(
+        !text ||
+        !username
+    ){
 
         return;
+
     }
 
     database
-    .ref("messages")
-    .push({
+        .ref("messages")
+        .push({
 
-        username:username,
+            username:
+                username,
 
-        text:text,
+            text:
+                text,
 
-        timestamp:Date.now()
+            timestamp:
+                Date.now()
 
-    });
+        });
 
     input.value = "";
 
     input.focus();
+
 }
 
 
@@ -524,8 +758,7 @@ document.getElementById(
 
 document.getElementById(
     "messageInput"
-).onkeydown =
-function(event){
+).onkeydown = function(event){
 
     if(event.key === "Enter"){
 
@@ -538,20 +771,24 @@ function(event){
 };
 
 
-/* ÇEVRİMİÇİ */
+/* =====================================================
+   ÇEVRİMİÇİ KULLANICILAR
+===================================================== */
 
 function setOnline(){
 
     const ref =
         database
-        .ref("onlineUsers")
-        .push();
+            .ref("onlineUsers")
+            .push();
 
-    userKey = ref.key;
+    userKey =
+        ref.key;
 
     ref.set({
 
-        username:username,
+        username:
+            username,
 
         timestamp:
             firebase.database.ServerValue.TIMESTAMP
@@ -560,64 +797,873 @@ function setOnline(){
 
     ref.onDisconnect().remove();
 
+    database
+        .ref("onlineUsers")
+        .on(
+            "value",
+            function(snapshot){
+
+                const count =
+                    snapshot.numChildren();
+
+                document.getElementById(
+                    "onlineText"
+                ).textContent =
+                    "🟢 " +
+                    count +
+                    " kişi çevrimiçi";
+
+                const names = [];
+
+                snapshot.forEach(
+                    function(child){
+
+                        const user =
+                            child.val();
+
+                        if(
+                            user &&
+                            user.username
+                        ){
+
+                            names.push(
+                                user.username
+                            );
+
+                        }
+
+                    }
+                );
+
+                document.getElementById(
+                    "onlineUsersText"
+                ).textContent =
+                    names.length
+                    ?
+                    "👥 " +
+                    names.join(", ")
+                    :
+                    "👥 Kimse yok";
+
+            }
+        );
+
+}
+
+
+/* =====================================================
+   SES DURUMU
+===================================================== */
+
+function showVoiceStatus(text){
+
+    const status =
+        document.getElementById(
+            "voiceStatus"
+        );
+
+    status.textContent =
+        text;
+
+    status.style.display =
+        "block";
+
+}
+
+
+function hideVoiceStatus(){
+
+    document.getElementById(
+        "voiceStatus"
+    ).style.display =
+        "none";
+
+}
+
+
+/* =====================================================
+   SESLİ SOHBETİ BAŞLAT
+===================================================== */
+
+async function startVoiceChat(){
+
+    try{
+
+        showVoiceStatus(
+            "🎤 Mikrofon açılıyor..."
+        );
+
+        if(
+            !navigator.mediaDevices ||
+            !navigator.mediaDevices.getUserMedia
+        ){
+
+            throw new Error(
+                "Tarayıcı mikrofon özelliğini desteklemiyor."
+            );
+
+        }
+
+        localStream =
+            await navigator.mediaDevices.getUserMedia({
+
+                audio:true,
+
+                video:false
+
+            });
+
+        voiceActive =
+            true;
+
+        const button =
+            document.getElementById(
+                "voiceButton"
+            );
+
+        button.textContent =
+            "🔴 Sesi Kapat";
+
+        button.classList.add(
+            "active"
+        );
+
+        startVoiceListener();
+
+        showVoiceStatus(
+            "🎤 Mikrofon açık"
+        );
+
+        await checkExistingCalls();
+
+    }
+    catch(error){
+
+        console.error(
+            "Mikrofon hatası:",
+            error
+        );
+
+        localStream =
+            null;
+
+        voiceActive =
+            false;
+
+        alert(
+            "Mikrofon açılamadı.\n\n" +
+            error.name +
+            "\n" +
+            error.message
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   SES BUTONU
+===================================================== */
+
+document.getElementById(
+    "voiceButton"
+).onclick = async function(){
+
+    if(voiceActive){
+
+        stopVoiceChat();
+
+    }
+    else{
+
+        await startVoiceChat();
+
+    }
+
+};
+
+
+/* =====================================================
+   ÇAĞRILARI DİNLE
+===================================================== */
+
+function startVoiceListener(){
+
+    if(
+        voiceListenerStarted
+    ){
+
+        return;
+
+    }
+
+    voiceListenerStarted =
+        true;
 
     database
-    .ref("onlineUsers")
-    .on("value",function(snapshot){
+        .ref("calls")
+        .on(
+            "child_added",
+            async function(snapshot){
 
-        const count =
-            snapshot.numChildren();
+                const call =
+                    snapshot.val();
 
-        document.getElementById(
-            "onlineText"
-        ).textContent =
-            "🟢 " +
-            count +
-            " kişi çevrimiçi";
+                const callId =
+                    snapshot.key;
+
+                if(!call){
+
+                    return;
+
+                }
+
+                if(
+                    call.caller ===
+                    username
+                ){
+
+                    return;
+
+                }
+
+                if(
+                    call.receiver !==
+                    username
+                ){
+
+                    return;
+
+                }
+
+                if(
+                    peerConnections[callId]
+                ){
+
+                    return;
+
+                }
+
+                if(
+                    !voiceActive ||
+                    !localStream
+                ){
+
+                    return;
+
+                }
+
+                await answerCall(
+                    callId,
+                    call
+                );
+
+            }
+        );
+
+}
 
 
-        const names = [];
+/* =====================================================
+   MEVCUT ÇAĞRILARI KONTROL ET
+===================================================== */
 
-        snapshot.forEach(function(child){
+async function checkExistingCalls(){
+
+    const snapshot =
+        await database
+            .ref("calls")
+            .once("value");
+
+    let foundCall =
+        false;
+
+    snapshot.forEach(
+        function(child){
+
+            const call =
+                child.val();
+
+            if(
+                call &&
+                call.receiver ===
+                username
+            ){
+
+                foundCall =
+                    true;
+
+                answerCall(
+                    child.key,
+                    call
+                );
+
+            }
+
+        }
+    );
+
+    if(!foundCall){
+
+        await createCall();
+
+    }
+
+}
+
+
+/* =====================================================
+   ÇAĞRI OLUŞTUR
+===================================================== */
+
+async function createCall(){
+
+    if(
+        !localStream ||
+        !voiceActive
+    ){
+
+        return;
+
+    }
+
+    const usersSnapshot =
+        await database
+            .ref("onlineUsers")
+            .once("value");
+
+    let otherUser =
+        null;
+
+    usersSnapshot.forEach(
+        function(child){
 
             const user =
                 child.val();
 
-            if(user && user.username){
+            if(
+                user &&
+                user.username &&
+                user.username !== username &&
+                !otherUser
+            ){
 
-                names.push(user.username);
+                otherUser =
+                    user.username;
 
             }
 
-        });
+        }
+    );
 
+    if(!otherUser){
 
-        document.getElementById(
-            "onlineUsersText"
-        ).textContent =
-            names.length
-            ? "👥 " + names.join(", ")
-            : "👥 Kimse yok";
+        showVoiceStatus(
+            "🎤 Mikrofon açık - başka kullanıcı bekleniyor"
+        );
+
+        return;
+
+    }
+
+    const callRef =
+        database
+            .ref("calls")
+            .push();
+
+    const callId =
+        callRef.key;
+
+    const pc =
+        new RTCPeerConnection(
+            rtcConfig
+        );
+
+    peerConnections[callId] =
+        pc;
+
+    localStream
+        .getTracks()
+        .forEach(
+            function(track){
+
+                pc.addTrack(
+                    track,
+                    localStream
+                );
+
+            }
+        );
+
+    pc.ontrack =
+        function(event){
+
+            const audio =
+                document.getElementById(
+                    "remoteAudio"
+                );
+
+            audio.srcObject =
+                event.streams[0];
+
+            audio.play()
+                .catch(
+                    function(error){
+
+                        console.log(
+                            "Audio play:",
+                            error
+                        );
+
+                    }
+                );
+
+            showVoiceStatus(
+                "🔊 Ses bağlantısı kuruldu"
+            );
+
+        };
+
+    pc.onicecandidate =
+        function(event){
+
+            if(
+                event.candidate
+            ){
+
+                database
+                    .ref(
+                        "calls/" +
+                        callId +
+                        "/callerCandidates"
+                    )
+                    .push(
+                        event.candidate.toJSON()
+                    );
+
+            }
+
+        };
+
+    const offer =
+        await pc.createOffer();
+
+    await pc.setLocalDescription(
+        offer
+    );
+
+    await callRef.set({
+
+        caller:
+            username,
+
+        receiver:
+            otherUser,
+
+        offer:{
+
+            type:
+                offer.type,
+
+            sdp:
+                offer.sdp
+
+        },
+
+        created:
+            Date.now()
 
     });
+
+    database
+        .ref(
+            "calls/" +
+            callId +
+            "/answer"
+        )
+        .on(
+            "value",
+            async function(snapshot){
+
+                const answer =
+                    snapshot.val();
+
+                if(
+                    answer &&
+                    !pc.currentRemoteDescription
+                ){
+
+                    try{
+
+                        await pc.setRemoteDescription(
+                            new RTCSessionDescription(
+                                answer
+                            )
+                        );
+
+                    }
+                    catch(error){
+
+                        console.error(
+                            "Remote description:",
+                            error
+                        );
+
+                    }
+
+                }
+
+            }
+        );
+
+    database
+        .ref(
+            "calls/" +
+            callId +
+            "/receiverCandidates"
+        )
+        .on(
+            "child_added",
+            async function(snapshot){
+
+                const candidate =
+                    snapshot.val();
+
+                if(candidate){
+
+                    try{
+
+                        await pc.addIceCandidate(
+                            new RTCIceCandidate(
+                                candidate
+                            )
+                        );
+
+                    }
+                    catch(error){
+
+                        console.log(
+                            "ICE:",
+                            error
+                        );
+
+                    }
+
+                }
+
+            }
+        );
+
 }
 
 
-/* ÇIKIŞ */
+/* =====================================================
+   GELEN ÇAĞRIYI CEVAPLA
+===================================================== */
+
+async function answerCall(
+    callId,
+    call
+){
+
+    if(
+        !localStream ||
+        !voiceActive
+    ){
+
+        return;
+
+    }
+
+    if(
+        peerConnections[callId]
+    ){
+
+        return;
+
+    }
+
+    const pc =
+        new RTCPeerConnection(
+            rtcConfig
+        );
+
+    peerConnections[callId] =
+        pc;
+
+    localStream
+        .getTracks()
+        .forEach(
+            function(track){
+
+                pc.addTrack(
+                    track,
+                    localStream
+                );
+
+            }
+        );
+
+    pc.ontrack =
+        function(event){
+
+            const audio =
+                document.getElementById(
+                    "remoteAudio"
+                );
+
+            audio.srcObject =
+                event.streams[0];
+
+            audio.play()
+                .catch(
+                    function(error){
+
+                        console.log(
+                            error
+                        );
+
+                    }
+                );
+
+            showVoiceStatus(
+                "🔊 Ses bağlantısı kuruldu"
+            );
+
+        };
+
+    pc.onicecandidate =
+        function(event){
+
+            if(
+                event.candidate
+            ){
+
+                database
+                    .ref(
+                        "calls/" +
+                        callId +
+                        "/receiverCandidates"
+                    )
+                    .push(
+                        event.candidate.toJSON()
+                    );
+
+            }
+
+        };
+
+    try{
+
+        await pc.setRemoteDescription(
+            new RTCSessionDescription(
+                call.offer
+            )
+        );
+
+    }
+    catch(error){
+
+        console.error(
+            "Offer hatası:",
+            error
+        );
+
+        return;
+
+    }
+
+    const answer =
+        await pc.createAnswer();
+
+    await pc.setLocalDescription(
+        answer
+    );
+
+    await database
+        .ref(
+            "calls/" +
+            callId +
+            "/answer"
+        )
+        .set({
+
+            type:
+                answer.type,
+
+            sdp:
+                answer.sdp
+
+        });
+
+    database
+        .ref(
+            "calls/" +
+            callId +
+            "/callerCandidates"
+        )
+        .on(
+            "child_added",
+            async function(snapshot){
+
+                const candidate =
+                    snapshot.val();
+
+                if(candidate){
+
+                    try{
+
+                        await pc.addIceCandidate(
+                            new RTCIceCandidate(
+                                candidate
+                            )
+                        );
+
+                    }
+                    catch(error){
+
+                        console.log(
+                            "ICE:",
+                            error
+                        );
+
+                    }
+
+                }
+
+            }
+        );
+
+}
+
+
+/* =====================================================
+   SESLİ SOHBETİ KAPAT
+===================================================== */
+
+function stopVoiceChat(){
+
+    voiceActive =
+        false;
+
+    if(localStream){
+
+        localStream
+            .getTracks()
+            .forEach(
+                function(track){
+
+                    track.stop();
+
+                }
+            );
+
+        localStream =
+            null;
+
+    }
+
+    Object.keys(
+        peerConnections
+    ).forEach(
+        function(id){
+
+            try{
+
+                peerConnections[id].close();
+
+            }
+            catch(error){
+
+                console.log(error);
+
+            }
+
+        }
+    );
+
+    peerConnections =
+        {};
+
+    const audio =
+        document.getElementById(
+            "remoteAudio"
+        );
+
+    audio.srcObject =
+        null;
+
+    const button =
+        document.getElementById(
+            "voiceButton"
+        );
+
+    button.textContent =
+        "🎤 Sesli Sohbet";
+
+    button.classList.remove(
+        "active"
+    );
+
+    hideVoiceStatus();
+
+    /* KENDİ ÇAĞRILARIMIZI TEMİZLE */
+
+    database
+        .ref("calls")
+        .once(
+            "value",
+            function(snapshot){
+
+                snapshot.forEach(
+                    function(child){
+
+                        const call =
+                            child.val();
+
+                        if(
+                            call &&
+                            (
+                                call.caller ===
+                                    username ||
+                                call.receiver ===
+                                    username
+                            )
+                        ){
+
+                            child.ref.remove();
+
+                        }
+
+                    }
+                );
+
+            }
+        );
+
+}
+
+
+/* =====================================================
+   ÇIKIŞ
+===================================================== */
 
 document.getElementById(
     "logoutButton"
 ).onclick =
 function(){
 
+    stopVoiceChat();
+
     if(userKey){
 
         database
-        .ref(
-            "onlineUsers/" +
-            userKey
-        )
-        .remove();
+            .ref(
+                "onlineUsers/" +
+                userKey
+            )
+            .remove();
 
     }
 
@@ -629,3 +1675,4 @@ function(){
 
 </body>
 </html>
+```
