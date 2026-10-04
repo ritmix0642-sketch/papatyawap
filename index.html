@@ -1,1 +1,2593 @@
- <!DOCTYPE html> <html lang="tr"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"> <title>Ritmix Sohbet</title> <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script> <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script> <style> *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; } html, body{ margin:0; padding:0; width:100%; height:100%; font-family:Arial,Helvetica,sans-serif; color:white; overflow:hidden; } body{ background: radial-gradient(circle at 20% 20%,rgba(91,70,255,.20),transparent 35%), radial-gradient(circle at 80% 80%,rgba(0,210,255,.15),transparent 35%), linear-gradient(135deg,#080b16,#10152b,#080b16); background-image:url("chat-background.png.png"); background-size:cover; background-position:center center; background-repeat:no-repeat; background-attachment:fixed; } /* ===================================================== GİRİŞ ===================================================== */ #login{ min-height:100vh; height:100vh; display:flex; align-items:center; justify-content:center; padding:20px; background:rgba(5,8,20,.35); } .login-box{ width:100%; max-width:420px; padding:38px 28px; text-align:center; background:rgba(22,27,49,.88); border:1px solid rgba(255,255,255,.10); border-radius:28px; box-shadow: 0 25px 80px rgba(0,0,0,.55), 0 0 40px rgba(91,70,255,.10); backdrop-filter:blur(18px); } .logo{ width:85px; height:85px; margin:auto; display:flex; justify-content:center; align-items:center; font-size:42px; border-radius:25px; background: linear-gradient(135deg,#6c5ce7,#00c6ff); box-shadow: 0 10px 35px rgba(76,100,255,.35); } .login-box h1{ margin-top:20px; font-size:28px; } .subtitle{ margin-top:9px; margin-bottom:28px; color:#9da7c5; font-size:14px; } #usernameInput{ width:100%; height:52px; padding:0 17px; border:1px solid rgba(255,255,255,.10); border-radius:15px; outline:none; background:rgba(5,8,20,.65); color:white; font-size:16px; } #loginButton{ width:100%; height:52px; margin-top:13px; border:0; border-radius:15px; background: linear-gradient(135deg,#665cff,#00bfff); color:white; font-size:15px; font-weight:bold; cursor:pointer; } /* ====================================================== SOHBET SAYFASI ===================================================== */ #chatPage{ display:none; width:100%; height:100vh; overflow:hidden; position:relative; } } /* ===================================================== ÜST BAŞLIK ===================================================== */ .header{ height:76px; display:flex; align-items:center; justify-content:space-between; padding:10px 18px; background:rgba(13,17,34,.92); border-bottom:1px solid rgba(255,255,255,.08); backdrop-filter:blur(18px); gap:15px; position:relative; z-index:50; } .header-title{ font-size:18px; font-weight:bold; } .online{ margin-top:5px; color:#48ee92; font-size:12px; } .online-users{ margin-top:4px; color:#8993b1; font-size:11px; max-width:500px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; } /* SADECE ÇIKIŞ */ .header-buttons{ display:flex; align-items:center; gap:8px; } .logout{ border:1px solid rgba(255,255,255,.08); color:white; padding:10px 14px; border-radius:12px; cursor:pointer; font-weight:bold; background:rgba(255,255,255,.07); } /* ===================================================== MESAJLAR ===================================================== */ .chat{ position:absolute; top:76px; left:0; right:0; bottom:112px; overflow-y:auto; padding:25px 16px 25px; max-width:850px; width:100%; margin:auto; scroll-behavior:smooth; } .message{ margin-bottom:18px; } .username{ margin-bottom:6px; color:#72a9ff; font-size:12px; font-weight:bold; } .my-message{ text-align:right; } .my-message .username{ color:#65e5a1; } .time{ margin-left:7px; color:#69738e; font-size:10px; } .bubble{ display:inline-block; max-width:85%; padding:12px 15px; border-radius:7px 17px 17px 17px; background:rgba(31,38,65,.90); border:1px solid rgba(255,255,255,.05); line-height:1.45; word-wrap:break-word; white-space:pre-wrap; kutu-gölgesi: 0 5px 18px rgba(0,0,0,.15); } .mesajım-baloncuk{ arka plan: doğrusal-gradyan(135deg,#405cb1,#36518f); kenar-yarıçapı:17px 7px 17px 17px; } .sil{ kenar:0; arka plan:şeffaf; renk:#ff6977; yazı tipi boyutu:10px; imleç:işaretçi; sol kenar boşluğu:7px; } /* ===================================================== GIF MESAJI ===================================================== */ .gif-message{ max-width:280px; border-radius:15px; display:block; margin-top:5px; overflow:hidden; } .gif-message img{ width:100%; max-width:280px; border-radius:15px; display:block; cursor:işaretçi; } /* ====================================================== ALANI ALT KONTROL ===================================================== */ .input-wrapper{ position:fixed; left:0; bottom:0; width:100%; padding:8px 10px 10px; background:rgba(13,17,34,.97); border-top:1px solid rgba(255,255,255,.08); backdrop-filter:blur(18px); z-index:100; } /* ====================================================== ÜST ARAÇ SATIRI MOBİLDE: 🎨 😊 GIF 🎤 SES ===================================================== */ .toolbar{ width:100%; max-width:850px; margin:0 auto 7px; display:flex; align-items:center; gap:6px; min-height:40px; } /* TOOL BUTONLARI */ .tool-button{ height:38px; min-width:42px; padding:0 10px; flex-shrink:0; border:0; border-radius:11px; background:#252c45; color:white; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:.15s; } .tool-button:hover{ background:#343d5d; } .tool-button:active{ transform:scale(.95); } /* GIF BUTONU */ .gif-button{ font-size:13px; font-weight:bold; letter-spacing:.3px; } /* SES BUTONU */ .voice-control{ height:38px; padding:0 13px; border:1px solid rgba(255,255,255,.08); border-radius:11px; arka plan: doğrusal-gradyan(135 derece,#19a968,#39d987); renk:beyaz; yazı tipi boyutu:12 piksel; yazı tipi kalınlığı:kalın; imleç:işaretçi; ekran:esnek; öğeleri hizala:ortala; içeriği hizala:ortala; boşluk:sarma yok; sol kenar boşluğu:otomatik; } .ses-kontrolü.aktif{ arka plan: doğrusal-gradyan(135 derece,#e63d4f,#ff6675); } /* ====================================================== RENKLER ====================================================== */ .color-buttons{ display:flex; align-items:center; gap:4px; padding:0 4px; } .color-button{ width:19px; height:19px; border-radius:50%; border:2px solid rgba(255,255,255,.35); cursor:pointer; flex-shrink:0; } .color-button.selected{ border:3px solid white; kutu-gölgesi: 0 0 8px rgba(255,255,255,.7); } .color-white{background:#fff} .color-pink{background:#ff69b4} .color-blue{background:#54a8ff} .color-green{background:#55e89a} .color-yellow{background:#ffd84d} .color-red{background:#ff6262} /* ====================================================== MESAJ GİRİŞ SATIRI GENİŞ ALAN ===================================================== */ .message-row{ width:100%; max-width:850px; margin:auto; display:flex; align-items:center; gap:7px; } .message-input{ flex:1; width:100%; height:46px; min-width:0; border:1px solid rgba(255,255,255,.08); outline:none; border-radius:15px; background:rgba(35,42,67,.90); color:white; padding:0 15px; font-size:15px; } .message-input::placeholder{ color:#77819d; } /* GÖNDER */ .send{ width:50px; height:46px; flex-shrink:0; border:0; border-radius:15px; background: linear-gradient(135deg,#665cff,#00bfff); color:white; font-size:20px; cursor:pointer; display:flex; align-items:center; justify-content:center; } .send:active{ transform:ölçek(.95); } /* ===================================================== EMOJİ PANELİ ===================================================== */ .emoji-panel{ display:none; position:fixed; bottom:113px; left:10px; width:300px; max-height:240px; overflow-y:auto; padding:12px; background:rgba(20,25,45,.98); border:1px solid rgba(255,255,255,.12); border-radius:18px; .box-shadow: 0 15px 45px rgba(0,0,0,.45); z-index:200; } .emoji-grid{ display:grid; grid-template-columns: repeat(8,1fr); gap:7px; } .emoji-item{ border:0; background:transparent; font-size:25px; cursor:pointer; border-radius:8px; padding:4px; } .emoji-item:hover{ background: rgba(255,255,255,.08); } /* ===================================================== GIF PANELİ ===================================================== */ .gif-panel{ display:none; position:fixed; bottom:113px; left:60px; width:350px; max-width: calc(100vw - 20px); height:430px; background: rgba(20,25,45,.98); border:1px solid rgba(255,255,255,.12); border-radius:18px; .gif-gölgesi: 0 15px 45px rgba(0,0,0,.45); z-indeksi:200; taşma:gizli; } .gif-arama{ görüntüleme:esnek; boşluk:7px; dolgu:10px; alt kenarlık: 1px düz rgba(255,255,255,.08); } .gif-arama girişi{ esneklik:1; yükseklik:40px; kenarlık:0; dış hat:yok; kenar yarıçapı:10px; arka plan:#2a3149; renk:beyaz; dolgu:0 12px; } .gif-arama düğmesi{ genişlik:45px; kenarlık:0; kenar yarıçapı:10px; arka plan:#665cff; renk:beyaz; yazı tipi boyutu:18px; imleç:işaretçi; } .gif-sonuçları{ yükseklik:350px; taşma-y:otomatik; dolgu:10px; görüntü:ızgara; ızgara şablonu sütunları: tekrarla(2,1fr); boşluk:8px; } .gif-sonuç{ genişlik:100%; yükseklik:120px; nesneye tam oturması:kapak; kenar yarıçapı:10px; imleç:işaretçi; arka plan:#111827; } .gif-boş{ ızgara sütunu:1/-1; metin hizalaması:ortala; dolgu:30px 10px; renk:#8993b1; yazı tipi boyutu:13px; } /* ====================================================== SES DURUMU ====================================================== */ #voiceStatus{ display:none; position:fixed; bottom:125px; left:50%; transform: translateX(-50%); background: rgba(22,27,49,.97); border: 1px solid rgba(255,255,255,.10); color:white; padding:11px 18px; border-radius:25px; font-size:13px; z-index:300; box-shadow: 0 10px 30px rgba(0,0,0,.35); white-space:nowrap; } /* ===================================================== MASAÜSTÜ ===================================================== */ @media(min-width:700px){ .input-wrapper{ max-width:100%; padding-left:10px; padding-right:10px; } .toolbar, .message-row{ max-width:850px; } } /* ===================================================== MOBİL ====================================================== */ @media(max-width:600px){ .header{ height:66px; min-height:66px; padding: 7px 9px; } .header-title{ font-size:14px; } .online{ font-size:11px; } .online-users{ font-size:10px; max-width:190px; } .logout{ padding:7px 10px; font-size:11px; } /* MESAJ ALANI */ .chat{ top:66px; bottom:106px; padding: 15px 10px 20px; } .bubble{ max-width:90%; padding: 10px 13px; } /* ALT PANEL */ .input-wrapper{ padding: 5px 6px calc(6px + env(safe-area-inset-bottom)); } /* ÜST BUTONLAR */ .toolbar{ margin-bottom:5px; gap:4px; min-height:36px; overflow:hidden; } .tool-button{ height:36px; min-width:38px; padding:0 8px; font-size:17px; border-radius:10px; } .gif-button{ font-size:12px; min-width:40px; } .voice-control{ height:36px; padding:0 9px; font-size:10px; border-radius:10px; } /* RENKLER */ .color-buttons{ gap:3px; padding:0 2px; } .color-button{ width:17px; height:17px; } /* MESAJ */ .message-row{ gap:5px; } .message-input{ height:44px; font-size:14px; border-radius:13px; padding: 0 13px; } .send{ width:44px; height:44px; border-radius:13px; font-size:18px; } /* EMOJI */ .emoji-panel{ bottom:105px; left:7px; width: calc(100vw - 14px); max-height:230px; } .emoji-grid{ grid-template-columns: repeat(8,1fr); gap:4px; } /* GIF */ .gif-panel{ left:7px; bottom:105px; width: calc(100vw - 14px); height:400px; } .gif-results{ height:320px; } /* SES */ #voiceStatus{ bottom:112px; max-width: calc(100vw - 30px); font-size:12px; padding: 9px 14px; } } /* ===================================================== ÇOK DAR TELEFONLAR ===================================================== */ @media(max-width:380px){ .header-title{ font-size:13px; } .online-users{ max-width:145px; } .logout{ padding: 6px 8px; font-size:10px; } .toolbar{ gap:3px; } .tool-button{ min-width:35px; padding:0 6px; font-size:16px; } .voice-control{ padding: 0 7px; font-size:9px; } .color-buttons{ gap:2px; } .color-button{ width:15px; height:15px; } .message-input{ font-size:13px; } } /* ===================================================== YATAY TELEFON ==================================================== */ @media(max-width:900px) and (orientation:landscape){ .header{ height:58px; } .chat{ top:58px; bottom:91px; } .input-wrapper{ padding: 4px 7px; } .toolbar{ min-height:30px; margin-bottom:3px; } .tool-button, .voice-control{ height:30px; } .message-input, .send{ height:38px; } .emoji-panel, .gif-panel{ bottom:92px; } } </style> </head> <body> <!-- ==================================================== GİRİŞ ==================================================== --> <div id = "login"> <div class = "login-box"> <div class = "logo"> 💬 </div> <h1> Ritmix Sohbet </h1> <div class = "subtitle"> Sohbete katılmak için kullanıcı adını yaz </div> <input id = "usernameInput" maxlength = "20" placeholder = "Kullanıcı adın..." autocomplete = "off" > <button id="loginButton"> SOHBETE GİR </button> </div> </div> <!-- ===================================================== SOHBET ===================================================== --> <div id="chatPage"> <!-- ÜST BAŞLIK --> <div class="header"> <div> <div class="header-title"> 💬 Ritmix Sohbet </div> <div class="online" id="onlineText"> 🟢 0 kişi çevrimiçi </div> <div class="online-users" id="onlineUsersText"> 👥 Kimse yok </div> </div> <div class="header-buttons"> <button class="logout" id="logoutButton"> Çıkış </button> </div> </div> <!-- MESAJLAR --> <div class="chat" id="chat"> </div> <!-- ===================================================== EMOJİ PANELİ ===================================================== --> <div class="emoji-panel" id="emojiPanel"> <div class="emoji-grid"> <button class="emoji-item">😀</button> <button class="emoji-item">😂</button> <button class="emoji-item">🤣</button> <button class="emoji-item">😊</button> <button <button class="emoji-item">😍</button> <button class="emoji-item">😘</button> <button class="emoji-item">🥰</button> <button class="emoji-item">😎</button> <button class="emoji-item">😢</button> <button class="emoji-item">😭</button> <button class="emoji-item">😡</button> <button class="emoji-item">😱</button> <button class="emoji-item">🤔</button> <button class="emoji-item">🙄</button> <button class="emoji-item">😴</button> <button class="emoji-item">🤗</button> <button <button class="emoji-item">❤️</button> <button class="emoji-item">🧡</button> <button class="emoji-item">💛</button> <button class="emoji-item">💚</button> <button class="emoji-item">💙</button> <button class="emoji-item">💜</button> <button class="emoji-item">🖤</button> <button class="emoji-item">💔</button> <button class="emoji-item">🔥</button> <button class="emoji-item">🎉</button> <button class="emoji-item">🎊</button> <button class="emoji-item">👏</button> <button <button class="emoji-item">👍</button> <button class="emoji-item">👎</button> <button class="emoji-item">💯</button> <button class="emoji-item">✨</button> <button class="emoji-item">😉</button> <button class="emoji-item">😜</button> <button class="emoji-item">😇</button> <button class="emoji-item">🥳</button> <button class="emoji-item">🤩</button> <button class="emoji-item">😏</button> <button class="emoji-item">😌</button> <button class="emoji-item">🤪</button> </div> </div> <!-- ===================================================== GIF PANELİ ===================================================== --> <div class="gif-panel" id="gifPanel"> <div class="gif-search"> <input id="gifSearchInput" placeholder="GIF ara..." autocomplete="off" > <button id="gifSearchButton"> 🔎 </button> </div> <div class="gif-results" id="gifResults"> <div class="gif-empty"> 🔎 Bir GIF ara </div></div></div><!-- ===================================================== ALT MESAJ PANELİ ===================================================== --> <div class="input-wrapper"> <!-- ÜST ARAÇ SATIRI --> <div class="toolbar"> <!-- YAZI RENGİ --> <div class="color-buttons" title="Yazı Rengi"> <button class="color-button color-white selected" data-color="#ffffff" title="Beyaz"> </button> <button class="color-button" <button class="color-button color-blue" data-color="#ff69b4" title="Pembe"> </button> <button class="color-button color-blue" data-color="#54a8ff" title="Mavi"> </button> <button class="color-button color-green" data-color="#55e89a" title="Yeşil"> </button> <button class="color-button color-yellow" data-color="#ffd84d" title="Sarı"> </button> <button class="color-button color-red" data-color="#ff6262" title="Kırmızı"> </button> </div> <!-- EMOJI --> <button class="tool-button" id="emojiButton" title="Emoji"> 😊 </button> <!-- GIF --> <button class="tool-button gif-button" id = "gifButton" title = "GIF"> GIF </button> <!-- SES --> <button class = "voice-control" id = "voiceButton"> 🎤 Sesli </button> </div> <!-- MESAJ GİRİŞ SATIRI --> <div class = "message-row"> <input class = "message-input" id = "messageInput" placeholder="Mesajınızı yazın..." autocomplete="off" > <button class="send" id="sendButton" title="Gönder"> ➤ </button> </div> </div> </div> <!-- SES DURUMU --> <div id="voiceStatus"> 🎤 Sesli bağlantı hazırlanıyor... </div> <audio id="remoteAudio" autoplay playinline> </audio> <script> /* ====================================================== FIREBASE ====================================================== */ const firebaseConfig = { apiKey: "AIzaSyDJ9zkgu_2ZLcD_ObEYwnFfSu6QffN9VQI", authDomain:"papatyawap.firebaseapp.com", databaseURL: "https://papatyawap-default-rtdb.firebaseio.com", projectId: "papatyawap", storageBucket: "papatyawap.firebasestorage.app", messagingSenderId: "29357315689", appId: "1:29357315689:web:78864218c204d291f734f8" }; firebase.initializeApp(firebaseConfig); const database = firebase.database(); /* ====================================================== GIPHY ====================================================== */ const GIPHY_API_KEY = "wZUjXSQmZ5TEx1UzVzqTY5BVwGcpShCy"; /* ====================================================== DEĞİŞKENLER ====================================================== */ let username = ""; let userKey = ""; let localStream = null; let peerConnections = {}; let voiceActive = false; let voiceListenerStarted = false; let selectedMessageColor = "#ffffff"; /* ====================================================== WEBRTC ====================================================== */ const rtcConfig = { iceServers:[ { urls: "stun:stun.l.google.com:19302" }, { urls: "stun:stun1.l.google.com:19302" } ] }; /* ====================================================== RENK ====================================================== */ document.querySelectorAll(".color-button") .forEach(function(button){ button.onclick = function(){ selectedMessageColor = this.dataset.color; document.querySelectorAll(".color-button") .forEach(function(item){ item.classList.remove("selected"); }); this.classList.add("selected"); }; }); /* ====================================================== EMOJİ ====================================================== */ const emojiButton = document.getElementById("emojiButton"); const emojiPanel = document.getElementById("emojiPanel"); const gifPanel = document.getElementById("gifPanel"); emojiButton.onclick = function(){ emojiPanel.style.display = emojiPanel.style.display === "block" ? "none" : "block"; gifPanel.style.display = "none"; }; document.querySelectorAll(".emoji-item").forEach(function(button){ button.onclick = function(){ const input = document.getElementById("messageInput"); input.value += this.textContent; input.focus(); }; }); /* ===================================================== GIF ===================================================== */ const gifButton = document.getElementById("gifButton"); const gifSearchInput = document.getElementById("gifSearchInput"); const gifSearchButton = document.getElementById("gifSearchButton"); const gifResults = document.getElementById("gifResults"); gifButton.onclick = function(){ gifPanel.style.display = gifPanel.style.display === "block" ? "none" :"blok"; emojiPanel.style.display = "yok"; }; gifSearchButton.onclick = searchGIFs; gifSearchInput.onkeydown = function(event){ if( event.key === "Enter" ){ event.preventDefault(); searchGIFs(); } }; /* ====================================================== GIF ARAMA ===================================================== */ async function searchGIFs(){ const query = gifSearchInput.value.trim(); if(!query){ gifResults.innerHTML = '<div class="gif-empty">' + '🔎 Önce GIF adı yazın' + '</div>'; geri dönmek; } if( !GIPHY_API_KEY ){ gifResults.innerHTML = '<div class="gif-empty">' + '⚠️ GIPHY API anahtarı yok.' + '</div>'; geri dönmek; } gifResults.innerHTML = '<div class="gif-empty">' + '⏳ GIF aranıyor...' + '</div>'; try { const url = "https://api.giphy.com/v1/gifs/search" + "?api_key=" + encodeURIComponent( GIPHY_API_KEY ) + "&q=" + encodeURIComponent( query ) + "&limit=24" + "&rating=pg-13" + "&lang=tr"; const response = await fetch(url); if (!response.ok) { throw new Error( "HTTP " + response.status ); } const data = await response.json(); if ( !data || !data.data || data.data.length === 0 ) { gifResults.innerHTML = '<div class="gif-empty">' + '😔 GIF bulunamadı' + '</div>'; return; } } gifResults.innerHTML = ""; data.data.forEach(function(gif){ const images = gif.images || {}; const previewUrl = images.fixed_width?.webp || images.fixed_width?.url || images.preview_gif?.url || images.original?.url; const originalUrl = images.original?.url || previewUrl; if(!previewUrl){ return; } const image = document.createElement("img"); image.className = "gif-result"; image.src = previewUrl; image.alt = gif.title || "GIF"; image.loading = "lazy"; image.onclick = function(){ sendGIF(previewUrl, originalUrl); gifPanel.style.display = "none"; }; gifResults.appendChild(image); }); } catch(error){ console.error( "GIPHY hatası:", error ); gifResults.innerHTML = '<div class="gif-empty">' + '❌ GIF yüklenemedi.' + '</div>'; } } /* ===================================================== GIF GÖNDER ====================================================== */ function sendGIF( önizlemeUrl, orijinalUrl ){ if(!kullanıcı adı){ return; } database .ref("messages") .push({ username: username, type: "gif", gif: originalUrl, preview: previewUrl, color: selectedMessageColor, timestamp: Date.now() }); } /* ===================================================== GİRİŞ ===================================================== */ function enterChat(){ const input = document.`getElementById("usernameInput");` `const name = input.value.trim();` `if(!name){ alert("Lütfen user name yaz."); input.focus(); return; } username = name; `document.getElementById("login").style.display = "none";` `document.getElementById("chatPage").style.display = "block";` `loadMessages(); setOnline();` `document.getElementById("loginButton").onclick = enterChat;` `document.getElementById("usernameInput").onkeydown = function(event){ if(event.key === "Enter"){ enterChat(); } };` /* ====================================================== MESAJLARI YÜKLE ===================================================== */ function loadMessages(){ database .ref("messages") .on( "value", function(snapshot){ const chat = document.getElementById( "chat" ); chat.innerHTML = ""; snapshot.forEach( function(child){ const message = child.val(); if(!message){ return; } const box = document.createElement( "div" ); box.className = "message"; if( Eğer mesaj.kullanıcı adı === kullanıcı adı ise { box.classList.add("my-message"); } /* KULLANICI */ const user = document.createElement("div"); user.className = "username"; user.textContent = message.username; /* SAAT */ if (message.timestamp) { const time = document.createElement("span"); time.className = "time"; time.textContent = new Date(message.timestamp) .toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" }); user.appendChild(time); } /* SİL */ if (message.username === kullanıcı adı) { const deleteButton = document.createElement("button"); deleteButton.className = "delete"; deleteButton.textContent = "Sil"; deleteButton.onclick = function(){ child.ref.remove(); }; user.appendChild( deleteButton ); } /* GIF */ if( message.type === "gif" && message.gif ){ const gifBox = document.createElement( "div" ); gifBox.className = "gif-message"; const gifImage = document.createElement( "img" ); gifImage.src = message.preview || message.gif; gifImage.alt = "GIF"; gifImage.onclick = function(){ window.open( message.gif, "_blank" ); }; gifBox.appendChild( gifImage ); box.appendChild( user ); box.appendChild( gifBox ); chat.appendChild( box ); return; } /* NORMAL MESAJ */ const bubble = document.createElement( "div" ); bubble.className = "bubble"; bubble.textContent = message.text || ""; if( message.color ){ bubble.style.color = message.color; } box.appendChild( user ); box.appendChild( bubble ); chat.appendChild( box ); }); chat.scrollTop = chat.scrollHeight; }); } /* ===================================================== MESAJ GÖNDER ===================================================== */ function sendMessage(){ const input = document.getElementById( "messageInput" ); const text = input.value.trim(); if( !text || !username ){ return; } database .ref("messages") .push({ username: username, text: text, color: selectedMessageColor, type: "text", timestamp: Date.now() }); input.value = ""; input.focus(); } document.getElementById("sendButton").onclick = sendMessage; document.getElementById("messageInput").onkeydown = function(event){ if(event.key === "Enter"){ event.preventDefault(); sendMessage(); } }; /* ====================================================== ÇEVRİMİÇİ KULLANICILAR ===================================================== */ function setOnline(){ const ref = database .ref("onlineUsers") .push(); userKey = ref.key; ref.set({ username: username, timestamp: firebase.database.ServerValue .TIMESTAMP }); ref.onDisconnect() .remove(); Veritabanı.ref("onlineUsers").on("value", function(snapshot){ const count = snapshot.numChildren(); document.getElementById("onlineText").textContent = "🟢 " + count + " kişi çevrimiçi"; const names = []; snapshot.forEach(function(child){ const user = child.val(); if( user && user.username ){ names.push( user.username ); } }); document.getElementById("onlineUsersText").textContent = names.length ? "👥 " + names.join(", ") : "👥 Kimse yok"; }); } /* ====================================================== SES DURUMU ===================================================== */ function showVoiceStatus( text ){ const status = document.getElementById( "voiceStatus" ); status.textContent = text; status.style.display = "block"; } function hideVoiceStatus(){ document.getElementById( "voiceStatus" ).style.display = "none"; } /* ==================================================== MİKROFON AÇ ===================================================== */ async function startVoiceChat(){ try{ showVoiceStatus( "🎤 Mikrofon açıldı..." ); if( !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia ){ throw new Error( "Bu tarayıcı mikrofon erişimini desteklemiyor."); } localStream = gezgini bekliyor .mediaDevices .getUserMedia({ audio:true, video:false }); voiceActive = true; const button = document.getElementById("voiceButton"); button.textContent = "🔴 Sesi Kapat"; button.classList.add("active"); startVoiceListener(); showVoiceStatus("🎤 Sesli sohbet aktif"); const callsSnapshot = await database.ref("calls").once("value"); let foundCall = false; callsSnapshot.forEach(function(child){ const call = child.val(); if(call && call.receiver === username){ foundCall = true; answerCall(child.key, call); } }); if(!foundCall){ await createCall(); } } catch(error){ console.error("Mikrofon hatası:", error); alert("Mikrofon açısı:\n\n" + error.name + "\n" + error.message); } } } /* ===================================================== SES BUTONU ===================================================== */ document .getElementById( "voiceButton" ) .onclick = async function(){ if( voiceActive ){ stopVoiceChat(); } else{ await startVoiceChat(); } }; /* ====================================================== ÇAĞRI DİNLE ===================================================== */ function startVoiceListener(){ if( voiceListenerStarted ){ return; } voiceListenerStarted = true; } veritabanı .ref("çağrılar") .on( "çocuk_eklendi", asenkron fonksiyon(anlık görüntü){ const çağrı = anlık görüntü.val(); const çağrıId = anlık görüntü.key; eğer (çağrı yoksa){ geri dön; eğer (çağrı.arayan === kullanıcı adı){ geri dön; eğer (çağrı.alıcı !== kullanıcı adı){ geri dön; eğer (eşbağlantılar[çağrıId]){ geri dön; eğer (ses aktif değilse){ geri dön; } await cevap çağrısı( çağrıId, çağrı ); } ); } /* ===================================================== ÇAĞRI OLUŞTUR ===================================================== */ async function createCall(){ if( !localStream ){ return; } const usersSnapshot = await database .ref("onlineUsers") .once("value"); let otherUser = null; usersSnapshot.forEach(function(child){ const user = child.val(); if(user && user.username && user.username !== username && !otherUser){ otherUser = user.username; } }); if(!otherUser){ showVoiceStatus("🎤 Mikrofon açık - başka kullanıcı bekleniyor"); return; } const callRef = database.ref("calls").push(); const callId = callRef.key; const pc = new RTCPeerConnection(rtcConfig); peerConnections[callId] = pc; localStream.getTracks().forEach(function(track){ pc.addTrack(track, localStream); }); pc.ontrack = function(event){ const audio = document.getElementById("remoteAudio"); audio.srcObject = event.streams[0]; audio.play() .catch( function(error){ console.log( "Ses çalınıyor:", error ); }); showVoiceStatus( "🔊 Ses bağlantısı kesildi" ); }; pc.onicecandidate = function(event){ if( event.candidate ){ database .ref( "calls/" + callId + "/callerCandidates" ) .push( event.candidate .toJSON() ); } }; const offer = await pc.createOffer(); await pc.setLocalDescription( offer ); await callRef.set({ caller: username, receiver: otherUser, offer:{ type: offer.type, sdp: offer.sdp }, created: Date.now() }); veritabanı .ref( "calls/" + callId + "/answer" ) .on( "value", async function(snapshot){ const answer = snapshot.val(); if( answer && !pc.currentRemoteDescription ){ await pc .setRemoteDescription( new RTCSessionDescription( answer ) ); } } ); database .ref( "calls/" + callId + "/receiverCandidates" ) .on( "child_added", async function(snapshot){ const candidate = snapshot.val(); if( candidate ){ try{ await pc.addIceCandidate( new RTCIceCandidate( candidate ) ); } catch(error){ console.log( error ); } } } ); } /* ===================================================== ÇAĞRIYI CEVAPLA ===================================================== */ async function answerCall( callId, call ){ if( !localStream || !voiceActive ){ return; } const pc = new RTCPeerConnection( rtcConfig ); peerConnections[ callId ] = pc; localStream .getTracks() .forEach( function(track){ pc.addTrack( track, localStream ); }); pc.ontrack = function(event){ const audio = document.getElementById( "remoteAudio" ); audio.srcObject = event.streams[0]; audio.play() .catch( function(error){ console.log( error ); }); showVoiceStatus( "🔊 Ses bağlantısı kesildi" ); }; pc.onicecandidate = function(event){ if( event.candidate ){ database .ref( "calls/" + callId + "/receiverCandidates" ) .push( event.candidate .toJSON() ); } }; await pc.setRemoteDescription( new RTCSessionDescription( call.offer ) ); const answer = await pc.createAnswer(); await pc.setLocalDescription( answer ); await database.ref("calls/" + callId + "/answer").set({ type: answer.type, sdp: answer.sdp }); database.ref("calls/" + callId + "/callerCandidates").on("child_added", async function(snapshot){ const candidate = snapshot.val(); if( candidate ){ try{ await pc.addIceCandidate( new RTCIceCandidate( candidate ) ); } catch(error){ console.log( error ); } } } ); } /* ====================================================== SESİ KAPAT ===================================================== */ function stopVoiceChat(){ voiceActive = false; if( localStream ){ localStream .getTracks() .forEach( function(track){ track.stop(); }); localStream = null; } Object.keys( peerConnections ) .forEach( function(id){ try{ peerConnections[ id ].close(); } catch(error){ console.log( error ); } }); peerConnections = {}; const audio = document.getElementById("remoteAudio"); audio.srcObject = null; const button = document.getElementById("voiceButton"); button.textContent = "🎤 Sesli"; button.classList.remove("active"); hideVoiceStatus(); database.ref("calls").once("value", function(snapshot){ snapshot.forEach(function(child){ const call = child.val(); if( call && ( call.caller === username || call.receiver === username ) ){ child.ref.remove(); } }); } ); } /* ==================================================== ÇIKIŞ ===================================================== */ document .getElementById( "logoutButton" ) .onclick = function(){ stopVoiceChat(); if( userKey ){ database .ref( "onlineUsers/" + userKey ) .remove(); } location.reload(); }; /* ======================================================= DIŞARI TIKLAMA ====================================================== */ document.addEventListener( "click", function(event){ if( !emojiPanel.contains( event.target ) && event.target !== emojiButton ){ emojiPanel.style.display = "none"; } if( !gifPanel.contains( event.target ) && event.target !== gifButton ){ gifPanel.style.display = "none"; } }); /* ====================================================== MOBİL KLAVYE AÇILDIĞINDA MESAJ ALANINI KORU ===================================================== */ const messageInput = document.getElementById( "messageInput" ); messageInput.addEventListener( "focus", function(){ setTimeout( function(){ messageInput.scrollIntoView({ behavior:"smooth", block:"nearest" }); }, 300 ); }); </script> </body> </html> ``` ### Şimdi GitHub'da yapılacak işlem **Sadece 4 işlem:** 1. GitHub'daki `papatyawap`ın içine gir. 2. **`index.html`** paylarını aç. 3. **Düzenle / kalem ✏️** butonuna bas. 4. İçindeki **eski kodun tamamı sil → sürekli kodun tamamının yapıştırıldığı → Değişiklikleri kabul et**. ### Çok önemli `chat-background.png.png` dosyan GitHub'da daha önce nasıl duruyorsa **ona dokunmaya**. Yeni kod onu yine: ```text chat-background.png.png ``` adıyla çağırıyor. Yani GitHub'da ideal olarak şöyle olmalı: ```text papatyawap/ │ ├── index.html │ └── chat-background.png.png ``` **Başka dosya oluşturman g**300 ); }); </script> </body> </html> ``` ### Şimdi GitHub'da yapacağın işlem **Sadece 4 işlem:** 1. GitHub'daki `papatyawap` projenin içine gir. 2. **`index.html`** dosyasını aç. 3. **Edit / kalem ✏️** butonuna bas. 4. İçindeki **eski kodun tamamını sil → yukarıdaki kodun tamamını yapıştır → Commit changes**. ### Çok önemli `chat-background.png.png` dosyan GitHub'da daha önce nasıl duruyorsa **ona dokunma**. Yeni kod onu yine: ```text chat-background.png.png ``` adıyla çağırıyor. Yani GitHub'da ideal olarak şöyle olmalı: ```text papatyawap/ │ ├── index.html │ └── chat-background.png.png ``` **Başka dosya oluşturman g**300 ); }); </script> </body> </html>
+ <!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Ritmix Sohbet</title>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+
+<style>
+* {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    color: white;
+    background:
+        linear-gradient(rgba(5, 8, 20, .55), rgba(5, 8, 20, .72)),
+        url("chat-background.png.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    overflow: hidden;
+}
+
+/* =========================
+   GİRİŞ
+========================= */
+
+#login {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.login-box {
+    width: 100%;
+    max-width: 420px;
+    padding: 38px 28px;
+    text-align: center;
+    background: rgba(22, 27, 49, .88);
+    border: 1px solid rgba(255,255,255,.10);
+    border-radius: 28px;
+    box-shadow:
+        0 25px 80px rgba(0,0,0,.55),
+        0 0 40px rgba(91,70,255,.10);
+    backdrop-filter: blur(18px);
+}
+
+.logo {
+    width: 85px;
+    height: 85px;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 42px;
+    border-radius: 25px;
+    background: linear-gradient(135deg,#6c5ce7,#00c6ff);
+    box-shadow: 0 10px 35px rgba(76,100,255,.35);
+}
+
+.login-box h1 {
+    margin-top: 20px;
+    font-size: 28px;
+}
+
+.subtitle {
+    margin-top: 9px;
+    margin-bottom: 28px;
+    color: #9da7c5;
+    font-size: 14px;
+}
+
+#usernameInput {
+    width: 100%;
+    height: 52px;
+    padding: 0 17px;
+    border: 1px solid rgba(255,255,255,.10);
+    border-radius: 15px;
+    outline: none;
+    background: rgba(5,8,20,.65);
+    color: white;
+    font-size: 16px;
+}
+
+#loginButton {
+    width: 100%;
+    height: 52px;
+    margin-top: 13px;
+    border: 0;
+    border-radius: 15px;
+    background: linear-gradient(135deg,#665cff,#00bfff);
+    color: white;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* =========================
+   SOHBET
+========================= */
+
+#chatPage {
+    display: none;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+}
+
+/* =========================
+   ÜST BAR
+========================= */
+
+.header {
+    position: relative;
+    z-index: 20;
+    min-height: 76px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 10px 18px;
+    background: rgba(13,17,34,.94);
+    border-bottom: 1px solid rgba(255,255,255,.08);
+    backdrop-filter: blur(18px);
+}
+
+.header-info {
+    min-width: 0;
+    flex: 1;
+}
+
+.header-title {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.online {
+    margin-top: 5px;
+    color: #48ee92;
+    font-size: 12px;
+}
+
+.online-users {
+    margin-top: 4px;
+    color: #8993b1;
+    font-size: 11px;
+    max-width: 600px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.header-buttons {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.logout,
+.voice-button {
+    min-height: 40px;
+    border: 1px solid rgba(255,255,255,.08);
+    color: white;
+    padding: 9px 13px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.logout {
+    background: rgba(255,255,255,.07);
+}
+
+.voice-button {
+    background: linear-gradient(135deg,#19a968,#39d987);
+}
+
+.voice-button.active {
+    background: linear-gradient(135deg,#e63d4f,#ff6675);
+}
+
+/* =========================
+   MESAJLAR
+========================= */
+
+.chat {
+    height: calc(100vh - 158px);
+    overflow-y: auto;
+    padding: 25px 16px 30px;
+    max-width: 850px;
+    margin: auto;
+    scroll-behavior: smooth;
+}
+
+.message {
+    margin-bottom: 18px;
+}
+
+.username {
+    margin-bottom: 6px;
+    color: #72a9ff;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.my-message {
+    text-align: right;
+}
+
+.my-message .username {
+    color: #65e5a1;
+}
+
+.time {
+    margin-left: 7px;
+    color: #69738e;
+    font-size: 10px;
+}
+
+.delete {
+    border: 0;
+    background: transparent;
+    color: #ff6977;
+    font-size: 10px;
+    cursor: pointer;
+    margin-left: 7px;
+}
+
+.bubble {
+    display: inline-block;
+    max-width: 85%;
+    padding: 12px 15px;
+    border-radius: 7px 17px 17px 17px;
+    background: rgba(31,38,65,.90);
+    border: 1px solid rgba(255,255,255,.05);
+    line-height: 1.45;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+    box-shadow: 0 5px 18px rgba(0,0,0,.15);
+}
+
+.my-message .bubble {
+    background: linear-gradient(135deg,#405cb1,#36518f);
+    border-radius: 17px 7px 17px 17px;
+}
+
+/* =========================
+   GIF
+========================= */
+
+.gif-message {
+    max-width: 280px;
+    border-radius: 15px;
+    display: block;
+    margin-top: 5px;
+    overflow: hidden;
+}
+
+.gif-message img {
+    width: 100%;
+    max-width: 280px;
+    border-radius: 15px;
+    display: block;
+    cursor: pointer;
+}
+
+/* =========================
+   ALT PANEL
+========================= */
+
+.input-area {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    min-height: 82px;
+    padding:
+        8px
+        max(10px,env(safe-area-inset-right))
+        calc(8px + env(safe-area-inset-bottom))
+        max(10px,env(safe-area-inset-left));
+    background: rgba(13,17,34,.97);
+    border-top: 1px solid rgba(255,255,255,.08);
+    backdrop-filter: blur(18px);
+    z-index: 25;
+}
+
+/* =========================
+   ARAÇLAR
+========================= */
+
+.tools-row {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin-bottom: 7px;
+    min-height: 38px;
+}
+
+.tool-button {
+    width: 42px;
+    height: 38px;
+    flex-shrink: 0;
+    border: 0;
+    border-radius: 10px;
+    background: #252c45;
+    color: white;
+    font-size: 19px;
+    cursor: pointer;
+}
+
+.tool-button:hover {
+    background: #343d5d;
+}
+
+.gif-button {
+    font-size: 13px;
+    font-weight: bold;
+}
+
+/* =========================
+   RENKLER
+========================= */
+
+.color-label {
+    color: #8993b1;
+    font-size: 11px;
+    white-space: nowrap;
+}
+
+.color-buttons {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    min-width: 0;
+}
+
+.color-button {
+    width: 21px;
+    height: 21px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,.35);
+    cursor: pointer;
+    flex-shrink: 0;
+    padding: 0;
+}
+
+.color-button.selected {
+    border: 3px solid white;
+    box-shadow: 0 0 8px rgba(255,255,255,.7);
+}
+
+.color-white { background:#fff; }
+.color-pink { background:#ff69b4; }
+.color-blue { background:#54a8ff; }
+.color-green { background:#55e89a; }
+.color-yellow { background:#ffd84d; }
+.color-red { background:#ff6262; }
+
+/* =========================
+   MESAJ GİRİŞ
+========================= */
+
+.message-row {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.message-input {
+    flex: 1;
+    width: 100%;
+    min-width: 0;
+    height: 46px;
+    border: 1px solid rgba(255,255,255,.08);
+    outline: none;
+    border-radius: 15px;
+    background: rgba(35,42,67,.80);
+    color: white;
+    padding: 0 15px;
+    font-size: 15px;
+}
+
+.message-input::placeholder {
+    color: #77819d;
+}
+
+.send {
+    width: 50px;
+    height: 46px;
+    flex-shrink: 0;
+    border: 0;
+    border-radius: 15px;
+    background: linear-gradient(135deg,#665cff,#00bfff);
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+/* =========================
+   EMOJI
+========================= */
+
+.emoji-panel {
+    display: none;
+    position: fixed;
+    bottom: 94px;
+    left: 10px;
+    width: 300px;
+    max-height: 240px;
+    overflow-y: auto;
+    padding: 12px;
+    background: rgba(20,25,45,.98);
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: 18px;
+    box-shadow: 0 15px 45px rgba(0,0,0,.45);
+    z-index: 40;
+}
+
+.emoji-grid {
+    display: grid;
+    grid-template-columns: repeat(8,1fr);
+    gap: 7px;
+}
+
+.emoji-item {
+    border: 0;
+    background: transparent;
+    font-size: 25px;
+    cursor: pointer;
+    border-radius: 8px;
+    padding: 4px;
+}
+
+.emoji-item:hover {
+    background: rgba(255,255,255,.08);
+}
+
+/* =========================
+   GIF PANEL
+========================= */
+
+.gif-panel {
+    display: none;
+    position: fixed;
+    bottom: 94px;
+    left: 60px;
+    width: 350px;
+    max-width: calc(100vw - 20px);
+    height: 430px;
+    background: rgba(20,25,45,.98);
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: 18px;
+    box-shadow: 0 15px 45px rgba(0,0,0,.45);
+    z-index: 40;
+    overflow: hidden;
+}
+
+.gif-search {
+    display: flex;
+    gap: 7px;
+    padding: 10px;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+}
+
+.gif-search input {
+    flex: 1;
+    height: 40px;
+    border: 0;
+    outline: none;
+    border-radius: 10px;
+    background: #2a3149;
+    color: white;
+    padding: 0 12px;
+}
+
+.gif-search button {
+    width: 45px;
+    border: 0;
+    border-radius: 10px;
+    background: #665cff;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.gif-results {
+    height: 350px;
+    overflow-y: auto;
+    padding: 10px;
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    gap: 8px;
+}
+
+.gif-result {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 10px;
+    cursor: pointer;
+    background: #111827;
+}
+
+.gif-empty {
+    grid-column: 1/-1;
+    text-align: center;
+    padding: 30px 10px;
+    color: #8993b1;
+    font-size: 13px;
+}
+
+/* =========================
+   SES
+========================= */
+
+#voiceStatus {
+    display: none;
+    position: fixed;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(22,27,49,.96);
+    border: 1px solid rgba(255,255,255,.10);
+    color: white;
+    padding: 11px 18px;
+    border-radius: 25px;
+    font-size: 13px;
+    z-index: 50;
+    box-shadow: 0 10px 30px rgba(0,0,0,.35);
+    white-space: nowrap;
+}
+
+/* =========================
+   MASAÜSTÜ
+========================= */
+
+@media (min-width:700px) {
+    .input-area {
+        max-width: 850px;
+        left: 50%;
+        transform: translateX(-50%);
+        border-radius: 18px 18px 0 0;
+    }
+}
+
+/* =========================
+   MOBİL
+========================= */
+
+@media (max-width:600px) {
+
+    body {
+        background-attachment: scroll;
+    }
+
+    .header {
+        min-height: 62px;
+        padding: 7px 9px;
+        gap: 7px;
+    }
+
+    .header-title {
+        font-size: 14px;
+    }
+
+    .online {
+        margin-top: 3px;
+        font-size: 11px;
+    }
+
+    .online-users {
+        max-width: 145px;
+        font-size: 10px;
+    }
+
+    .header-buttons {
+        gap: 5px;
+    }
+
+    .voice-button,
+    .logout {
+        min-height: 36px;
+        padding: 7px 9px;
+        font-size: 10px;
+        border-radius: 10px;
+    }
+
+    .voice-button {
+        max-width: 105px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .chat {
+        height: calc(100vh - 143px);
+        padding: 15px 10px 20px;
+    }
+
+    .bubble {
+        max-width: 88%;
+    }
+
+    .input-area {
+        min-height: 81px;
+        padding: 7px 8px calc(7px + env(safe-area-inset-bottom));
+    }
+
+    .tools-row {
+        gap: 5px;
+        margin-bottom: 6px;
+        min-height: 32px;
+    }
+
+    .tool-button {
+        width: 37px;
+        height: 32px;
+        border-radius: 9px;
+        font-size: 17px;
+    }
+
+    .gif-button {
+        font-size: 11px;
+    }
+
+    .color-label {
+        display: none;
+    }
+
+    .color-buttons {
+        gap: 4px;
+        overflow: hidden;
+    }
+
+    .color-button {
+        width: 18px;
+        height: 18px;
+    }
+
+    .message-row {
+        gap: 5px;
+    }
+
+    .message-input {
+        height: 42px;
+        font-size: 14px;
+        border-radius: 13px;
+        padding: 0 12px;
+    }
+
+    .send {
+        width: 44px;
+        height: 42px;
+        border-radius: 13px;
+        font-size: 18px;
+    }
+
+    .emoji-panel {
+        width: calc(100vw - 20px);
+        left: 10px;
+        bottom: 92px;
+    }
+
+    .gif-panel {
+        left: 10px;
+        bottom: 92px;
+        width: calc(100vw - 20px);
+    }
+
+    #voiceStatus {
+        bottom: 95px;
+        max-width: calc(100vw - 30px);
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
+@media (max-width:380px) {
+
+    .header-title {
+        font-size: 13px;
+    }
+
+    .online-users {
+        max-width: 110px;
+    }
+
+    .voice-button {
+        max-width: 82px;
+        padding: 7px 6px;
+    }
+
+    .logout {
+        padding: 7px;
+    }
+
+    .color-button {
+        width: 16px;
+        height: 16px;
+    }
+
+    .tool-button {
+        width: 34px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- =========================
+     GİRİŞ
+========================= -->
+
+<div id="login">
+
+    <div class="login-box">
+
+        <div class="logo">💬</div>
+
+        <h1>Ritmix Sohbet</h1>
+
+        <div class="subtitle">
+            Sohbete katılmak için kullanıcı adını yaz
+        </div>
+
+        <input
+            id="usernameInput"
+            maxlength="20"
+            placeholder="Kullanıcı adın..."
+            autocomplete="off"
+        >
+
+        <button id="loginButton">
+            SOHBETE GİR
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     SOHBET
+========================= -->
+
+<div id="chatPage">
+
+    <!-- ÜST BAR -->
+
+    <div class="header">
+
+        <div class="header-info">
+
+            <div class="header-title">
+                💬 Ritmix Sohbet
+            </div>
+
+            <div class="online" id="onlineText">
+                🟢 0 kişi çevrimiçi
+            </div>
+
+            <div class="online-users" id="onlineUsersText">
+                👥 Kimse yok
+            </div>
+
+        </div>
+
+
+        <div class="header-buttons">
+
+            <button
+                class="voice-button"
+                id="voiceButton"
+            >
+                🎤 Sesli Sohbet
+            </button>
+
+            <button
+                class="logout"
+                id="logoutButton"
+            >
+                Çıkış
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- MESAJLAR -->
+
+    <div
+        class="chat"
+        id="chat"
+    ></div>
+
+
+    <!-- EMOJI PANELİ -->
+
+    <div
+        class="emoji-panel"
+        id="emojiPanel"
+    >
+
+        <div class="emoji-grid">
+
+            <button class="emoji-item">😀</button>
+            <button class="emoji-item">😂</button>
+            <button class="emoji-item">🤣</button>
+            <button class="emoji-item">😊</button>
+            <button class="emoji-item">😍</button>
+            <button class="emoji-item">😘</button>
+            <button class="emoji-item">🥰</button>
+            <button class="emoji-item">😎</button>
+
+            <button class="emoji-item">😢</button>
+            <button class="emoji-item">😭</button>
+            <button class="emoji-item">😡</button>
+            <button class="emoji-item">😱</button>
+            <button class="emoji-item">🤔</button>
+            <button class="emoji-item">🙄</button>
+            <button class="emoji-item">😴</button>
+            <button class="emoji-item">🤗</button>
+
+            <button class="emoji-item">❤️</button>
+            <button class="emoji-item">🧡</button>
+            <button class="emoji-item">💛</button>
+            <button class="emoji-item">💚</button>
+            <button class="emoji-item">💙</button>
+            <button class="emoji-item">💜</button>
+            <button class="emoji-item">🖤</button>
+            <button class="emoji-item">💔</button>
+
+            <button class="emoji-item">🔥</button>
+            <button class="emoji-item">🎉</button>
+            <button class="emoji-item">🎊</button>
+            <button class="emoji-item">👏</button>
+            <button class="emoji-item">👍</button>
+            <button class="emoji-item">👎</button>
+            <button class="emoji-item">💯</button>
+            <button class="emoji-item">✨</button>
+
+            <button class="emoji-item">😉</button>
+            <button class="emoji-item">😜</button>
+            <button class="emoji-item">😇</button>
+            <button class="emoji-item">🥳</button>
+            <button class="emoji-item">🤩</button>
+            <button class="emoji-item">😏</button>
+            <button class="emoji-item">😌</button>
+            <button class="emoji-item">🤪</button>
+
+        </div>
+
+    </div>
+
+
+    <!-- GIF PANELİ -->
+
+    <div
+        class="gif-panel"
+        id="gifPanel"
+    >
+
+        <div class="gif-search">
+
+            <input
+                id="gifSearchInput"
+                placeholder="GIF ara..."
+                autocomplete="off"
+            >
+
+            <button id="gifSearchButton">
+                🔎
+            </button>
+
+        </div>
+
+        <div
+            class="gif-results"
+            id="gifResults"
+        >
+
+            <div class="gif-empty">
+                🔎 Bir GIF arayın
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ALT MESAJ PANELİ -->
+
+    <div class="input-area">
+
+        <!-- ÜST SATIR -->
+
+        <div class="tools-row">
+
+            <button
+                class="tool-button"
+                id="emojiButton"
+                title="Emoji"
+            >
+                😀
+            </button>
+
+            <button
+                class="tool-button gif-button"
+                id="gifButton"
+                title="GIF"
+            >
+                GIF
+            </button>
+
+            <span class="color-label">
+                🎨
+            </span>
+
+            <div class="color-buttons">
+
+                <button
+                    class="color-button color-white selected"
+                    data-color="#ffffff"
+                    title="Beyaz"
+                ></button>
+
+                <button
+                    class="color-button color-pink"
+                    data-color="#ff69b4"
+                    title="Pembe"
+                ></button>
+
+                <button
+                    class="color-button color-blue"
+                    data-color="#54a8ff"
+                    title="Mavi"
+                ></button>
+
+                <button
+                    class="color-button color-green"
+                    data-color="#55e89a"
+                    title="Yeşil"
+                ></button>
+
+                <button
+                    class="color-button color-yellow"
+                    data-color="#ffd84d"
+                    title="Sarı"
+                ></button>
+
+                <button
+                    class="color-button color-red"
+                    data-color="#ff6262"
+                    title="Kırmızı"
+                ></button>
+
+            </div>
+
+        </div>
+
+
+        <!-- ALT SATIR -->
+
+        <div class="message-row">
+
+            <input
+                class="message-input"
+                id="messageInput"
+                placeholder="Mesajınızı yazın..."
+                autocomplete="off"
+            >
+
+            <button
+                class="send"
+                id="sendButton"
+            >
+                ➤
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- SES DURUMU -->
+
+<div id="voiceStatus">
+    🎤 Sesli sistem hazırlanıyor...
+</div>
+
+<audio
+    id="remoteAudio"
+    autoplay
+    playsinline
+></audio>
+
+
+<script>
+
+/* =====================================================
+   FIREBASE
+===================================================== */
+
+const firebaseConfig = {
+    apiKey: "AIzaSyDJ9zkgu_2ZLcD_ObEYwnFfSu6QffN9VQI",
+    authDomain: "papatyawap.firebaseapp.com",
+    databaseURL: "https://papatyawap-default-rtdb.firebaseio.com",
+    projectId: "papatyawap",
+    storageBucket: "papatyawap.firebasestorage.app",
+    messagingSenderId: "29357315689",
+    appId: "1:29357315689:web:78864218c204d291f734f8"
+};
+
+firebase.initializeApp(firebaseConfig);
+
+const database = firebase.database();
+
+
+/* =====================================================
+   GIPHY
+===================================================== */
+
+const GIPHY_API_KEY =
+    "wZUjXSQmZ5TEx1UzVzqTY5BVwGcpShCy";
+
+
+/* =====================================================
+   DEĞİŞKENLER
+===================================================== */
+
+let username = "";
+let userKey = "";
+
+let localStream = null;
+
+let peerConnections = {};
+
+let voiceActive = false;
+
+let voiceListenerStarted = false;
+
+let selectedMessageColor = "#ffffff";
+
+
+/* =====================================================
+   WEBRTC
+===================================================== */
+
+const rtcConfig = {
+
+    iceServers: [
+
+        {
+            urls: "stun:stun.l.google.com:19302"
+        },
+
+        {
+            urls: "stun:stun1.l.google.com:19302"
+        }
+
+    ]
+
+};
+
+
+/* =====================================================
+   RENK
+===================================================== */
+
+document
+    .querySelectorAll(".color-button")
+    .forEach(function(button) {
+
+        button.onclick = function() {
+
+            selectedMessageColor =
+                this.dataset.color;
+
+            document
+                .querySelectorAll(".color-button")
+                .forEach(function(item) {
+
+                    item.classList.remove("selected");
+
+                });
+
+            this.classList.add("selected");
+
+        };
+
+    });
+
+
+/* =====================================================
+   EMOJİ
+===================================================== */
+
+const emojiButton =
+    document.getElementById("emojiButton");
+
+const emojiPanel =
+    document.getElementById("emojiPanel");
+
+const gifPanel =
+    document.getElementById("gifPanel");
+
+
+emojiButton.onclick = function() {
+
+    emojiPanel.style.display =
+        emojiPanel.style.display === "block"
+            ? "none"
+            : "block";
+
+    gifPanel.style.display = "none";
+
+};
+
+
+document
+    .querySelectorAll(".emoji-item")
+    .forEach(function(button) {
+
+        button.onclick = function() {
+
+            const input =
+                document.getElementById("messageInput");
+
+            input.value += this.textContent;
+
+            input.focus();
+
+        };
+
+    });
+
+
+/* =====================================================
+   GIF
+===================================================== */
+
+const gifButton =
+    document.getElementById("gifButton");
+
+const gifSearchInput =
+    document.getElementById("gifSearchInput");
+
+const gifSearchButton =
+    document.getElementById("gifSearchButton");
+
+const gifResults =
+    document.getElementById("gifResults");
+
+
+gifButton.onclick = function() {
+
+    gifPanel.style.display =
+        gifPanel.style.display === "block"
+            ? "none"
+            : "block";
+
+    emojiPanel.style.display = "none";
+
+};
+
+
+gifSearchButton.onclick = searchGIFs;
+
+
+gifSearchInput.onkeydown = function(event) {
+
+    if (event.key === "Enter") {
+
+        event.preventDefault();
+
+        searchGIFs();
+
+    }
+
+};
+
+
+/* =====================================================
+   GIF ARAMA
+===================================================== */
+
+async function searchGIFs() {
+
+    const query =
+        gifSearchInput.value.trim();
+
+    if (!query) {
+
+        gifResults.innerHTML =
+            '<div class="gif-empty">🔎 Önce GIF adı yazın</div>';
+
+        return;
+
+    }
+
+    gifResults.innerHTML =
+        '<div class="gif-empty">⏳ GIF aranıyor...</div>';
+
+    try {
+
+        const url =
+            "https://api.giphy.com/v1/gifs/search" +
+            "?api_key=" +
+            encodeURIComponent(GIPHY_API_KEY) +
+            "&q=" +
+            encodeURIComponent(query) +
+            "&limit=24" +
+            "&rating=pg-13" +
+            "&lang=tr";
+
+        const response =
+            await fetch(url);
+
+        if (!response.ok) {
+
+            throw new Error(
+                "HTTP " + response.status
+            );
+
+        }
+
+        const data =
+            await response.json();
+
+        if (
+            !data ||
+            !data.data ||
+            data.data.length === 0
+        ) {
+
+            gifResults.innerHTML =
+                '<div class="gif-empty">😔 GIF bulunamadı</div>';
+
+            return;
+
+        }
+
+        gifResults.innerHTML = "";
+
+        data.data.forEach(function(gif) {
+
+            const images =
+                gif.images || {};
+
+            const previewUrl =
+                images.fixed_width?.webp ||
+                images.fixed_width?.url ||
+                images.preview_gif?.url ||
+                images.original?.url;
+
+            const originalUrl =
+                images.original?.url ||
+                previewUrl;
+
+            if (!previewUrl) {
+                return;
+            }
+
+            const image =
+                document.createElement("img");
+
+            image.className = "gif-result";
+
+            image.src = previewUrl;
+
+            image.alt =
+                gif.title || "GIF";
+
+            image.loading = "lazy";
+
+            image.onclick = function() {
+
+                sendGIF(
+                    previewUrl,
+                    originalUrl
+                );
+
+                gifPanel.style.display = "none";
+
+            };
+
+            gifResults.appendChild(image);
+
+        });
+
+    }
+
+    catch(error) {
+
+        console.error(
+            "GIPHY hatası:",
+            error
+        );
+
+        gifResults.innerHTML =
+            '<div class="gif-empty">❌ GIF yüklenemedi.</div>';
+
+    }
+
+}
+
+
+/* =====================================================
+   GIF GÖNDER
+===================================================== */
+
+function sendGIF(
+    previewUrl,
+    originalUrl
+) {
+
+    if (!username) {
+        return;
+    }
+
+    database
+        .ref("messages")
+        .push({
+
+            username: username,
+
+            type: "gif",
+
+            gif: originalUrl,
+
+            preview: previewUrl,
+
+            color: selectedMessageColor,
+
+            timestamp: Date.now()
+
+        });
+
+}
+
+
+/* =====================================================
+   GİRİŞ
+===================================================== */
+
+function enterChat() {
+
+    const input =
+        document.getElementById("usernameInput");
+
+    const name =
+        input.value.trim();
+
+    if (!name) {
+
+        alert(
+            "Lütfen kullanıcı adınızı yazın."
+        );
+
+        input.focus();
+
+        return;
+
+    }
+
+    username = name;
+
+    document.getElementById("login")
+        .style.display = "none";
+
+    document.getElementById("chatPage")
+        .style.display = "block";
+
+    loadMessages();
+
+    setOnline();
+
+}
+
+
+document
+    .getElementById("loginButton")
+    .onclick = enterChat;
+
+
+document
+    .getElementById("usernameInput")
+    .onkeydown = function(event) {
+
+        if (event.key === "Enter") {
+
+            enterChat();
+
+        }
+
+    };
+
+
+/* =====================================================
+   MESAJLARI YÜKLE
+===================================================== */
+
+function loadMessages() {
+
+    database
+        .ref("messages")
+        .on("value", function(snapshot) {
+
+            const chat =
+                document.getElementById("chat");
+
+            chat.innerHTML = "";
+
+            snapshot.forEach(function(child) {
+
+                const message =
+                    child.val();
+
+                if (!message) {
+                    return;
+                }
+
+                const box =
+                    document.createElement("div");
+
+                box.className = "message";
+
+
+                if (
+                    message.username === username
+                ) {
+
+                    box.classList.add(
+                        "my-message"
+                    );
+
+                }
+
+
+                /* KULLANICI */
+
+                const user =
+                    document.createElement("div");
+
+                user.className = "username";
+
+                user.textContent =
+                    message.username;
+
+
+                /* SAAT */
+
+                if (message.timestamp) {
+
+                    const time =
+                        document.createElement("span");
+
+                    time.className = "time";
+
+                    time.textContent =
+                        new Date(
+                            message.timestamp
+                        ).toLocaleTimeString(
+                            "tr-TR",
+                            {
+                                hour: "2-digit",
+                                minute: "2-digit"
+                            }
+                        );
+
+                    user.appendChild(time);
+
+                }
+
+
+                /* SİL */
+
+                if (
+                    message.username === username
+                ) {
+
+                    const deleteButton =
+                        document.createElement("button");
+
+                    deleteButton.className =
+                        "delete";
+
+                    deleteButton.textContent =
+                        "Sil";
+
+                    deleteButton.onclick =
+                        function() {
+
+                            child.ref.remove();
+
+                        };
+
+                    user.appendChild(
+                        deleteButton
+                    );
+
+                }
+
+
+                /* GIF */
+
+                if (
+                    message.type === "gif" &&
+                    message.gif
+                ) {
+
+                    const gifBox =
+                        document.createElement("div");
+
+                    gifBox.className =
+                        "gif-message";
+
+
+                    const gifImage =
+                        document.createElement("img");
+
+                    gifImage.src =
+                        message.preview ||
+                        message.gif;
+
+                    gifImage.alt = "GIF";
+
+
+                    gifImage.onclick =
+                        function() {
+
+                            window.open(
+                                message.gif,
+                                "_blank"
+                            );
+
+                        };
+
+
+                    gifBox.appendChild(
+                        gifImage
+                    );
+
+                    box.appendChild(user);
+
+                    box.appendChild(gifBox);
+
+                    chat.appendChild(box);
+
+                    return;
+
+                }
+
+
+                /* NORMAL MESAJ */
+
+                const bubble =
+                    document.createElement("div");
+
+                bubble.className =
+                    "bubble";
+
+                bubble.textContent =
+                    message.text || "";
+
+
+                if (message.color) {
+
+                    bubble.style.color =
+                        message.color;
+
+                }
+
+
+                box.appendChild(user);
+
+                box.appendChild(bubble);
+
+                chat.appendChild(box);
+
+            });
+
+
+            chat.scrollTop =
+                chat.scrollHeight;
+
+        });
+
+}
+
+
+/* =====================================================
+   MESAJ GÖNDER
+===================================================== */
+
+function sendMessage() {
+
+    const input =
+        document.getElementById(
+            "messageInput"
+        );
+
+    const text =
+        input.value.trim();
+
+    if (
+        !text ||
+        !username
+    ) {
+
+        return;
+
+    }
+
+
+    database
+        .ref("messages")
+        .push({
+
+            username: username,
+
+            text: text,
+
+            color: selectedMessageColor,
+
+            type: "text",
+
+            timestamp: Date.now()
+
+        });
+
+
+    input.value = "";
+
+    input.focus();
+
+}
+
+
+document
+    .getElementById("sendButton")
+    .onclick = sendMessage;
+
+
+document
+    .getElementById("messageInput")
+    .onkeydown = function(event) {
+
+        if (event.key === "Enter") {
+
+            event.preventDefault();
+
+            sendMessage();
+
+        }
+
+    };
+
+
+/* =====================================================
+   ÇEVRİMİÇİ KULLANICILAR
+===================================================== */
+
+function setOnline() {
+
+    const ref =
+        database
+            .ref("onlineUsers")
+            .push();
+
+    userKey = ref.key;
+
+
+    ref.set({
+
+        username: username,
+
+        timestamp:
+            firebase.database.ServerValue.TIMESTAMP
+
+    });
+
+
+    ref.onDisconnect().remove();
+
+
+    database
+        .ref("onlineUsers")
+        .on("value", function(snapshot) {
+
+            const count =
+                snapshot.numChildren();
+
+            document
+                .getElementById("onlineText")
+                .textContent =
+                "🟢 " +
+                count +
+                " kişi çevrimiçi";
+
+
+            const names = [];
+
+
+            snapshot.forEach(function(child) {
+
+                const user =
+                    child.val();
+
+                if (
+                    user &&
+                    user.username
+                ) {
+
+                    names.push(
+                        user.username
+                    );
+
+                }
+
+            });
+
+
+            document
+                .getElementById(
+                    "onlineUsersText"
+                )
+                .textContent =
+                names.length
+                    ? "👥 " + names.join(", ")
+                    : "👥 Kimse yok";
+
+        });
+
+}
+
+
+/* =====================================================
+   SES DURUMU
+===================================================== */
+
+function showVoiceStatus(text) {
+
+    const status =
+        document.getElementById(
+            "voiceStatus"
+        );
+
+    status.textContent = text;
+
+    status.style.display = "block";
+
+}
+
+
+function hideVoiceStatus() {
+
+    document.getElementById(
+        "voiceStatus"
+    ).style.display = "none";
+
+}
+
+
+/* =====================================================
+   MİKROFON
+===================================================== */
+
+async function startVoiceChat() {
+
+    try {
+
+        showVoiceStatus(
+            "🎤 Mikrofon açılıyor..."
+        );
+
+
+        if (
+            !navigator.mediaDevices ||
+            !navigator.mediaDevices.getUserMedia
+        ) {
+
+            throw new Error(
+                "Tarayıcınız mikrofon erişimini desteklemiyor."
+            );
+
+        }
+
+
+        localStream =
+            await navigator
+                .mediaDevices
+                .getUserMedia({
+
+                    audio: true,
+
+                    video: false
+
+                });
+
+
+        voiceActive = true;
+
+
+        const button =
+            document.getElementById(
+                "voiceButton"
+            );
+
+
+        button.textContent =
+            "🔴 Sesi Kapat";
+
+
+        button.classList.add(
+            "active"
+        );
+
+
+        startVoiceListener();
+
+
+        showVoiceStatus(
+            "🎤 Sesli sohbet aktif"
+        );
+
+
+        const callsSnapshot =
+            await database
+                .ref("calls")
+                .once("value");
+
+
+        let foundCall = false;
+
+
+        callsSnapshot.forEach(
+            function(child) {
+
+                const call =
+                    child.val();
+
+                if (
+                    call &&
+                    call.receiver === username
+                ) {
+
+                    foundCall = true;
+
+                    answerCall(
+                        child.key,
+                        call
+                    );
+
+                }
+
+            }
+        );
+
+
+        if (!foundCall) {
+
+            await createCall();
+
+        }
+
+    }
+
+    catch(error) {
+
+        console.error(
+            "Mikrofon hatası:",
+            error
+        );
+
+        alert(
+            "Mikrofon açılamadı.\n\n" +
+            error.name +
+            "\n" +
+            error.message
+        );
+
+        voiceActive = false;
+
+    }
+
+}
+
+
+/* =====================================================
+   SES BUTONU
+===================================================== */
+
+document
+    .getElementById("voiceButton")
+    .onclick = async function() {
+
+        if (voiceActive) {
+
+            stopVoiceChat();
+
+        }
+        else {
+
+            await startVoiceChat();
+
+        }
+
+    };
+
+
+/* =====================================================
+   ÇAĞRI DİNLE
+===================================================== */
+
+function startVoiceListener() {
+
+    if (voiceListenerStarted) {
+        return;
+    }
+
+    voiceListenerStarted = true;
+
+
+    database
+        .ref("calls")
+        .on(
+            "child_added",
+            async function(snapshot) {
+
+                const call =
+                    snapshot.val();
+
+                const callId =
+                    snapshot.key;
+
+
+                if (!call) {
+                    return;
+                }
+
+
+                if (
+                    call.caller === username
+                ) {
+
+                    return;
+
+                }
+
+
+                if (
+                    call.receiver !== username
+                ) {
+
+                    return;
+
+                }
+
+
+                if (
+                    peerConnections[callId]
+                ) {
+
+                    return;
+
+                }
+
+
+                if (!voiceActive) {
+                    return;
+                }
+
+
+                try {
+
+                    await answerCall(
+                        callId,
+                        call
+                    );
+
+                }
+
+                catch(error) {
+
+                    console.error(
+                        "Çağrı cevaplama hatası:",
+                        error
+                    );
+
+                }
+
+            }
+        );
+
+}
+
+
+/* =====================================================
+   ÇAĞRI BAŞLAT
+===================================================== */
+
+async function createCall() {
+
+    if (!localStream) {
+        return;
+    }
+
+
+    const usersSnapshot =
+        await database
+            .ref("onlineUsers")
+            .once("value");
+
+
+    let otherUser = null;
+
+
+    usersSnapshot.forEach(
+        function(child) {
+
+            const user =
+                child.val();
+
+            if (
+                user &&
+                user.username &&
+                user.username !== username &&
+                !otherUser
+            ) {
+
+                otherUser =
+                    user.username;
+
+            }
+
+        }
+    );
+
+
+    if (!otherUser) {
+
+        showVoiceStatus(
+            "🎤 Mikrofon açık - başka kullanıcı bekleniyor"
+        );
+
+        return;
+
+    }
+
+
+    const callRef =
+        database
+            .ref("calls")
+            .push();
+
+
+    const callId =
+        callRef.key;
+
+
+    const pc =
+        new RTCPeerConnection(
+            rtcConfig
+        );
+
+
+    peerConnections[callId] =
+        pc;
+
+
+    localStream
+        .getTracks()
+        .forEach(function(track) {
+
+            pc.addTrack(
+                track,
+                localStream
+            );
+
+        });
+
+
+    pc.ontrack =
+        function(event) {
+
+            const audio =
+                document.getElementById(
+                    "remoteAudio"
+                );
+
+
+            audio.srcObject =
+                event.streams[0];
+
+
+            audio.play()
+                .catch(function(error) {
+
+                    console.log(
+                        "Ses oynatma hatası:",
+                        error
+                    );
+
+                });
+
+
+            showVoiceStatus(
+                "🔊 Ses bağlantısı aktif"
+            );
+
+        };
+
+
+    pc.onicecandidate =
+        function(event) {
+
+            if (event.candidate) {
+
+                database
+                    .ref(
+                        "calls/" +
+                        callId +
+                        "/callerCandidates"
+                    )
+                    .push(
+                        event.candidate.toJSON()
+                    );
+
+            }
+
+        };
+
+
+    const offer =
+        await pc.createOffer();
+
+
+    await pc.setLocalDescription(
+        offer
+    );
+
+
+    await callRef.set({
+
+        caller: username,
+
+        receiver: otherUser,
+
+        offer: {
+
+            type: offer.type,
+
+            sdp: offer.sdp
+
+        },
+
+        created: Date.now()
+
+    });
+
+
+    database
+        .ref(
+            "calls/" +
+            callId +
+            "/answer"
+        )
+        .on(
+            "value",
+            async function(snapshot) {
+
+                const answer =
+                    snapshot.val();
+
+
+                if (
+                    answer &&
+                    !pc.currentRemoteDescription
+                ) {
+
+                    await pc.setRemoteDescription(
+                        new RTCSessionDescription(
+                            answer
+                        )
+                    );
+
+                }
+
+            }
+        );
+
+
+    database
+        .ref(
+            "calls/" +
+            callId +
+            "/receiverCandidates"
+        )
+        .on(
+            "child_added",
+            async function(snapshot) {
+
+                const candidate =
+                    snapshot.val();
+
+
+                if (candidate) {
+
+                    try {
+
+                        await pc.addIceCandidate(
+                            new RTCIceCandidate(
+                                candidate
+                            )
+                        );
+
+                    }
+
+                    catch(error) {
+
+                        console.log(error);
+
+                    }
+
+                }
+
+            }
+        );
+
+}
+
+
+/* =====================================================
+   ÇAĞRIYI CEVAPLA
+===================================================== */
+
+async function answerCall(
+    callId,
+    call
+) {
+
+    if (
+        !localStream ||
+        !voiceActive
+    ) {
+
+        return;
+
+    }
+
+
+    const pc =
+        new RTCPeerConnection(
+            rtcConfig
+        );
+
+
+    peerConnections[callId] =
+        pc;
+
+
+    localStream
+        .getTracks()
+        .forEach(function(track) {
+
+            pc.addTrack(
+                track,
+                localStream
+            );
+
+        });
+
+
+    pc.ontrack =
+        function(event) {
+
+            const audio =
+                document.getElementById(
+                    "remoteAudio"
+                );
+
+
+            audio.srcObject =
+                event.streams[0];
+
+
+            audio.play()
+                .catch(function(error) {
+
+                    console.log(error);
+
+                });
+
+
+            showVoiceStatus(
+                "🔊 Ses bağlantısı aktif"
+            );
+
+        };
+
+
+    pc.onicecandidate =
+        function(event) {
+
+            if (event.candidate) {
+
+                database
+                    .ref(
+                        "calls/" +
+                        callId +
+                        "/receiverCandidates"
+                    )
+                    .push(
+                        event.candidate.toJSON()
+                    );
+
+            }
+
+        };
+
+
+    await pc.setRemoteDescription(
+        new RTCSessionDescription(
+            call.offer
+        )
+    );
+
+
+    const answer =
+        await pc.createAnswer();
+
+
+    await pc.setLocalDescription(
+        answer
+    );
+
+
+    await database
+        .ref(
+            "calls/" +
+            callId +
+            "/answer"
+        )
+        .set({
+
+            type: answer.type,
+
+            sdp: answer.sdp
+
+        });
+
+
+    database
+        .ref(
+            "calls/" +
+            callId +
+            "/callerCandidates"
+        )
+        .on(
+            "child_added",
+            async function(snapshot) {
+
+                const candidate =
+                    snapshot.val();
+
+
+                if (candidate) {
+
+                    try {
+
+                        await pc.addIceCandidate(
+                            new RTCIceCandidate(
+                                candidate
+                            )
+                        );
+
+                    }
+
+                    catch(error) {
+
+                        console.log(error);
+
+                    }
+
+                }
+
+            }
+        );
+
+}
+
+
+/* =====================================================
+   SESİ KAPAT
+===================================================== */
+
+function stopVoiceChat() {
+
+    voiceActive = false;
+
+
+    if (localStream) {
+
+        localStream
+            .getTracks()
+            .forEach(function(track) {
+
+                track.stop();
+
+            });
+
+        localStream = null;
+
+    }
+
+
+    Object
+        .keys(peerConnections)
+        .forEach(function(id) {
+
+            try {
+
+                peerConnections[id].close();
+
+            }
+
+            catch(error) {
+
+                console.log(error);
+
+            }
+
+        });
+
+
+    peerConnections = {};
+
+
+    const audio =
+        document.getElementById(
+            "remoteAudio"
+        );
+
+
+    audio.srcObject = null;
+
+
+    const button =
+        document.getElementById(
+            "voiceButton"
+        );
+
+
+    button.textContent =
+        "🎤 Sesli Sohbet";
+
+
+    button.classList.remove(
+        "active"
+    );
+
+
+    hideVoiceStatus();
+
+
+    database
+        .ref("calls")
+        .once(
+            "value",
+            function(snapshot) {
+
+                snapshot.forEach(
+                    function(child) {
+
+                        const call =
+                            child.val();
+
+
+                        if (
+                            call &&
+                            (
+                                call.caller === username ||
+                                call.receiver === username
+                            )
+                        ) {
+
+                            child.ref.remove();
+
+                        }
+
+                    }
+                );
+
+            }
+        );
+
+}
+
+
+/* =====================================================
+   ÇIKIŞ
+===================================================== */
+
+document
+    .getElementById("logoutButton")
+    .onclick = function() {
+
+        stopVoiceChat();
+
+
+        if (userKey) {
+
+            database
+                .ref(
+                    "onlineUsers/" +
+                    userKey
+                )
+                .remove();
+
+        }
+
+
+        location.reload();
+
+    };
+
+
+/* =====================================================
+   DIŞARI TIKLAMA
+===================================================== */
+
+document.addEventListener(
+    "click",
+    function(event) {
+
+        if (
+            !emojiPanel.contains(
+                event.target
+            ) &&
+            event.target !== emojiButton
+        ) {
+
+            emojiPanel.style.display =
+                "none";
+
+        }
+
+
+        if (
+            !gifPanel.contains(
+                event.target
+            ) &&
+            event.target !== gifButton
+        ) {
+
+            gifPanel.style.display =
+                "none";
+
+        }
+
+    }
+);
+
+</script>
+
+</body>
+</html>
