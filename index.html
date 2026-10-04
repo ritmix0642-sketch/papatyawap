@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
@@ -130,7 +130,7 @@ body {
 .header {
     position: relative;
     z-index: 20;
-    min-height: 76px;
+    height: 76px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -200,15 +200,36 @@ body {
 
 /* =========================
    MESAJLAR
+   ÖNEMLİ DÜZELTME
 ========================= */
 
 .chat {
-    height: calc(100vh - 158px);
+    position: absolute;
+    top: 76px;
+    left: 0;
+    right: 0;
+
+    /* ALT PANELİN GERÇEK YÜKSEKLİĞİ */
+    bottom: 108px;
+
     overflow-y: auto;
-    padding: 25px 16px 30px;
+
+    padding:
+        25px
+        16px
+        35px;
+
     max-width: 850px;
+    width: 100%;
     margin: auto;
+
     scroll-behavior: smooth;
+
+    /*
+       Mesajların alt panelin arkasına
+       girmesini kesin olarak engeller.
+    */
+    z-index: 5;
 }
 
 .message {
@@ -292,15 +313,27 @@ body {
     bottom: 0;
     left: 0;
     width: 100%;
-    min-height: 82px;
+
+    /*
+       Önceki 82px yetersizdi.
+       İki satırlı panel için gerçek alan.
+    */
+    height: 108px;
+    min-height: 108px;
+
     padding:
         8px
         max(10px,env(safe-area-inset-right))
         calc(8px + env(safe-area-inset-bottom))
         max(10px,env(safe-area-inset-left));
-    background: rgba(13,17,34,.97);
+
+    background: rgba(13,17,34,.98);
     border-top: 1px solid rgba(255,255,255,.08);
     backdrop-filter: blur(18px);
+
+    /*
+       Mesajların üzerinde durması gerekiyor.
+    */
     z-index: 25;
 }
 
@@ -425,7 +458,7 @@ body {
 .emoji-panel {
     display: none;
     position: fixed;
-    bottom: 94px;
+    bottom: 114px;
     left: 10px;
     width: 300px;
     max-height: 240px;
@@ -464,7 +497,7 @@ body {
 .gif-panel {
     display: none;
     position: fixed;
-    bottom: 94px;
+    bottom: 114px;
     left: 60px;
     width: 350px;
     max-width: calc(100vw - 20px);
@@ -538,7 +571,7 @@ body {
 #voiceStatus {
     display: none;
     position: fixed;
-    bottom: 100px;
+    bottom: 120px;
     left: 50%;
     transform: translateX(-50%);
     background: rgba(22,27,49,.96);
@@ -557,11 +590,16 @@ body {
 ========================= */
 
 @media (min-width:700px) {
+
     .input-area {
         max-width: 850px;
         left: 50%;
         transform: translateX(-50%);
         border-radius: 18px 18px 0 0;
+    }
+
+    .chat {
+        max-width: 850px;
     }
 }
 
@@ -576,6 +614,7 @@ body {
     }
 
     .header {
+        height: 62px;
         min-height: 62px;
         padding: 7px 9px;
         gap: 7px;
@@ -613,18 +652,43 @@ body {
         text-overflow: ellipsis;
     }
 
+    /* =========================
+       MOBİL MESAJ ALANI
+    ========================= */
+
     .chat {
-        height: calc(100vh - 143px);
-        padding: 15px 10px 20px;
+        top: 62px;
+
+        /*
+           Mobil alt panel:
+           araç satırı + mesaj satırı
+        */
+        bottom: 94px;
+
+        padding:
+            15px
+            10px
+            30px;
+
+        max-width: none;
     }
 
     .bubble {
         max-width: 88%;
     }
 
+    /* =========================
+       MOBİL ALT PANEL
+    ========================= */
+
     .input-area {
-        min-height: 81px;
-        padding: 7px 8px calc(7px + env(safe-area-inset-bottom));
+        height: 94px;
+        min-height: 94px;
+
+        padding:
+            7px
+            8px
+            calc(7px + env(safe-area-inset-bottom));
     }
 
     .tools-row {
@@ -679,17 +743,17 @@ body {
     .emoji-panel {
         width: calc(100vw - 20px);
         left: 10px;
-        bottom: 92px;
+        bottom: 104px;
     }
 
     .gif-panel {
         left: 10px;
-        bottom: 92px;
+        bottom: 104px;
         width: calc(100vw - 20px);
     }
 
     #voiceStatus {
-        bottom: 95px;
+        bottom: 105px;
         max-width: calc(100vw - 30px);
         overflow: hidden;
         text-overflow: ellipsis;
@@ -786,7 +850,6 @@ body {
             </div>
 
         </div>
-
 
         <div class="header-buttons">
 
@@ -1605,6 +1668,11 @@ function loadMessages() {
 
             });
 
+
+            /*
+               MESAJLAR YÜKLENDİĞİNDE
+               EN ALT MESAJI GÖSTER.
+            */
 
             chat.scrollTop =
                 chat.scrollHeight;
