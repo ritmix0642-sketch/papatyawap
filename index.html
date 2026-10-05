@@ -10,6 +10,11 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 
 <style>
+
+/* =========================
+   TEMEL
+========================= */
+
 * {
     box-sizing: border-box;
     -webkit-tap-highlight-color: transparent;
@@ -25,9 +30,10 @@ body {
 body {
     font-family: Arial, Helvetica, sans-serif;
     color: #333333;
-    background: #f7f5ef;
+    background: #f4f1ea;
     overflow: hidden;
 }
+
 
 /* =========================
    GİRİŞ
@@ -36,65 +42,96 @@ body {
 #login {
     width: 100%;
     min-height: 100vh;
+
     display: flex;
     align-items: center;
     justify-content: center;
+
     padding: 20px;
-    background: #f7f5ef;
 }
 
 .login-box {
     width: 100%;
     max-width: 420px;
+
     padding: 38px 28px;
+
     text-align: center;
+
     background: #fffdf8;
-    border: 1px solid #e6e1d7;
-    border-radius: 24px;
-    box-shadow: 0 15px 45px rgba(60,55,45,.12);
+
+    border: 1px solid #e5dfd2;
+
+    border-radius: 22px;
+
+    box-shadow:
+        0 15px 45px rgba(0,0,0,.10);
 }
 
 .login-box h1 {
-    margin: 0;
+    margin: 0 0 10px;
+
     color: #333333;
+
     font-size: 28px;
 }
 
 .subtitle {
-    margin-top: 9px;
     margin-bottom: 28px;
-    color: #77736b;
+
+    color: #77736c;
+
     font-size: 14px;
 }
 
 #usernameInput {
     width: 100%;
     height: 52px;
+
     padding: 0 17px;
-    border: 1px solid #ddd8ce;
-    border-radius: 15px;
+
+    border: 1px solid #d9d3c8;
+
+    border-radius: 14px;
+
     outline: none;
+
     background: #ffffff;
+
     color: #333333;
+
     font-size: 16px;
 }
 
 #usernameInput:focus {
-    border-color: #aaa398;
+    border-color: #999186;
 }
 
 #loginButton {
     width: 100%;
     height: 52px;
+
     margin-top: 13px;
+
     border: 0;
-    border-radius: 15px;
-    background: #333333;
+
+    border-radius: 14px;
+
+    background: #44413b;
+
     color: white;
+
     font-size: 15px;
+
     font-weight: bold;
+
     cursor: pointer;
 }
+
+#loginButton:active {
+    transform: scale(.98);
+}
+
 
 /* =========================
    SOHBET
@@ -102,12 +139,17 @@ body {
 
 #chatPage {
     display: none;
+
     width: 100%;
     height: 100vh;
+
     overflow: hidden;
+
     position: relative;
-    background: #f7f5ef;
+
+    background: #f4f1ea;
 }
+
 
 /* =========================
    ÜST BAR
@@ -115,78 +157,113 @@ body {
 
 .header {
     position: relative;
+
     z-index: 20;
+
     height: 76px;
+
     display: flex;
+
     align-items: center;
+
     justify-content: space-between;
+
     gap: 15px;
+
     padding: 10px 18px;
+
     background: #fffdf8;
-    border-bottom: 1px solid #e4dfd5;
+
+    border-bottom: 1px solid #ded8cd;
 }
 
 .header-info {
     min-width: 0;
+
     flex: 1;
 }
 
 .header-title {
     font-size: 18px;
+
     font-weight: bold;
-    color: #333333;
+
+    color: #302e2a;
 }
 
 .online {
     margin-top: 5px;
+
     color: #159957;
+
     font-size: 12px;
 }
 
 .online-users {
     margin-top: 4px;
-    color: #77736b;
+
+    color: #77736c;
+
     font-size: 11px;
+
     max-width: 600px;
+
     white-space: nowrap;
+
     overflow: hidden;
+
     text-overflow: ellipsis;
 }
 
 .header-buttons {
     display: flex;
+
     align-items: center;
+
     gap: 8px;
+
     flex-shrink: 0;
 }
 
 .logout,
 .voice-button {
     min-height: 40px;
-    border: 1px solid #ddd8ce;
+
+    border: 1px solid #d7d1c6;
+
     color: #333333;
+
     padding: 9px 13px;
+
     border-radius: 12px;
+
     cursor: pointer;
+
     font-weight: bold;
+
     white-space: nowrap;
 }
 
 .logout {
-    background: #eeeae2;
+    background: #f0ece4;
 }
 
 .voice-button {
-    background: #dff5e8;
-    color: #147a47;
-    border-color: #b9e6cb;
+    background: #dff4e8;
+
+    border-color: #b8dfc9;
+
+    color: #137b48;
 }
 
 .voice-button.active {
-    background: #ffe0e3;
-    color: #c72e43;
-    border-color: #f2b8c0;
+    background: #ffe1e4;
+
+    border-color: #f0b4bc;
+
+    color: #c93447;
 }
+
 
 /* =========================
    MESAJ ALANI
@@ -194,9 +271,13 @@ body {
 
 .chat {
     position: absolute;
+
     top: 76px;
+
     left: 0;
+
     right: 0;
+
     bottom: 108px;
 
     overflow-y: auto;
@@ -207,31 +288,37 @@ body {
         35px;
 
     max-width: 850px;
+
     width: 100%;
+
     margin: auto;
 
     scroll-behavior: smooth;
+
+    z-index: 5;
 }
+
 
 /* =========================
    MESAJ
-   BALON YOK
 ========================= */
 
 .message {
-    margin-bottom: 20px;
-    padding: 0;
+    margin-bottom: 17px;
+
+    line-height: 1.5;
 }
 
 .username {
-    margin-bottom: 4px;
-    color: #2878d4;
-    font-size: 12px;
-    font-weight: bold;
-}
+    display: inline;
 
-.my-message {
-    text-align: right;
+    margin-right: 7px;
+
+    color: #2878d4;
+
+    font-size: 13px;
+
+    font-weight: bold;
 }
 
 .my-message .username {
@@ -239,38 +326,50 @@ body {
 }
 
 .time {
-    margin-left: 7px;
-    color: #8d887f;
+    margin-left: 5px;
+
+    color: #918b82;
+
     font-size: 10px;
 }
 
 .delete {
     border: 0;
+
     background: transparent;
+
     color: #e34b5f;
+
     font-size: 10px;
+
     cursor: pointer;
+
     margin-left: 7px;
+
     padding: 0;
 }
 
+.delete:hover {
+    text-decoration: underline;
+}
+
+
 /* =========================
-   DÜZ MESAJ YAZISI
+   MESAJ YAZISI
 ========================= */
 
 .message-text {
-    display: block;
-    width: 100%;
+    display: inline;
+
     color: #333333;
+
     font-size: 15px;
-    line-height: 1.5;
+
     word-break: break-word;
+
     overflow-wrap: anywhere;
 }
 
-.my-message .message-text {
-    text-align: right;
-}
 
 /* =========================
    GIF
@@ -278,19 +377,28 @@ body {
 
 .gif-message {
     max-width: 280px;
+
     border-radius: 15px;
-    display: inline-block;
-    margin-top: 5px;
+
+    display: block;
+
+    margin-top: 7px;
+
     overflow: hidden;
 }
 
 .gif-message img {
     width: 100%;
+
     max-width: 280px;
+
     border-radius: 15px;
+
     display: block;
+
     cursor: pointer;
 }
+
 
 /* =========================
    ALT PANEL
@@ -298,11 +406,15 @@ body {
 
 .input-area {
     position: fixed;
+
     bottom: 0;
+
     left: 0;
+
     width: 100%;
 
     height: 108px;
+
     min-height: 108px;
 
     padding:
@@ -312,10 +424,12 @@ body {
         max(10px,env(safe-area-inset-left));
 
     background: #fffdf8;
-    border-top: 1px solid #e4dfd5;
+
+    border-top: 1px solid #ded8cd;
 
     z-index: 25;
 }
+
 
 /* =========================
    ARAÇLAR
@@ -323,64 +437,92 @@ body {
 
 .tools-row {
     width: 100%;
+
     display: flex;
+
     align-items: center;
+
     gap: 7px;
+
     margin-bottom: 7px;
+
     min-height: 38px;
 }
 
 .tool-button {
     width: 42px;
+
     height: 38px;
+
     flex-shrink: 0;
-    border: 1px solid #ddd8ce;
+
+    border: 1px solid #d7d1c6;
+
     border-radius: 10px;
-    background: #eeeae2;
+
+    background: #eee9df;
+
     color: #333333;
+
     font-size: 19px;
+
     cursor: pointer;
 }
 
 .tool-button:hover {
-    background: #e3ded4;
+    background: #e3ded3;
 }
 
 .gif-button {
     font-size: 13px;
+
     font-weight: bold;
 }
+
 
 /* =========================
    RENKLER
 ========================= */
 
 .color-label {
-    color: #77736b;
+    color: #77736c;
+
     font-size: 11px;
+
     white-space: nowrap;
 }
 
 .color-buttons {
     display: flex;
+
     align-items: center;
+
     gap: 5px;
+
     min-width: 0;
 }
 
 .color-button {
     width: 21px;
+
     height: 21px;
+
     border-radius: 50%;
-    border: 2px solid rgba(0,0,0,.20);
+
+    border: 2px solid rgba(0,0,0,.18);
+
     cursor: pointer;
+
     flex-shrink: 0;
+
     padding: 0;
 }
 
 .color-button.selected {
     border: 3px solid #333333;
-    box-shadow: 0 0 0 2px #ffffff;
+
+    box-shadow:
+        0 0 0 2px #ffffff;
 }
 
 .color-white {
@@ -407,46 +549,73 @@ body {
     background:#e34b5f;
 }
 
+
 /* =========================
    MESAJ GİRİŞ
 ========================= */
 
 .message-row {
     width: 100%;
+
     display: flex;
+
     align-items: center;
+
     gap: 7px;
 }
 
 .message-input {
     flex: 1;
+
     width: 100%;
+
     min-width: 0;
+
     height: 46px;
-    border: 1px solid #ddd8ce;
+
+    border: 1px solid #d7d1c6;
+
     outline: none;
+
     border-radius: 15px;
+
     background: #ffffff;
+
     color: #333333;
+
     padding: 0 15px;
+
     font-size: 15px;
 }
 
 .message-input::placeholder {
-    color: #99948b;
+    color: #99938a;
+}
+
+.message-input:focus {
+    border-color: #aaa298;
 }
 
 .send {
     width: 50px;
+
     height: 46px;
+
     flex-shrink: 0;
+
     border: 0;
+
     border-radius: 15px;
-    background: #333333;
+
+    background: #44413b;
+
     color: white;
+
     font-size: 20px;
+
     cursor: pointer;
 }
+
 
 /* =========================
    EMOJI
@@ -454,38 +623,60 @@ body {
 
 .emoji-panel {
     display: none;
+
     position: fixed;
+
     bottom: 114px;
+
     left: 10px;
+
     width: 300px;
+
     max-height: 240px;
+
     overflow-y: auto;
+
     padding: 12px;
+
     background: #fffdf8;
-    border: 1px solid #ddd8ce;
+
+    border: 1px solid #d8d2c8;
+
     border-radius: 18px;
-    box-shadow: 0 15px 45px rgba(60,55,45,.20);
+
+    box-shadow:
+        0 15px 45px rgba(0,0,0,.18);
+
     z-index: 40;
 }
 
 .emoji-grid {
     display: grid;
-    grid-template-columns: repeat(8,1fr);
+
+    grid-template-columns:
+        repeat(8,1fr);
+
     gap: 7px;
 }
 
 .emoji-item {
     border: 0;
+
     background: transparent;
+
     font-size: 25px;
+
     cursor: pointer;
+
     border-radius: 8px;
+
     padding: 4px;
 }
 
 .emoji-item:hover {
-    background: #eeeae2;
+    background: #eee9df;
 }
+
 
 /* =========================
    GIF PANEL
@@ -493,73 +684,120 @@ body {
 
 .gif-panel {
     display: none;
+
     position: fixed;
+
     bottom: 114px;
+
     left: 60px;
+
     width: 350px;
-    max-width: calc(100vw - 20px);
+
+    max-width:
+        calc(100vw - 20px);
+
     height: 430px;
+
     background: #fffdf8;
-    border: 1px solid #ddd8ce;
+
+    border: 1px solid #d8d2c8;
+
     border-radius: 18px;
-    box-shadow: 0 15px 45px rgba(60,55,45,.20);
+
+    box-shadow:
+        0 15px 45px rgba(0,0,0,.18);
+
     z-index: 40;
+
     overflow: hidden;
 }
 
 .gif-search {
     display: flex;
+
     gap: 7px;
+
     padding: 10px;
-    border-bottom: 1px solid #e4dfd5;
+
+    border-bottom:
+        1px solid #e1dbd0;
 }
 
 .gif-search input {
     flex: 1;
+
     height: 40px;
-    border: 1px solid #ddd8ce;
+
+    border: 1px solid #d7d1c6;
+
     outline: none;
+
     border-radius: 10px;
+
     background: #ffffff;
+
     color: #333333;
+
     padding: 0 12px;
 }
 
 .gif-search button {
     width: 45px;
+
     border: 0;
+
     border-radius: 10px;
-    background: #333333;
+
+    background: #44413b;
+
     color: white;
+
     font-size: 18px;
+
     cursor: pointer;
 }
 
 .gif-results {
     height: 350px;
+
     overflow-y: auto;
+
     padding: 10px;
+
     display: grid;
-    grid-template-columns: repeat(2,1fr);
+
+    grid-template-columns:
+        repeat(2,1fr);
+
     gap: 8px;
 }
 
 .gif-result {
     width: 100%;
+
     height: 120px;
+
     object-fit: cover;
+
     border-radius: 10px;
+
     cursor: pointer;
-    background: #eeeae2;
+
+    background: #eee9df;
 }
 
 .gif-empty {
     grid-column: 1/-1;
+
     text-align: center;
+
     padding: 30px 10px;
-    color: #77736b;
+
+    color: #77736c;
+
     font-size: 13px;
 }
+
 
 /* =========================
    SES
@@ -567,20 +805,35 @@ body {
 
 #voiceStatus {
     display: none;
+
     position: fixed;
+
     bottom: 120px;
+
     left: 50%;
+
     transform: translateX(-50%);
+
     background: #fffdf8;
-    border: 1px solid #ddd8ce;
+
+    border: 1px solid #d8d2c8;
+
     color: #333333;
+
     padding: 11px 18px;
+
     border-radius: 25px;
+
     font-size: 13px;
+
     z-index: 50;
-    box-shadow: 0 10px 30px rgba(60,55,45,.20);
+
+    box-shadow:
+        0 10px 30px rgba(0,0,0,.15);
+
     white-space: nowrap;
 }
+
 
 /* =========================
    MASAÜSTÜ
@@ -590,15 +843,21 @@ body {
 
     .input-area {
         max-width: 850px;
+
         left: 50%;
-        transform: translateX(-50%);
-        border-radius: 18px 18px 0 0;
+
+        transform:
+            translateX(-50%);
+
+        border-radius:
+            18px 18px 0 0;
     }
 
     .chat {
         max-width: 850px;
     }
 }
+
 
 /* =========================
    MOBİL
@@ -608,8 +867,11 @@ body {
 
     .header {
         height: 62px;
+
         min-height: 62px;
+
         padding: 7px 9px;
+
         gap: 7px;
     }
 
@@ -619,11 +881,13 @@ body {
 
     .online {
         margin-top: 3px;
+
         font-size: 11px;
     }
 
     .online-users {
         max-width: 145px;
+
         font-size: 10px;
     }
 
@@ -634,25 +898,37 @@ body {
     .voice-button,
     .logout {
         min-height: 36px;
+
         padding: 7px 9px;
+
         font-size: 10px;
+
         border-radius: 10px;
     }
 
     .voice-button {
         max-width: 105px;
+
         overflow: hidden;
+
         text-overflow: ellipsis;
     }
 
     .chat {
         top: 62px;
+
         bottom: 94px;
+
         padding:
             15px
             10px
             30px;
+
         max-width: none;
+    }
+
+    .message {
+        margin-bottom: 15px;
     }
 
     .message-text {
@@ -661,6 +937,7 @@ body {
 
     .input-area {
         height: 94px;
+
         min-height: 94px;
 
         padding:
@@ -671,14 +948,19 @@ body {
 
     .tools-row {
         gap: 5px;
+
         margin-bottom: 6px;
+
         min-height: 32px;
     }
 
     .tool-button {
         width: 37px;
+
         height: 32px;
+
         border-radius: 9px;
+
         font-size: 17px;
     }
 
@@ -692,11 +974,13 @@ body {
 
     .color-buttons {
         gap: 4px;
+
         overflow: hidden;
     }
 
     .color-button {
         width: 18px;
+
         height: 18px;
     }
 
@@ -706,37 +990,58 @@ body {
 
     .message-input {
         height: 42px;
+
         font-size: 14px;
+
         border-radius: 13px;
+
         padding: 0 12px;
     }
 
     .send {
         width: 44px;
+
         height: 42px;
+
         border-radius: 13px;
+
         font-size: 18px;
     }
 
     .emoji-panel {
-        width: calc(100vw - 20px);
+        width:
+            calc(100vw - 20px);
+
         left: 10px;
+
         bottom: 104px;
     }
 
     .gif-panel {
         left: 10px;
+
         bottom: 104px;
-        width: calc(100vw - 20px);
+
+        width:
+            calc(100vw - 20px);
     }
 
     #voiceStatus {
         bottom: 105px;
-        max-width: calc(100vw - 30px);
+
+        max-width:
+            calc(100vw - 30px);
+
         overflow: hidden;
+
         text-overflow: ellipsis;
     }
 }
+
+
+/* =========================
+   KÜÇÜK TELEFON
+========================= */
 
 @media (max-width:380px) {
 
@@ -750,6 +1055,7 @@ body {
 
     .voice-button {
         max-width: 82px;
+
         padding: 7px 6px;
     }
 
@@ -759,6 +1065,7 @@ body {
 
     .color-button {
         width: 16px;
+
         height: 16px;
     }
 
@@ -766,10 +1073,13 @@ body {
         width: 34px;
     }
 }
+
 </style>
 </head>
 
+
 <body>
+
 
 <!-- =========================
      GİRİŞ
@@ -807,6 +1117,9 @@ body {
 
 <div id="chatPage">
 
+
+    <!-- ÜST BAR -->
+
     <div class="header">
 
         <div class="header-info">
@@ -815,15 +1128,22 @@ body {
                 💬 Ritmix Sohbet
             </div>
 
-            <div class="online" id="onlineText">
+            <div
+                class="online"
+                id="onlineText"
+            >
                 🟢 0 kişi çevrimiçi
             </div>
 
-            <div class="online-users" id="onlineUsersText">
+            <div
+                class="online-users"
+                id="onlineUsersText"
+            >
                 👥 Kimse yok
             </div>
 
         </div>
+
 
         <div class="header-buttons">
 
@@ -846,13 +1166,17 @@ body {
     </div>
 
 
+    <!-- MESAJLAR -->
+
     <div
         class="chat"
         id="chat"
     ></div>
 
 
-    <!-- EMOJI -->
+    <!-- =========================
+         EMOJI
+    ========================= -->
 
     <div
         class="emoji-panel"
@@ -911,7 +1235,9 @@ body {
     </div>
 
 
-    <!-- GIF -->
+    <!-- =========================
+         GIF
+    ========================= -->
 
     <div
         class="gif-panel"
@@ -946,9 +1272,12 @@ body {
     </div>
 
 
-    <!-- ALT PANEL -->
+    <!-- =========================
+         ALT PANEL
+    ========================= -->
 
     <div class="input-area">
+
 
         <div class="tools-row">
 
@@ -1038,7 +1367,9 @@ body {
 </div>
 
 
-<!-- SES DURUMU -->
+<!-- =========================
+     SES
+========================= -->
 
 <div id="voiceStatus">
     🎤 Sesli sistem hazırlanıyor...
@@ -1053,23 +1384,39 @@ body {
 
 <script>
 
+
 /* =====================================================
    FIREBASE
 ===================================================== */
 
 const firebaseConfig = {
-    apiKey: "AIzaSyDJ9zkgu_2ZLcD_ObEYwnFfSu6QffN9VQI",
-    authDomain: "papatyawap.firebaseapp.com",
-    databaseURL: "https://papatyawap-default-rtdb.firebaseio.com",
-    projectId: "papatyawap",
-    storageBucket: "papatyawap.firebasestorage.app",
-    messagingSenderId: "29357315689",
-    appId: "1:29357315689:web:78864218c204d291f734f8"
+
+    apiKey:
+        "AIzaSyDJ9zkgu_2ZLcD_ObEYwnFfSu6QffN9VQI",
+
+    authDomain:
+        "papatyawap.firebaseapp.com",
+
+    databaseURL:
+        "https://papatyawap-default-rtdb.firebaseio.com",
+
+    projectId:
+        "papatyawap",
+
+    storageBucket:
+        "papatyawap.firebasestorage.app",
+
+    messagingSenderId:
+        "29357315689",
+
+    appId:
+        "1:29357315689:web:78864218c204d291f734f8"
 };
 
 firebase.initializeApp(firebaseConfig);
 
-const database = firebase.database();
+const database =
+    firebase.database();
 
 
 /* =====================================================
@@ -1085,13 +1432,19 @@ const GIPHY_API_KEY =
 ===================================================== */
 
 let username = "";
+
 let userKey = "";
 
 let localStream = null;
+
 let peerConnections = {};
+
 let voiceActive = false;
+
 let voiceListenerStarted = false;
-let selectedMessageColor = "#333333";
+
+let selectedMessageColor =
+    "#333333";
 
 
 /* =====================================================
@@ -1103,11 +1456,13 @@ const rtcConfig = {
     iceServers: [
 
         {
-            urls: "stun:stun.l.google.com:19302"
+            urls:
+                "stun:stun.l.google.com:19302"
         },
 
         {
-            urls: "stun:stun1.l.google.com:19302"
+            urls:
+                "stun:stun1.l.google.com:19302"
         }
 
     ]
@@ -1123,66 +1478,91 @@ document
     .querySelectorAll(".color-button")
     .forEach(function(button) {
 
-        button.onclick = function() {
+        button.onclick =
+            function() {
 
-            selectedMessageColor =
-                this.dataset.color;
+                selectedMessageColor =
+                    this.dataset.color;
 
-            document
-                .querySelectorAll(".color-button")
-                .forEach(function(item) {
+                document
+                    .querySelectorAll(
+                        ".color-button"
+                    )
+                    .forEach(
+                        function(item) {
 
-                    item.classList.remove("selected");
+                            item.classList
+                                .remove(
+                                    "selected"
+                                );
 
-                });
+                        }
+                    );
 
-            this.classList.add("selected");
+                this.classList.add(
+                    "selected"
+                );
 
-        };
+            };
 
     });
 
 
 /* =====================================================
-   EMOJİ
+   EMOJI
 ===================================================== */
 
 const emojiButton =
-    document.getElementById("emojiButton");
+    document.getElementById(
+        "emojiButton"
+    );
 
 const emojiPanel =
-    document.getElementById("emojiPanel");
+    document.getElementById(
+        "emojiPanel"
+    );
 
 const gifPanel =
-    document.getElementById("gifPanel");
+    document.getElementById(
+        "gifPanel"
+    );
 
 
-emojiButton.onclick = function() {
+emojiButton.onclick =
+    function() {
 
-    emojiPanel.style.display =
-        emojiPanel.style.display === "block"
-            ? "none"
-            : "block";
+        emojiPanel.style.display =
+            emojiPanel.style.display ===
+            "block"
+                ? "none"
+                : "block";
 
-    gifPanel.style.display = "none";
+        gifPanel.style.display =
+            "none";
 
-};
+    };
 
 
 document
-    .querySelectorAll(".emoji-item")
+    .querySelectorAll(
+        ".emoji-item"
+    )
     .forEach(function(button) {
 
-        button.onclick = function() {
+        button.onclick =
+            function() {
 
-            const input =
-                document.getElementById("messageInput");
+                const input =
+                    document.getElementById(
+                        "messageInput"
+                    );
 
-            input.value += this.textContent;
+                input.value +=
+                    this.textContent;
 
-            input.focus();
+                input.focus();
 
-        };
+            };
 
     });
 
@@ -1192,49 +1572,58 @@ document
 ===================================================== */
 
 const gifButton =
-    document.getElementById("gifButton");
+    document.getElementById(
+        "gifButton"
+    );
 
 const gifSearchInput =
-    document.getElementById("gifSearchInput");
+    document.getElementById(
+        "gifSearchInput"
+    );
 
 const gifSearchButton =
-    document.getElementById("gifSearchButton");
+    document.getElementById(
+        "gifSearchButton"
+    );
 
 const gifResults =
-    document.getElementById("gifResults");
+    document.getElementById(
+        "gifResults"
+    );
 
 
-gifButton.onclick = function() {
+gifButton.onclick =
+    function() {
 
-    gifPanel.style.display =
-        gifPanel.style.display === "block"
-            ? "none"
-            : "block";
+        gifPanel.style.display =
+            gifPanel.style.display ===
+            "block"
+                ? "none"
+                : "block";
 
-    emojiPanel.style.display = "none";
+        emojiPanel.style.display =
+            "none";
 
-};
-
-
-gifSearchButton.onclick = searchGIFs;
-
-
-gifSearchInput.onkeydown = function(event) {
-
-    if (event.key === "Enter") {
-
-        event.preventDefault();
-
-        searchGIFs();
-
-    }
-
-};
+    };
 
 
-/* =====================================================
-   GIF ARAMA
-===================================================== */
+gifSearchButton.onclick =
+    searchGIFs;
+
+
+gifSearchInput.onkeydown =
+    function(event) {
+
+        if (event.key === "Enter") {
+
+            event.preventDefault();
+
+            searchGIFs();
+
+        }
+
+    };
+
 
 async function searchGIFs() {
 
@@ -1258,9 +1647,13 @@ async function searchGIFs() {
         const url =
             "https://api.giphy.com/v1/gifs/search" +
             "?api_key=" +
-            encodeURIComponent(GIPHY_API_KEY) +
+            encodeURIComponent(
+                GIPHY_API_KEY
+            ) +
             "&q=" +
-            encodeURIComponent(query) +
+            encodeURIComponent(
+                query
+            ) +
             "&limit=24" +
             "&rating=pg-13" +
             "&lang=tr";
@@ -1271,7 +1664,8 @@ async function searchGIFs() {
         if (!response.ok) {
 
             throw new Error(
-                "HTTP " + response.status
+                "HTTP " +
+                response.status
             );
 
         }
@@ -1294,47 +1688,62 @@ async function searchGIFs() {
 
         gifResults.innerHTML = "";
 
-        data.data.forEach(function(gif) {
+        data.data.forEach(
+            function(gif) {
 
-            const images =
-                gif.images || {};
+                const images =
+                    gif.images || {};
 
-            const previewUrl =
-                images.fixed_width?.webp ||
-                images.fixed_width?.url ||
-                images.preview_gif?.url ||
-                images.original?.url;
+                const previewUrl =
+                    images.fixed_width?.webp ||
+                    images.fixed_width?.url ||
+                    images.preview_gif?.url ||
+                    images.original?.url;
 
-            const originalUrl =
-                images.original?.url ||
-                previewUrl;
+                const originalUrl =
+                    images.original?.url ||
+                    previewUrl;
 
-            if (!previewUrl) {
-                return;
-            }
+                if (!previewUrl) {
+                    return;
+                }
 
-            const image =
-                document.createElement("img");
+                const image =
+                    document.createElement(
+                        "img"
+                    );
 
-            image.className = "gif-result";
-            image.src = previewUrl;
-            image.alt = gif.title || "GIF";
-            image.loading = "lazy";
+                image.className =
+                    "gif-result";
 
-            image.onclick = function() {
+                image.src =
+                    previewUrl;
 
-                sendGIF(
-                    previewUrl,
-                    originalUrl
+                image.alt =
+                    gif.title || "GIF";
+
+                image.loading =
+                    "lazy";
+
+                image.onclick =
+                    function() {
+
+                        sendGIF(
+                            previewUrl,
+                            originalUrl
+                        );
+
+                        gifPanel.style.display =
+                            "none";
+
+                    };
+
+                gifResults.appendChild(
+                    image
                 );
 
-                gifPanel.style.display = "none";
-
-            };
-
-            gifResults.appendChild(image);
-
-        });
+            }
+        );
 
     }
 
@@ -1370,12 +1779,20 @@ function sendGIF(
         .ref("messages")
         .push({
 
-            username: username,
-            type: "gif",
-            gif: originalUrl,
-            preview: previewUrl,
-            color: selectedMessageColor,
-            timestamp: Date.now()
+            username:
+                username,
+
+            type:
+                "gif",
+
+            gif:
+                originalUrl,
+
+            preview:
+                previewUrl,
+
+            timestamp:
+                Date.now()
 
         });
 
@@ -1389,7 +1806,9 @@ function sendGIF(
 function enterChat() {
 
     const input =
-        document.getElementById("usernameInput");
+        document.getElementById(
+            "usernameInput"
+        );
 
     const name =
         input.value.trim();
@@ -1406,13 +1825,18 @@ function enterChat() {
 
     }
 
-    username = name;
+    username =
+        name;
 
-    document.getElementById("login")
-        .style.display = "none";
+    document.getElementById(
+        "login"
+    ).style.display =
+        "none";
 
-    document.getElementById("chatPage")
-        .style.display = "block";
+    document.getElementById(
+        "chatPage"
+    ).style.display =
+        "block";
 
     loadMessages();
 
@@ -1422,13 +1846,19 @@ function enterChat() {
 
 
 document
-    .getElementById("loginButton")
-    .onclick = enterChat;
+    .getElementById(
+        "loginButton"
+    )
+    .onclick =
+    enterChat;
 
 
 document
-    .getElementById("usernameInput")
-    .onkeydown = function(event) {
+    .getElementById(
+        "usernameInput"
+    )
+    .onkeydown =
+    function(event) {
 
         if (event.key === "Enter") {
 
@@ -1447,184 +1877,235 @@ function loadMessages() {
 
     database
         .ref("messages")
-        .on("value", function(snapshot) {
+        .on(
+            "value",
+            function(snapshot) {
 
-            const chat =
-                document.getElementById("chat");
-
-            chat.innerHTML = "";
-
-            snapshot.forEach(function(child) {
-
-                const message =
-                    child.val();
-
-                if (!message) {
-                    return;
-                }
-
-                const box =
-                    document.createElement("div");
-
-                box.className = "message";
-
-
-                if (
-                    message.username === username
-                ) {
-
-                    box.classList.add(
-                        "my-message"
+                const chat =
+                    document.getElementById(
+                        "chat"
                     );
 
-                }
+                chat.innerHTML = "";
 
+                snapshot.forEach(
+                    function(child) {
 
-                /* KULLANICI */
+                        const message =
+                            child.val();
 
-                const user =
-                    document.createElement("div");
+                        if (!message) {
+                            return;
+                        }
 
-                user.className = "username";
-
-                user.textContent =
-                    message.username;
-
-
-                /* SAAT */
-
-                if (message.timestamp) {
-
-                    const time =
-                        document.createElement("span");
-
-                    time.className = "time";
-
-                    time.textContent =
-                        new Date(
-                            message.timestamp
-                        ).toLocaleTimeString(
-                            "tr-TR",
-                            {
-                                hour: "2-digit",
-                                minute: "2-digit"
-                            }
-                        );
-
-                    user.appendChild(time);
-
-                }
-
-
-                /* SİL */
-
-                if (
-                    message.username === username
-                ) {
-
-                    const deleteButton =
-                        document.createElement("button");
-
-                    deleteButton.className =
-                        "delete";
-
-                    deleteButton.textContent =
-                        "Sil";
-
-                    deleteButton.onclick =
-                        function() {
-
-                            child.ref.remove();
-
-                        };
-
-                    user.appendChild(
-                        deleteButton
-                    );
-
-                }
-
-
-                /* GIF */
-
-                if (
-                    message.type === "gif" &&
-                    message.gif
-                ) {
-
-                    const gifBox =
-                        document.createElement("div");
-
-                    gifBox.className =
-                        "gif-message";
-
-
-                    const gifImage =
-                        document.createElement("img");
-
-                    gifImage.src =
-                        message.preview ||
-                        message.gif;
-
-                    gifImage.alt = "GIF";
-
-
-                    gifImage.onclick =
-                        function() {
-
-                            window.open(
-                                message.gif,
-                                "_blank"
+                        const box =
+                            document.createElement(
+                                "div"
                             );
 
-                        };
+                        box.className =
+                            "message";
 
 
-                    gifBox.appendChild(
-                        gifImage
-                    );
+                        if (
+                            message.username ===
+                            username
+                        ) {
 
-                    box.appendChild(user);
-                    box.appendChild(gifBox);
-                    chat.appendChild(box);
+                            box.classList.add(
+                                "my-message"
+                            );
 
-                    return;
-
-                }
-
-
-                /* NORMAL MESAJ */
-
-                const messageText =
-                    document.createElement("div");
-
-                messageText.className =
-                    "message-text";
-
-                messageText.textContent =
-                    message.text || "";
+                        }
 
 
-                if (message.color) {
+                        /* KULLANICI */
 
-                    messageText.style.color =
-                        message.color;
+                        const user =
+                            document.createElement(
+                                "span"
+                            );
 
-                }
+                        user.className =
+                            "username";
 
-
-                box.appendChild(user);
-                box.appendChild(messageText);
-
-                chat.appendChild(box);
-
-            });
+                        user.textContent =
+                            message.username;
 
 
-            chat.scrollTop =
-                chat.scrollHeight;
+                        /* SAAT */
 
-        });
+                        if (
+                            message.timestamp
+                        ) {
+
+                            const time =
+                                document.createElement(
+                                    "span"
+                                );
+
+                            time.className =
+                                "time";
+
+                            time.textContent =
+                                new Date(
+                                    message.timestamp
+                                ).toLocaleTimeString(
+                                    "tr-TR",
+                                    {
+                                        hour:
+                                            "2-digit",
+                                        minute:
+                                            "2-digit"
+                                    }
+                                );
+
+                            user.appendChild(
+                                time
+                            );
+
+                        }
+
+
+                        /* SİL */
+
+                        if (
+                            message.username ===
+                            username
+                        ) {
+
+                            const deleteButton =
+                                document.createElement(
+                                    "button"
+                                );
+
+                            deleteButton.className =
+                                "delete";
+
+                            deleteButton.textContent =
+                                "Sil";
+
+                            deleteButton.onclick =
+                                function() {
+
+                                    child.ref.remove();
+
+                                };
+
+                            user.appendChild(
+                                deleteButton
+                            );
+
+                        }
+
+
+                        /* GIF */
+
+                        if (
+                            message.type ===
+                                "gif" &&
+                            message.gif
+                        ) {
+
+                            const gifBox =
+                                document.createElement(
+                                    "div"
+                                );
+
+                            gifBox.className =
+                                "gif-message";
+
+
+                            const gifImage =
+                                document.createElement(
+                                    "img"
+                                );
+
+                            gifImage.src =
+                                message.preview ||
+                                message.gif;
+
+                            gifImage.alt =
+                                "GIF";
+
+
+                            gifImage.onclick =
+                                function() {
+
+                                    window.open(
+                                        message.gif,
+                                        "_blank"
+                                    );
+
+                                };
+
+
+                            gifBox.appendChild(
+                                gifImage
+                            );
+
+                            box.appendChild(
+                                user
+                            );
+
+                            box.appendChild(
+                                gifBox
+                            );
+
+                            chat.appendChild(
+                                box
+                            );
+
+                            return;
+
+                        }
+
+
+                        /* NORMAL MESAJ */
+
+                        const messageText =
+                            document.createElement(
+                                "span"
+                            );
+
+                        messageText.className =
+                            "message-text";
+
+                        messageText.textContent =
+                            message.text || "";
+
+
+                        if (
+                            message.color
+                        ) {
+
+                            messageText.style.color =
+                                message.color;
+
+                        }
+
+
+                        box.appendChild(
+                            user
+                        );
+
+                        box.appendChild(
+                            messageText
+                        );
+
+                        chat.appendChild(
+                            box
+                        );
+
+                    }
+                );
+
+
+                chat.scrollTop =
+                    chat.scrollHeight;
+
+            }
+        );
 
 }
 
@@ -1652,34 +2133,48 @@ function sendMessage() {
 
     }
 
-
     database
         .ref("messages")
         .push({
 
-            username: username,
-            text: text,
-            color: selectedMessageColor,
-            type: "text",
-            timestamp: Date.now()
+            username:
+                username,
+
+            text:
+                text,
+
+            color:
+                selectedMessageColor,
+
+            type:
+                "text",
+
+            timestamp:
+                Date.now()
 
         });
 
-
     input.value = "";
+
     input.focus();
 
 }
 
 
 document
-    .getElementById("sendButton")
-    .onclick = sendMessage;
+    .getElementById(
+        "sendButton"
+    )
+    .onclick =
+    sendMessage;
 
 
 document
-    .getElementById("messageInput")
-    .onkeydown = function(event) {
+    .getElementById(
+        "messageInput"
+    )
+    .onkeydown =
+    function(event) {
 
         if (event.key === "Enter") {
 
@@ -1703,12 +2198,14 @@ function setOnline() {
             .ref("onlineUsers")
             .push();
 
-    userKey = ref.key;
+    userKey =
+        ref.key;
 
 
     ref.set({
 
-        username: username,
+        username:
+            username,
 
         timestamp:
             firebase.database.ServerValue.TIMESTAMP
@@ -1716,56 +2213,65 @@ function setOnline() {
     });
 
 
-    ref.onDisconnect().remove();
+    ref.onDisconnect()
+        .remove();
 
 
     database
         .ref("onlineUsers")
-        .on("value", function(snapshot) {
+        .on(
+            "value",
+            function(snapshot) {
 
-            const count =
-                snapshot.numChildren();
+                const count =
+                    snapshot.numChildren();
 
-            document
-                .getElementById("onlineText")
-                .textContent =
-                "🟢 " +
-                count +
-                " kişi çevrimiçi";
-
-
-            const names = [];
-
-
-            snapshot.forEach(function(child) {
-
-                const user =
-                    child.val();
-
-                if (
-                    user &&
-                    user.username
-                ) {
-
-                    names.push(
-                        user.username
-                    );
-
-                }
-
-            });
+                document
+                    .getElementById(
+                        "onlineText"
+                    )
+                    .textContent =
+                    "🟢 " +
+                    count +
+                    " kişi çevrimiçi";
 
 
-            document
-                .getElementById(
-                    "onlineUsersText"
-                )
-                .textContent =
-                names.length
-                    ? "👥 " + names.join(", ")
-                    : "👥 Kimse yok";
+                const names = [];
 
-        });
+
+                snapshot.forEach(
+                    function(child) {
+
+                        const user =
+                            child.val();
+
+                        if (
+                            user &&
+                            user.username
+                        ) {
+
+                            names.push(
+                                user.username
+                            );
+
+                        }
+
+                    }
+                );
+
+
+                document
+                    .getElementById(
+                        "onlineUsersText"
+                    )
+                    .textContent =
+                    names.length
+                        ? "👥 " +
+                          names.join(", ")
+                        : "👥 Kimse yok";
+
+            }
+        );
 
 }
 
@@ -1781,8 +2287,11 @@ function showVoiceStatus(text) {
             "voiceStatus"
         );
 
-    status.textContent = text;
-    status.style.display = "block";
+    status.textContent =
+        text;
+
+    status.style.display =
+        "block";
 
 }
 
@@ -1791,7 +2300,8 @@ function hideVoiceStatus() {
 
     document.getElementById(
         "voiceStatus"
-    ).style.display = "none";
+    ).style.display =
+        "none";
 
 }
 
@@ -1827,12 +2337,14 @@ async function startVoiceChat() {
                 .getUserMedia({
 
                     audio: true,
+
                     video: false
 
                 });
 
 
-        voiceActive = true;
+        voiceActive =
+            true;
 
 
         const button =
@@ -1843,7 +2355,6 @@ async function startVoiceChat() {
 
         button.textContent =
             "🔴 Sesi Kapat";
-
 
         button.classList.add(
             "active"
@@ -1864,7 +2375,8 @@ async function startVoiceChat() {
                 .once("value");
 
 
-        let foundCall = false;
+        let foundCall =
+            false;
 
 
         callsSnapshot.forEach(
@@ -1875,10 +2387,12 @@ async function startVoiceChat() {
 
                 if (
                     call &&
-                    call.receiver === username
+                    call.receiver ===
+                        username
                 ) {
 
-                    foundCall = true;
+                    foundCall =
+                        true;
 
                     answerCall(
                         child.key,
@@ -1913,7 +2427,8 @@ async function startVoiceChat() {
             error.message
         );
 
-        voiceActive = false;
+        voiceActive =
+            false;
 
     }
 
@@ -1925,8 +2440,11 @@ async function startVoiceChat() {
 ===================================================== */
 
 document
-    .getElementById("voiceButton")
-    .onclick = async function() {
+    .getElementById(
+        "voiceButton"
+    )
+    .onclick =
+    async function() {
 
         if (voiceActive) {
 
@@ -1948,11 +2466,16 @@ document
 
 function startVoiceListener() {
 
-    if (voiceListenerStarted) {
+    if (
+        voiceListenerStarted
+    ) {
+
         return;
+
     }
 
-    voiceListenerStarted = true;
+    voiceListenerStarted =
+        true;
 
 
     database
@@ -1974,7 +2497,8 @@ function startVoiceListener() {
 
 
                 if (
-                    call.caller === username
+                    call.caller ===
+                    username
                 ) {
 
                     return;
@@ -1983,7 +2507,8 @@ function startVoiceListener() {
 
 
                 if (
-                    call.receiver !== username
+                    call.receiver !==
+                    username
                 ) {
 
                     return;
@@ -1992,7 +2517,9 @@ function startVoiceListener() {
 
 
                 if (
-                    peerConnections[callId]
+                    peerConnections[
+                        callId
+                    ]
                 ) {
 
                     return;
@@ -2001,7 +2528,9 @@ function startVoiceListener() {
 
 
                 if (!voiceActive) {
+
                     return;
+
                 }
 
 
@@ -2046,7 +2575,8 @@ async function createCall() {
             .once("value");
 
 
-    let otherUser = null;
+    let otherUser =
+        null;
 
 
     usersSnapshot.forEach(
@@ -2058,7 +2588,8 @@ async function createCall() {
             if (
                 user &&
                 user.username &&
-                user.username !== username &&
+                user.username !==
+                    username &&
                 !otherUser
             ) {
 
@@ -2098,20 +2629,23 @@ async function createCall() {
         );
 
 
-    peerConnections[callId] =
-        pc;
+    peerConnections[
+        callId
+    ] = pc;
 
 
     localStream
         .getTracks()
-        .forEach(function(track) {
+        .forEach(
+            function(track) {
 
-            pc.addTrack(
-                track,
-                localStream
-            );
+                pc.addTrack(
+                    track,
+                    localStream
+                );
 
-        });
+            }
+        );
 
 
     pc.ontrack =
@@ -2122,21 +2656,20 @@ async function createCall() {
                     "remoteAudio"
                 );
 
-
             audio.srcObject =
                 event.streams[0];
 
-
             audio.play()
-                .catch(function(error) {
+                .catch(
+                    function(error) {
 
-                    console.log(
-                        "Ses oynatma hatası:",
-                        error
-                    );
+                        console.log(
+                            "Ses oynatma hatası:",
+                            error
+                        );
 
-                });
-
+                    }
+                );
 
             showVoiceStatus(
                 "🔊 Ses bağlantısı aktif"
@@ -2148,7 +2681,9 @@ async function createCall() {
     pc.onicecandidate =
         function(event) {
 
-            if (event.candidate) {
+            if (
+                event.candidate
+            ) {
 
                 database
                     .ref(
@@ -2176,17 +2711,24 @@ async function createCall() {
 
     await callRef.set({
 
-        caller: username,
-        receiver: otherUser,
+        caller:
+            username,
+
+        receiver:
+            otherUser,
 
         offer: {
 
-            type: offer.type,
-            sdp: offer.sdp
+            type:
+                offer.type,
+
+            sdp:
+                offer.sdp
 
         },
 
-        created: Date.now()
+        created:
+            Date.now()
 
     });
 
@@ -2203,7 +2745,6 @@ async function createCall() {
 
                 const answer =
                     snapshot.val();
-
 
                 if (
                     answer &&
@@ -2235,7 +2776,6 @@ async function createCall() {
                 const candidate =
                     snapshot.val();
 
-
                 if (candidate) {
 
                     try {
@@ -2250,7 +2790,9 @@ async function createCall() {
 
                     catch(error) {
 
-                        console.log(error);
+                        console.log(
+                            error
+                        );
 
                     }
 
@@ -2287,20 +2829,23 @@ async function answerCall(
         );
 
 
-    peerConnections[callId] =
-        pc;
+    peerConnections[
+        callId
+    ] = pc;
 
 
     localStream
         .getTracks()
-        .forEach(function(track) {
+        .forEach(
+            function(track) {
 
-            pc.addTrack(
-                track,
-                localStream
-            );
+                pc.addTrack(
+                    track,
+                    localStream
+                );
 
-        });
+            }
+        );
 
 
     pc.ontrack =
@@ -2311,18 +2856,19 @@ async function answerCall(
                     "remoteAudio"
                 );
 
-
             audio.srcObject =
                 event.streams[0];
 
-
             audio.play()
-                .catch(function(error) {
+                .catch(
+                    function(error) {
 
-                    console.log(error);
+                        console.log(
+                            error
+                        );
 
-                });
-
+                    }
+                );
 
             showVoiceStatus(
                 "🔊 Ses bağlantısı aktif"
@@ -2334,7 +2880,9 @@ async function answerCall(
     pc.onicecandidate =
         function(event) {
 
-            if (event.candidate) {
+            if (
+                event.candidate
+            ) {
 
                 database
                     .ref(
@@ -2375,8 +2923,11 @@ async function answerCall(
         )
         .set({
 
-            type: answer.type,
-            sdp: answer.sdp
+            type:
+                answer.type,
+
+            sdp:
+                answer.sdp
 
         });
 
@@ -2394,7 +2945,6 @@ async function answerCall(
                 const candidate =
                     snapshot.val();
 
-
                 if (candidate) {
 
                     try {
@@ -2409,7 +2959,9 @@ async function answerCall(
 
                     catch(error) {
 
-                        console.log(error);
+                        console.log(
+                            error
+                        );
 
                     }
 
@@ -2427,44 +2979,54 @@ async function answerCall(
 
 function stopVoiceChat() {
 
-    voiceActive = false;
+    voiceActive =
+        false;
 
 
     if (localStream) {
 
         localStream
             .getTracks()
-            .forEach(function(track) {
+            .forEach(
+                function(track) {
 
-                track.stop();
+                    track.stop();
 
-            });
+                }
+            );
 
-        localStream = null;
+        localStream =
+            null;
 
     }
 
 
     Object
         .keys(peerConnections)
-        .forEach(function(id) {
+        .forEach(
+            function(id) {
 
-            try {
+                try {
 
-                peerConnections[id].close();
+                    peerConnections[id]
+                        .close();
+
+                }
+
+                catch(error) {
+
+                    console.log(
+                        error
+                    );
+
+                }
 
             }
-
-            catch(error) {
-
-                console.log(error);
-
-            }
-
-        });
+        );
 
 
-    peerConnections = {};
+    peerConnections =
+        {};
 
 
     const audio =
@@ -2472,8 +3034,8 @@ function stopVoiceChat() {
             "remoteAudio"
         );
 
-
-    audio.srcObject = null;
+    audio.srcObject =
+        null;
 
 
     const button =
@@ -2481,10 +3043,8 @@ function stopVoiceChat() {
             "voiceButton"
         );
 
-
     button.textContent =
         "🎤 Sesli Sohbet";
-
 
     button.classList.remove(
         "active"
@@ -2506,12 +3066,13 @@ function stopVoiceChat() {
                         const call =
                             child.val();
 
-
                         if (
                             call &&
                             (
-                                call.caller === username ||
-                                call.receiver === username
+                                call.caller ===
+                                    username ||
+                                call.receiver ===
+                                    username
                             )
                         ) {
 
@@ -2533,8 +3094,11 @@ function stopVoiceChat() {
 ===================================================== */
 
 document
-    .getElementById("logoutButton")
-    .onclick = function() {
+    .getElementById(
+        "logoutButton"
+    )
+    .onclick =
+    function() {
 
         stopVoiceChat();
 
@@ -2568,7 +3132,8 @@ document.addEventListener(
             !emojiPanel.contains(
                 event.target
             ) &&
-            event.target !== emojiButton
+            event.target !==
+                emojiButton
         ) {
 
             emojiPanel.style.display =
@@ -2581,7 +3146,8 @@ document.addEventListener(
             !gifPanel.contains(
                 event.target
             ) &&
-            event.target !== gifButton
+            event.target !==
+                gifButton
         ) {
 
             gifPanel.style.display =
