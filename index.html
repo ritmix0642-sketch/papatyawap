@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
 <title>Ritmix Sohbet</title>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -10,12 +11,14 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 
 <style>
+
 *{
     box-sizing:border-box;
     -webkit-tap-highlight-color:transparent;
 }
 
-html,body{
+html,
+body{
     margin:0;
     width:100%;
     height:100%;
@@ -35,21 +38,29 @@ body{
 #login{
     width:100%;
     min-height:100vh;
+
     display:flex;
     align-items:center;
     justify-content:center;
+
     padding:20px;
+
     background:#f5f2eb;
 }
 
 .login-box{
     width:100%;
     max-width:420px;
+
     padding:38px 28px;
+
     text-align:center;
+
     background:#fffdf7;
+
     border:1px solid #e5dfd2;
     border-radius:24px;
+
     box-shadow:0 15px 45px rgba(0,0,0,.10);
 }
 
@@ -60,6 +71,7 @@ body{
 
 .subtitle{
     margin:10px 0 28px;
+
     color:#77736b;
     font-size:14px;
 }
@@ -67,55 +79,75 @@ body{
 #usernameInput{
     width:100%;
     height:52px;
+
     padding:0 17px;
+
     border:1px solid #d8d3c8;
     border-radius:15px;
+
     outline:none;
+
     background:#fff;
     color:#222;
+
     font-size:16px;
 }
 
 #loginButton{
     width:100%;
     height:52px;
+
     margin-top:13px;
+
     border:0;
     border-radius:15px;
+
     background:#333;
     color:white;
+
     font-size:15px;
     font-weight:bold;
+
     cursor:pointer;
 }
 
 /* =========================
-   CHAT
+   SOHBET
 ========================= */
 
 #chatPage{
     display:none;
+
     width:100%;
     height:100vh;
+
     overflow:hidden;
+
     position:relative;
+
     background:#f5f2eb;
 }
 
 /* =========================
-   HEADER
+   ÜST BAR
 ========================= */
 
 .header{
     position:relative;
     z-index:20;
+
     height:76px;
+
     display:flex;
     align-items:center;
     justify-content:space-between;
+
     gap:10px;
-    padding:8px 14px;
+
+    padding:10px 18px;
+
     background:#fffdf7;
+
     border-bottom:1px solid #ded9cf;
 }
 
@@ -130,16 +162,20 @@ body{
 }
 
 .online{
-    margin-top:4px;
+    margin-top:5px;
+
     color:#159957;
     font-size:12px;
 }
 
 .online-users{
-    margin-top:3px;
+    margin-top:4px;
+
     color:#77736b;
-    font-size:10px;
-    max-width:500px;
+    font-size:11px;
+
+    max-width:600px;
+
     white-space:nowrap;
     overflow:hidden;
     text-overflow:ellipsis;
@@ -148,19 +184,27 @@ body{
 .header-buttons{
     display:flex;
     align-items:center;
-    gap:5px;
+
+    gap:6px;
+
     flex-shrink:0;
 }
 
 .logout,
 .voice-button,
 .room-delete{
-    min-height:38px;
+    min-height:40px;
+
     border:1px solid #d8d3c8;
-    padding:7px 10px;
-    border-radius:10px;
+
+    padding:8px 10px;
+
+    border-radius:11px;
+
     cursor:pointer;
+
     font-weight:bold;
+
     white-space:nowrap;
 }
 
@@ -170,54 +214,69 @@ body{
 
 .voice-button{
     background:#d9f4e5;
+
     color:#08783f;
+
     border-color:#b7dfc8;
 }
 
 .voice-button.active{
     background:#ffe0e3;
+
     color:#c72f42;
+
     border-color:#f1b7bf;
 }
 
 .room-delete{
-    background:#ffe2e5;
-    color:#c6283d;
-    border-color:#f0b9c0;
+    background:#ffe1e4;
+
+    color:#c72f42;
+
+    border-color:#f1b7bf;
 }
 
 /* =========================
-   CHAT ALANI
+   MESAJ ALANI
 ========================= */
 
 .chat{
     position:absolute;
+
     top:76px;
     left:0;
     right:0;
     bottom:0;
 
-    overflow:hidden;
+    overflow-y:auto;
+    overflow-x:hidden;
 
-    padding:18px 16px 170px;
+    padding:20px 16px 175px;
 
     max-width:850px;
+
     width:100%;
+
     margin:auto;
+
+    -webkit-overflow-scrolling:touch;
 }
 
 /* =========================
-   MESAJLAR
+   MESAJ
 ========================= */
 
 .message{
     width:100%;
+
     margin-bottom:18px;
 }
 
 .username{
     margin-bottom:4px;
+
     color:#2878d4;
+
     font-size:12px;
     font-weight:bold;
 }
@@ -232,29 +291,45 @@ body{
 
 .time{
     margin-left:7px;
+
     color:#8c877d;
+
     font-size:10px;
 }
 
 .delete{
     border:0;
+
     background:transparent;
+
     color:#e34b5f;
+
     font-size:10px;
+
     cursor:pointer;
+
     margin-left:7px;
 }
 
 .bubble{
     display:block;
-    width:100%;
+
+    max-width:100%;
+
     padding:0;
+
     margin:0;
+
     background:transparent;
+
     border:0;
+
     line-height:1.55;
+
     word-break:break-word;
+
     overflow-wrap:anywhere;
+
     color:#333;
 }
 
@@ -264,18 +339,26 @@ body{
 
 .image-message{
     display:inline-block;
+
     max-width:100%;
+
     margin-top:5px;
 }
 
 .image-message img{
     display:block;
+
     max-width:min(100%,650px);
+
     max-height:600px;
+
     width:auto;
     height:auto;
+
     object-fit:contain;
+
     border-radius:12px;
+
     cursor:pointer;
 }
 
@@ -285,77 +368,121 @@ body{
 
 .gif-message{
     max-width:min(100%,400px);
+
     display:inline-block;
+
     margin-top:5px;
+
     overflow:hidden;
 }
 
 .gif-message img{
     width:100%;
+
     max-width:400px;
     max-height:600px;
+
     object-fit:contain;
+
     border-radius:15px;
+
     display:block;
+
     cursor:pointer;
 }
 
 /* =========================
-   SAYFA BUTONLARI
+   SAYFA NUMARALARI
 ========================= */
 
-.pagination{
-    position:absolute;
-    left:50%;
-    bottom:120px;
-    transform:translateX(-50%);
+.pagination-wrapper{
+    position:fixed;
 
-    width:min(850px,calc(100% - 20px));
+    left:0;
+    right:0;
+
+    bottom:108px;
+
+    height:47px;
+
+    z-index:28;
 
     display:flex;
+
     align-items:center;
+
     justify-content:center;
-    gap:5px;
 
-    padding:7px;
+    padding:5px 8px;
 
-    background:rgba(255,253,247,.96);
-    border:1px solid #ded9cf;
-    border-radius:14px;
+    background:#fffdf7;
 
-    z-index:22;
+    border-top:1px solid #ded9cf;
+}
+
+.pagination{
+    width:100%;
+
+    max-width:850px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:6px;
 
     overflow-x:auto;
+
+    overflow-y:hidden;
+
+    padding:2px 3px;
+
+    scrollbar-width:thin;
+
+    -webkit-overflow-scrolling:touch;
+
+    justify-content:flex-start;
+}
+
+.pagination::-webkit-scrollbar{
+    height:4px;
 }
 
 .page-button{
-    min-width:34px;
-    height:32px;
+    flex:0 0 auto;
+
+    min-width:36px;
+    height:34px;
+
+    padding:0 9px;
 
     border:1px solid #d8d3c8;
+
     border-radius:9px;
 
     background:#eeeae1;
+
     color:#333;
 
-    cursor:pointer;
-    font-weight:bold;
-    font-size:12px;
+    font-size:13px;
 
-    flex-shrink:0;
+    font-weight:bold;
+
+    cursor:pointer;
 }
 
 .page-button.active{
     background:#333;
-    color:#fff;
+
+    color:white;
+
     border-color:#333;
 }
 
-.page-info{
-    color:#77736b;
-    font-size:11px;
-    padding:0 5px;
-    white-space:nowrap;
+.page-button:disabled{
+    opacity:.45;
+
+    cursor:not-allowed;
 }
 
 /* =========================
@@ -364,11 +491,14 @@ body{
 
 .input-area{
     position:fixed;
+
     bottom:0;
     left:0;
+
     width:100%;
 
     height:108px;
+
     min-height:108px;
 
     padding:
@@ -378,9 +508,10 @@ body{
         max(10px,env(safe-area-inset-left));
 
     background:#fffdf7;
+
     border-top:1px solid #ded9cf;
 
-    z-index:25;
+    z-index:30;
 }
 
 /* =========================
@@ -389,30 +520,40 @@ body{
 
 .tools-row{
     width:100%;
+
     display:flex;
+
     align-items:center;
-    gap:6px;
+
+    gap:7px;
+
     margin-bottom:7px;
+
     min-height:38px;
 }
 
 .tool-button{
     width:42px;
     height:38px;
+
     flex-shrink:0;
 
     border:1px solid #d8d3c8;
+
     border-radius:10px;
 
     background:#eeeae1;
+
     color:#333;
 
     font-size:19px;
+
     cursor:pointer;
 }
 
 .gif-button{
     font-size:13px;
+
     font-weight:bold;
 }
 
@@ -420,117 +561,145 @@ body{
     font-size:20px;
 }
 
-/* =========================
-   RENK PANELİ
-========================= */
-
-.color-wrapper{
-    position:relative;
+.color-button-main{
+    font-size:20px;
 }
-
-.color-main-button{
-    width:42px;
-    height:38px;
-
-    border:1px solid #d8d3c8;
-    border-radius:10px;
-
-    background:#eeeae1;
-
-    font-size:19px;
-    cursor:pointer;
-}
-
-.color-panel{
-    display:none;
-
-    position:absolute;
-    bottom:45px;
-    left:0;
-
-    padding:9px;
-
-    background:#fffdf7;
-
-    border:1px solid #d8d3c8;
-    border-radius:14px;
-
-    box-shadow:0 10px 30px rgba(0,0,0,.20);
-
-    z-index:50;
-}
-
-.color-panel.show{
-    display:flex;
-    gap:7px;
-}
-
-.color-button{
-    width:25px;
-    height:25px;
-    border-radius:50%;
-    border:2px solid rgba(0,0,0,.20);
-    cursor:pointer;
-    flex-shrink:0;
-    padding:0;
-}
-
-.color-button.selected{
-    border:3px solid #222;
-    box-shadow:0 0 7px rgba(0,0,0,.25);
-}
-
-.color-white{background:#333;}
-.color-pink{background:#ff69b4;}
-.color-blue{background:#2878d4;}
-.color-green{background:#159957;}
-.color-yellow{background:#c99400;}
-.color-red{background:#e34b5f;}
 
 #imageInput{
     display:none;
 }
 
 /* =========================
-   MESAJ GİRİŞİ
+   RENK PANELİ
+========================= */
+
+.color-panel{
+    display:none;
+
+    position:fixed;
+
+    bottom:158px;
+    left:10px;
+
+    padding:10px;
+
+    background:#fffdf7;
+
+    border:1px solid #d8d3c8;
+
+    border-radius:15px;
+
+    box-shadow:0 15px 45px rgba(0,0,0,.20);
+
+    z-index:45;
+}
+
+.color-panel.show{
+    display:flex;
+
+    align-items:center;
+
+    gap:7px;
+}
+
+.color-button{
+    width:25px;
+    height:25px;
+
+    border-radius:50%;
+
+    border:2px solid rgba(0,0,0,.20);
+
+    cursor:pointer;
+
+    flex-shrink:0;
+
+    padding:0;
+}
+
+.color-button.selected{
+    border:3px solid #222;
+
+    box-shadow:0 0 7px rgba(0,0,0,.25);
+}
+
+.color-white{
+    background:#333;
+}
+
+.color-pink{
+    background:#ff69b4;
+}
+
+.color-blue{
+    background:#2878d4;
+}
+
+.color-green{
+    background:#159957;
+}
+
+.color-yellow{
+    background:#c99400;
+}
+
+.color-red{
+    background:#e34b5f;
+}
+
+/* =========================
+   MESAJ GİRİŞ
 ========================= */
 
 .message-row{
     width:100%;
+
     display:flex;
+
     align-items:center;
+
     gap:7px;
 }
 
 .message-input{
     flex:1;
+
     width:100%;
     min-width:0;
+
     height:46px;
 
     border:1px solid #d8d3c8;
+
     outline:none;
+
     border-radius:15px;
 
     background:#fff;
+
     color:#222;
 
     padding:0 15px;
+
     font-size:15px;
 }
 
 .send{
     width:50px;
     height:46px;
+
     flex-shrink:0;
 
     border:0;
+
     border-radius:15px;
 
     background:#333;
+
     color:white;
 
     font-size:20px;
+
     cursor:pointer;
 }
 
@@ -543,10 +712,12 @@ body{
 
     position:fixed;
 
-    bottom:114px;
+    bottom:160px;
+
     left:10px;
 
     width:300px;
+
     max-height:240px;
 
     overflow-y:auto;
@@ -554,7 +725,9 @@ body{
     padding:12px;
 
     background:#fffdf7;
+
     border:1px solid #d8d3c8;
+
     border-radius:18px;
 
     box-shadow:0 15px 45px rgba(0,0,0,.20);
@@ -564,16 +737,23 @@ body{
 
 .emoji-grid{
     display:grid;
+
     grid-template-columns:repeat(8,1fr);
+
     gap:7px;
 }
 
 .emoji-item{
     border:0;
+
     background:transparent;
+
     font-size:25px;
+
     cursor:pointer;
+
     border-radius:8px;
+
     padding:4px;
 }
 
@@ -586,16 +766,20 @@ body{
 
     position:fixed;
 
-    bottom:114px;
+    bottom:160px;
+
     left:60px;
 
     width:350px;
+
     max-width:calc(100vw - 20px);
 
     height:430px;
 
     background:#fffdf7;
+
     border:1px solid #d8d3c8;
+
     border-radius:18px;
 
     box-shadow:0 15px 45px rgba(0,0,0,.20);
@@ -607,17 +791,23 @@ body{
 
 .gif-search{
     display:flex;
+
     gap:7px;
+
     padding:10px;
+
     border-bottom:1px solid #ded9cf;
 }
 
 .gif-search input{
     flex:1;
+
     height:40px;
 
     border:1px solid #d8d3c8;
+
     outline:none;
+
     border-radius:10px;
 
     background:#fff;
@@ -627,27 +817,37 @@ body{
 
 .gif-search button{
     width:45px;
+
     border:0;
+
     border-radius:10px;
+
     background:#333;
+
     color:white;
+
     font-size:18px;
+
     cursor:pointer;
 }
 
 .gif-results{
     height:350px;
+
     overflow-y:auto;
 
     padding:10px;
 
     display:grid;
+
     grid-template-columns:repeat(2,1fr);
+
     gap:8px;
 }
 
 .gif-result{
     width:100%;
+
     height:120px;
 
     object-fit:cover;
@@ -661,9 +861,13 @@ body{
 
 .gif-empty{
     grid-column:1/-1;
+
     text-align:center;
+
     padding:30px 10px;
+
     color:#77736b;
+
     font-size:13px;
 }
 
@@ -676,7 +880,8 @@ body{
 
     position:fixed;
 
-    bottom:120px;
+    bottom:165px;
+
     left:50%;
 
     transform:translateX(-50%);
@@ -708,9 +913,26 @@ body{
 
     .input-area{
         max-width:850px;
+
         left:50%;
+
         transform:translateX(-50%);
+
         border-radius:18px 18px 0 0;
+    }
+
+    .pagination-wrapper{
+        max-width:850px;
+
+        left:50%;
+
+        right:auto;
+
+        width:850px;
+
+        transform:translateX(-50%);
+
+        border-radius:15px 15px 0 0;
     }
 
 }
@@ -722,9 +944,12 @@ body{
 @media (max-width:600px){
 
     .header{
-        height:64px;
-        min-height:64px;
-        padding:6px 7px;
+        height:62px;
+
+        min-height:62px;
+
+        padding:7px 6px;
+
         gap:5px;
     }
 
@@ -733,12 +958,14 @@ body{
     }
 
     .online{
-        margin-top:2px;
+        margin-top:3px;
+
         font-size:10px;
     }
 
     .online-users{
-        max-width:115px;
+        max-width:130px;
+
         font-size:9px;
     }
 
@@ -750,114 +977,195 @@ body{
     .logout,
     .room-delete{
         min-height:34px;
-        padding:6px 7px;
+
+        padding:6px 6px;
+
         font-size:9px;
+
         border-radius:9px;
     }
 
     .voice-button{
-        max-width:83px;
+        max-width:82px;
+
         overflow:hidden;
+
         text-overflow:ellipsis;
     }
 
     .room-delete{
-        max-width:70px;
+        max-width:54px;
+
         overflow:hidden;
+
         text-overflow:ellipsis;
     }
 
     .chat{
-        top:64px;
+        top:62px;
+
         padding:
-            12px
-            9px
+            15px
+            10px
             160px;
     }
 
+    .image-message{
+        max-width:100%;
+    }
+
+    .image-message img{
+        max-width:100%;
+
+        max-height:500px;
+    }
+
+    .gif-message{
+        max-width:100%;
+    }
+
+    .gif-message img{
+        max-width:100%;
+
+        max-height:500px;
+    }
+
+    /* =========================
+       MOBİL SAYFA NUMARALARI
+    ========================= */
+
+    .pagination-wrapper{
+        bottom:94px;
+
+        height:45px;
+
+        padding:4px 6px;
+
+        display:block;
+    }
+
     .pagination{
-        bottom:101px;
-        padding:6px;
-        gap:4px;
+        height:37px;
+
+        justify-content:flex-start;
+
+        gap:5px;
+
+        overflow-x:auto;
+
+        overflow-y:hidden;
+
+        padding:1px 2px;
     }
 
     .page-button{
-        min-width:30px;
-        height:29px;
-        font-size:10px;
-    }
+        min-width:34px;
 
-    .page-info{
-        font-size:9px;
+        height:32px;
+
+        padding:0 8px;
+
+        font-size:12px;
     }
 
     .input-area{
         height:94px;
+
         min-height:94px;
 
         padding:
-            6px
             7px
-            calc(6px + env(safe-area-inset-bottom));
+            8px
+            calc(7px + env(safe-area-inset-bottom));
     }
 
     .tools-row{
-        gap:4px;
-        margin-bottom:5px;
+        gap:5px;
+
+        margin-bottom:6px;
+
         min-height:32px;
     }
 
-    .tool-button,
-    .color-main-button{
-        width:36px;
+    .tool-button{
+        width:37px;
+
         height:32px;
-        border-radius:8px;
-        font-size:16px;
-    }
 
-    .gif-button{
-        font-size:10px;
-    }
+        border-radius:9px;
 
-    .image-button{
         font-size:17px;
     }
 
-    .color-button{
-        width:20px;
-        height:20px;
+    .gif-button{
+        font-size:11px;
+    }
+
+    .image-button{
+        font-size:18px;
+    }
+
+    .color-button-main{
+        font-size:18px;
+    }
+
+    .message-row{
+        gap:5px;
     }
 
     .message-input{
         height:42px;
+
         font-size:14px;
+
         border-radius:13px;
+
         padding:0 12px;
     }
 
     .send{
         width:44px;
+
         height:42px;
+
         border-radius:13px;
+
         font-size:18px;
     }
 
     .emoji-panel{
         width:calc(100vw - 20px);
+
         left:10px;
-        bottom:104px;
+
+        bottom:150px;
     }
 
     .gif-panel{
         left:10px;
-        bottom:104px;
+
+        bottom:150px;
+
         width:calc(100vw - 20px);
     }
 
+    .color-panel{
+        bottom:150px;
+
+        left:8px;
+
+        max-width:calc(100vw - 16px);
+
+        overflow-x:auto;
+    }
+
     #voiceStatus{
-        bottom:105px;
+        bottom:150px;
+
         max-width:calc(100vw - 30px);
+
         overflow:hidden;
+
         text-overflow:ellipsis;
     }
 
@@ -874,27 +1182,37 @@ body{
     }
 
     .online-users{
-        max-width:90px;
+        max-width:100px;
     }
 
     .voice-button{
-        max-width:65px;
-    }
+        max-width:70px;
 
-    .room-delete{
-        max-width:58px;
+        padding:6px 4px;
     }
 
     .logout{
-        padding:6px;
+        padding:6px 5px;
     }
 
-    .tool-button,
-    .color-main-button{
-        width:33px;
+    .room-delete{
+        max-width:45px;
+
+        padding:6px 4px;
+    }
+
+    .tool-button{
+        width:34px;
+    }
+
+    .page-button{
+        min-width:32px;
+
+        padding:0 7px;
     }
 
 }
+
 </style>
 </head>
 
@@ -967,8 +1285,9 @@ body{
             <button
                 class="room-delete"
                 id="roomDeleteButton"
+                title="Odayı Sil"
             >
-                🗑️ Odayı Sil
+                🗑️ Oda
             </button>
 
             <button
@@ -984,7 +1303,7 @@ body{
 
 
     <!-- =========================
-         MESAJ ALANI
+         MESAJLAR
     ========================= -->
 
     <div
@@ -994,13 +1313,17 @@ body{
 
 
     <!-- =========================
-         SAYFALAMA
+         SAYFA NUMARALARI
     ========================= -->
 
-    <div
-        class="pagination"
-        id="pagination"
-    ></div>
+    <div class="pagination-wrapper">
+
+        <div
+            class="pagination"
+            id="pagination"
+        ></div>
+
+    </div>
 
 
     <!-- =========================
@@ -1102,7 +1425,55 @@ body{
 
 
     <!-- =========================
-         ALT PANEL
+         RENK PANELİ
+    ========================= -->
+
+    <div
+        class="color-panel"
+        id="colorPanel"
+    >
+
+        <button
+            class="color-button color-white selected"
+            data-color="#333333"
+            title="Siyah"
+        ></button>
+
+        <button
+            class="color-button color-pink"
+            data-color="#ff69b4"
+            title="Pembe"
+        ></button>
+
+        <button
+            class="color-button color-blue"
+            data-color="#2878d4"
+            title="Mavi"
+        ></button>
+
+        <button
+            class="color-button color-green"
+            data-color="#159957"
+            title="Yeşil"
+        ></button>
+
+        <button
+            class="color-button color-yellow"
+            data-color="#c99400"
+            title="Sarı"
+        ></button>
+
+        <button
+            class="color-button color-red"
+            data-color="#e34b5f"
+            title="Kırmızı"
+        ></button>
+
+    </div>
+
+
+    <!-- =========================
+         MESAJ PANELİ
     ========================= -->
 
     <div class="input-area">
@@ -1135,6 +1506,7 @@ body{
                 📷
             </button>
 
+
             <input
                 type="file"
                 id="imageInput"
@@ -1142,62 +1514,13 @@ body{
             >
 
 
-            <!-- RENKLER TEK BUTON -->
-
-            <div class="color-wrapper">
-
-                <button
-                    class="color-main-button"
-                    id="colorMainButton"
-                    title="Yazı rengi"
-                >
-                    🎨
-                </button>
-
-                <div
-                    class="color-panel"
-                    id="colorPanel"
-                >
-
-                    <button
-                        class="color-button color-white selected"
-                        data-color="#333333"
-                        title="Siyah"
-                    ></button>
-
-                    <button
-                        class="color-button color-pink"
-                        data-color="#ff69b4"
-                        title="Pembe"
-                    ></button>
-
-                    <button
-                        class="color-button color-blue"
-                        data-color="#2878d4"
-                        title="Mavi"
-                    ></button>
-
-                    <button
-                        class="color-button color-green"
-                        data-color="#159957"
-                        title="Yeşil"
-                    ></button>
-
-                    <button
-                        class="color-button color-yellow"
-                        data-color="#c99400"
-                        title="Sarı"
-                    ></button>
-
-                    <button
-                        class="color-button color-red"
-                        data-color="#e34b5f"
-                        title="Kırmızı"
-                    ></button>
-
-                </div>
-
-            </div>
+            <button
+                class="tool-button color-button-main"
+                id="colorButton"
+                title="Yazı rengi"
+            >
+                🎨
+            </button>
 
         </div>
 
@@ -1225,7 +1548,9 @@ body{
 </div>
 
 
-<!-- SES DURUMU -->
+<!-- =========================
+     SES
+========================= -->
 
 <div id="voiceStatus">
     🎤 Sesli sistem hazırlanıyor...
@@ -1270,7 +1595,9 @@ const firebaseConfig = {
 };
 
 
-firebase.initializeApp(firebaseConfig);
+firebase.initializeApp(
+    firebaseConfig
+);
 
 const database =
     firebase.database();
@@ -1288,7 +1615,7 @@ const GIPHY_API_KEY =
 
 
 /* =========================================================
-   SABİTLER
+   SAYFA SİSTEMİ
 ========================================================= */
 
 const MESSAGES_PER_PAGE = 8;
@@ -1297,6 +1624,16 @@ const MAX_PAGES = 20;
 
 const MAX_MESSAGES =
     MESSAGES_PER_PAGE * MAX_PAGES;
+
+
+/*
+   Kullanıcı hangi sayfadaysa burada tutulur.
+
+   Yeni mesaj geldiğinde otomatik olarak
+   başka sayfaya geçilmez.
+*/
+
+let currentPage = 1;
 
 
 /* =========================================================
@@ -1317,14 +1654,6 @@ let voiceListenerStarted = false;
 
 let selectedMessageColor =
     "#333333";
-
-let allMessages = [];
-
-let currentPage = 1;
-
-let previousMessageCount = 0;
-
-let messagesListenerStarted = false;
 
 
 /* =========================================================
@@ -1351,12 +1680,12 @@ const rtcConfig = {
 
 
 /* =========================================================
-   RENK BUTONU
+   RENK PANELİ
 ========================================================= */
 
-const colorMainButton =
+const colorButton =
     document.getElementById(
-        "colorMainButton"
+        "colorButton"
     );
 
 const colorPanel =
@@ -1365,7 +1694,7 @@ const colorPanel =
     );
 
 
-colorMainButton.onclick =
+colorButton.onclick =
 function(event){
 
     event.stopPropagation();
@@ -1374,26 +1703,36 @@ function(event){
         "show"
     );
 
+    document
+    .getElementById("emojiPanel")
+    .style.display =
+        "none";
+
+    document
+    .getElementById("gifPanel")
+    .style.display =
+        "none";
+
 };
 
 
-/* =========================================================
-   RENK SEÇ
-========================================================= */
-
 document
 .querySelectorAll(".color-button")
-.forEach(function(button){
+.forEach(
+function(button){
 
     button.onclick =
-    function(){
+    function(event){
+
+        event.stopPropagation();
 
         selectedMessageColor =
             this.dataset.color;
 
         document
         .querySelectorAll(".color-button")
-        .forEach(function(item){
+        .forEach(
+        function(item){
 
             item.classList.remove(
                 "selected"
@@ -1440,7 +1779,8 @@ function(event){
     event.stopPropagation();
 
     emojiPanel.style.display =
-        emojiPanel.style.display === "block"
+        emojiPanel.style.display ===
+        "block"
         ? "none"
         : "block";
 
@@ -1456,7 +1796,8 @@ function(event){
 
 document
 .querySelectorAll(".emoji-item")
-.forEach(function(button){
+.forEach(
+function(button){
 
     button.onclick =
     function(){
@@ -1477,7 +1818,7 @@ document
 
 
 /* =========================================================
-   RESİM / GIF YÜKLE
+   CİHAZDAN RESİM / GIF
 ========================================================= */
 
 const imageButton =
@@ -1543,75 +1884,96 @@ function(event){
     }
 
 
-    const reader =
-        new FileReader();
+    /*
+       160 mesaj sınırına ulaşıldıysa
+       yeni mesaj kabul etmiyoruz.
+    */
+
+    checkMessageLimit(
+    function(canSend){
+
+        if(!canSend){
+
+            return;
+
+        }
 
 
-    reader.onload =
-    function(e){
-
-        const imageData =
-            e.target.result;
+        const reader =
+            new FileReader();
 
 
-        database
-        .ref("messages")
-        .push({
+        reader.onload =
+        function(e){
 
-            username:
-                username,
+            const imageData =
+                e.target.result;
 
-            type:
-                "image",
 
-            image:
-                imageData,
+            database
+            .ref("messages")
+            .push({
 
-            filename:
-                file.name,
+                username:
+                    username,
 
-            mimeType:
-                file.type,
+                type:
+                    "image",
 
-            color:
-                selectedMessageColor,
+                image:
+                    imageData,
 
-            timestamp:
-                Date.now()
+                filename:
+                    file.name,
 
-        })
-        .then(function(){
+                mimeType:
+                    file.type,
+
+                color:
+                    selectedMessageColor,
+
+                timestamp:
+                    Date.now()
+
+            })
+            .then(
+            function(){
+
+                imageInput.value = "";
+
+            })
+            .catch(
+            function(error){
+
+                console.error(
+                    error
+                );
+
+                alert(
+                    "Resim gönderilemedi.\n\n" +
+                    error.message
+                );
+
+            });
+
+        };
+
+
+        reader.onerror =
+        function(){
+
+            alert(
+                "Dosya okunamadı."
+            );
 
             imageInput.value = "";
 
-        })
-        .catch(function(error){
-
-            console.error(error);
-
-            alert(
-                "Resim gönderilemedi.\n\n" +
-                error.message
-            );
-
-        });
-
-    };
+        };
 
 
-    reader.onerror =
-    function(){
+        reader.readAsDataURL(file);
 
-        alert(
-            "Dosya okunamadı."
-        );
-
-        imageInput.value = "";
-
-    };
-
-
-    reader.readAsDataURL(file);
+    });
 
 };
 
@@ -1647,7 +2009,8 @@ function(event){
     event.stopPropagation();
 
     gifPanel.style.display =
-        gifPanel.style.display === "block"
+        gifPanel.style.display ===
+        "block"
         ? "none"
         : "block";
 
@@ -1849,34 +2212,84 @@ function sendGIF(
     }
 
 
-    database
-    .ref("messages")
-    .push({
+    checkMessageLimit(
+    function(canSend){
 
-        username:
-            username,
+        if(!canSend){
 
-        type:
-            "gif",
+            return;
 
-        gif:
-            originalUrl,
+        }
 
-        preview:
-            previewUrl,
 
-        color:
-            selectedMessageColor,
+        database
+        .ref("messages")
+        .push({
 
-        timestamp:
-            Date.now()
+            username:
+                username,
 
-    })
-    .catch(function(error){
+            type:
+                "gif",
 
-        console.error(error);
+            gif:
+                originalUrl,
+
+            preview:
+                previewUrl,
+
+            color:
+                selectedMessageColor,
+
+            timestamp:
+                Date.now()
+
+        });
 
     });
+
+}
+
+
+/* =========================================================
+   MESAJ SAYISINI KONTROL
+========================================================= */
+
+function checkMessageLimit(
+    callback
+){
+
+    database
+    .ref("messages")
+    .once(
+        "value",
+        function(snapshot){
+
+            const count =
+                snapshot.numChildren();
+
+
+            if(
+                count >=
+                MAX_MESSAGES
+            ){
+
+                alert(
+                    "⚠️ Sohbet odasında maksimum 20 sayfa ve 160 mesaj bulunabilir.\n\n" +
+                    "Yeni mesaj göndermek için önce eski mesajları silin veya '🗑️ Oda' butonunu kullanın."
+                );
+
+                callback(false);
+
+                return;
+
+            }
+
+
+            callback(true);
+
+        }
+    );
 
 }
 
@@ -1935,6 +2348,10 @@ async function enterChat(){
             "block";
 
 
+        currentPage =
+            1;
+
+
         loadMessages();
 
         setOnline();
@@ -1981,201 +2398,12 @@ function(event){
 
 
 /* =========================================================
-   MESAJLARI YÜKLE
+   SAYFA NUMARALARINI OLUŞTUR
 ========================================================= */
 
-function loadMessages(){
-
-    if(messagesListenerStarted){
-
-        return;
-
-    }
-
-
-    messagesListenerStarted =
-        true;
-
-
-    database
-    .ref("messages")
-    .orderByChild("timestamp")
-    .on(
-        "value",
-        function(snapshot){
-
-            const previousCount =
-                allMessages.length;
-
-
-            allMessages = [];
-
-
-            snapshot.forEach(
-            function(child){
-
-                const message =
-                    child.val();
-
-
-                if(message){
-
-                    allMessages.push({
-
-                        key:
-                            child.key,
-
-                        data:
-                            message
-
-                    });
-
-                }
-
-            });
-
-
-            /*
-               En yeni 160 mesajı tut.
-            */
-
-            if(
-                allMessages.length >
-                MAX_MESSAGES
-            ){
-
-                pruneOldMessages(
-                    allMessages.length -
-                    MAX_MESSAGES
-                );
-
-            }
-
-
-            const newCount =
-                allMessages.length;
-
-
-            const oldLastPage =
-                Math.max(
-                    1,
-                    Math.ceil(
-                        previousCount /
-                        MESSAGES_PER_PAGE
-                    )
-                );
-
-
-            const newLastPage =
-                Math.max(
-                    1,
-                    Math.ceil(
-                        newCount /
-                        MESSAGES_PER_PAGE
-                    )
-                );
-
-
-            /*
-               Yeni mesaj geldiyse ve kullanıcı
-               son sayfadaysa yeni son sayfaya geç.
-            */
-
-            if(
-                newCount > previousCount &&
-                currentPage >= oldLastPage
-            ){
-
-                currentPage =
-                    newLastPage;
-
-            }
-
-
-            /*
-               Eğer mevcut sayfa artık yoksa
-               son sayfaya dön.
-            */
-
-            if(
-                currentPage >
-                newLastPage
-            ){
-
-                currentPage =
-                    newLastPage;
-
-            }
-
-
-            renderPagination();
-
-            renderCurrentPage();
-
-            previousMessageCount =
-                newCount;
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   ESKİ MESAJLARI TEMİZLE
-========================================================= */
-
-function pruneOldMessages(
-    amount
+function updatePagination(
+    totalMessages
 ){
-
-    if(amount <= 0){
-
-        return;
-
-    }
-
-
-    const oldMessages =
-        allMessages.slice(
-            0,
-            amount
-        );
-
-
-    const updates = {};
-
-
-    oldMessages.forEach(
-    function(item){
-
-        updates[
-            item.key
-        ] = null;
-
-    });
-
-
-    database
-    .ref("messages")
-    .update(updates)
-    .catch(function(error){
-
-        console.error(
-            "Eski mesaj temizleme hatası:",
-            error
-        );
-
-    });
-
-}
-
-
-/* =========================================================
-   SAYFALARI OLUŞTUR
-========================================================= */
-
-function renderPagination(){
 
     const pagination =
         document.getElementById(
@@ -2187,23 +2415,33 @@ function renderPagination(){
 
 
     const totalPages =
-        Math.max(
-            1,
-            Math.ceil(
-                allMessages.length /
-                MESSAGES_PER_PAGE
-            )
+        Math.min(
+            Math.max(
+                1,
+                Math.ceil(
+                    totalMessages /
+                    MESSAGES_PER_PAGE
+                )
+            ),
+            MAX_PAGES
         );
 
 
-    /*
-       İlk sayfa
-    */
+    if(
+        currentPage >
+        totalPages
+    ){
+
+        currentPage =
+            totalPages;
+
+    }
+
 
     for(
-        let page = 1;
-        page <= totalPages;
-        page++
+        let i = 1;
+        i <= totalPages;
+        i++
     ){
 
         const button =
@@ -2216,8 +2454,12 @@ function renderPagination(){
             "page-button";
 
 
+        button.textContent =
+            i;
+
+
         if(
-            page === currentPage
+            i === currentPage
         ){
 
             button.classList.add(
@@ -2227,19 +2469,17 @@ function renderPagination(){
         }
 
 
-        button.textContent =
-            page;
-
-
         button.onclick =
         function(){
 
             currentPage =
-                page;
+                i;
 
-            renderPagination();
 
-            renderCurrentPage();
+            renderCurrentPage(
+                window.allMessages ||
+                []
+            );
 
         };
 
@@ -2251,34 +2491,42 @@ function renderPagination(){
     }
 
 
-    const info =
-        document.createElement(
-            "span"
-        );
+    /*
+       Aktif sayfa ekranda görünür
+       halde tutulur.
+    */
+
+    setTimeout(
+    function(){
+
+        const active =
+            pagination.querySelector(
+                ".active"
+            );
 
 
-    info.className =
-        "page-info";
+        if(active){
 
+            active.scrollIntoView({
+                behavior:"smooth",
+                block:"nearest",
+                inline:"center"
+            });
 
-    info.textContent =
-        totalPages +
-        " / " +
-        MAX_PAGES;
+        }
 
-
-    pagination.appendChild(
-        info
-    );
+    },50);
 
 }
 
 
 /* =========================================================
-   MEVCUT SAYFAYI GÖSTER
+   SAYFAYI GÖSTER
 ========================================================= */
 
-function renderCurrentPage(){
+function renderCurrentPage(
+    messages
+){
 
     const chat =
         document.getElementById(
@@ -2290,42 +2538,47 @@ function renderCurrentPage(){
 
 
     const start =
-        (
-            currentPage -
-            1
-        ) *
-        MESSAGES_PER_PAGE;
-
-
-    const end =
-        start +
+        (currentPage - 1) *
         MESSAGES_PER_PAGE;
 
 
     const pageMessages =
-        allMessages.slice(
+        messages.slice(
             start,
-            end
+            start +
+            MESSAGES_PER_PAGE
         );
 
 
     /*
-       Mesajlar eski → yeni
-       yani yukarıdan aşağıya.
+       Mesajlar Firebase'den
+       eskiden yeniye gelir.
+
+       Bu yüzden sayfanın içinde
+       yukarıdan aşağıya gösterilir.
     */
 
     pageMessages.forEach(
         function(item){
 
             renderMessage(
-                item.key,
-                item.data,
-                chat
+                item.message,
+                item.key
             );
 
         }
     );
 
+
+    updatePagination(
+        messages.length
+    );
+
+
+    /*
+       Sayfa değiştiğinde
+       sayfanın en üstüne git.
+    */
 
     chat.scrollTop = 0;
 
@@ -2333,14 +2586,107 @@ function renderCurrentPage(){
 
 
 /* =========================================================
-   MESAJ GÖRÜNTÜLE
+   MESAJLARI YÜKLE
+========================================================= */
+
+function loadMessages(){
+
+    database
+    .ref("messages")
+    .orderByChild("timestamp")
+    .on(
+        "value",
+        function(snapshot){
+
+            const messages = [];
+
+
+            snapshot.forEach(
+            function(child){
+
+                const message =
+                    child.val();
+
+
+                if(message){
+
+                    messages.push({
+
+                        key:
+                            child.key,
+
+                        message:
+                            message
+
+                    });
+
+                }
+
+            });
+
+
+            /*
+               Eski -> yeni
+               sıralama.
+            */
+
+            messages.sort(
+            function(a,b){
+
+                return (
+                    Number(
+                        a.message.timestamp || 0
+                    ) -
+                    Number(
+                        b.message.timestamp || 0
+                    )
+                );
+
+            });
+
+
+            /*
+               Global olarak saklıyoruz.
+            */
+
+            window.allMessages =
+                messages;
+
+
+            /*
+               ÖNEMLİ:
+
+               Yeni mesaj geldiğinde
+               currentPage değiştirilmez.
+
+               Böylece kullanıcı 1. sayfadaysa
+               1. sayfada kalır.
+            */
+
+            renderCurrentPage(
+                messages
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   TEK MESAJI OLUŞTUR
 ========================================================= */
 
 function renderMessage(
-    messageKey,
     message,
-    chat
+    messageKey
 ){
+
+    const chat =
+        document.getElementById(
+            "chat"
+        );
+
 
     const box =
         document.createElement(
@@ -2364,7 +2710,9 @@ function renderMessage(
     }
 
 
-    /* KULLANICI ADI */
+    /* =========================
+       KULLANICI
+    ========================= */
 
     const user =
         document.createElement(
@@ -2381,7 +2729,9 @@ function renderMessage(
         "Kullanıcı";
 
 
-    /* SAAT */
+    /* =========================
+       SAAT
+    ========================= */
 
     if(message.timestamp){
 
@@ -2417,7 +2767,9 @@ function renderMessage(
     }
 
 
-    /* KENDİ MESAJINI SİL */
+    /* =========================
+       SİL
+    ========================= */
 
     if(
         message.username ===
@@ -2466,7 +2818,9 @@ function renderMessage(
     }
 
 
-    /* GIPHY GIF */
+    /* =========================
+       GIPHY GIF
+    ========================= */
 
     if(
         message.type === "gif" &&
@@ -2533,7 +2887,9 @@ function renderMessage(
     }
 
 
-    /* CİHAZDAN RESİM/GIF */
+    /* =========================
+       CİHAZDAN RESİM / GIF
+    ========================= */
 
     if(
         message.type === "image" &&
@@ -2618,7 +2974,9 @@ function renderMessage(
     }
 
 
-    /* NORMAL MESAJ */
+    /* =========================
+       NORMAL MESAJ
+    ========================= */
 
     const bubble =
         document.createElement(
@@ -2686,43 +3044,57 @@ function sendMessage(){
     }
 
 
-    database
-    .ref("messages")
-    .push({
+    checkMessageLimit(
+    function(canSend){
 
-        username:
-            username,
+        if(!canSend){
 
-        text:
-            text,
+            return;
 
-        color:
-            selectedMessageColor,
+        }
 
-        type:
-            "text",
 
-        timestamp:
-            Date.now()
+        database
+        .ref("messages")
+        .push({
 
-    })
-    .then(function(){
+            username:
+                username,
 
-        input.value = "";
+            text:
+                text,
 
-        input.focus();
+            color:
+                selectedMessageColor,
 
-    })
-    .catch(function(error){
+            type:
+                "text",
 
-        console.error(
-            error
-        );
+            timestamp:
+                Date.now()
 
-        alert(
-            "Mesaj gönderilemedi.\n\n" +
-            error.message
-        );
+        })
+        .then(
+        function(){
+
+            input.value = "";
+
+            input.focus();
+
+        })
+        .catch(
+        function(error){
+
+            console.error(
+                error
+            );
+
+            alert(
+                "Mesaj gönderilemedi.\n\n" +
+                error.message
+            );
+
+        });
 
     });
 
@@ -2755,25 +3127,21 @@ function(event){
    ODAYI SİL
 ========================================================= */
 
-const roomDeleteButton =
-    document.getElementById(
-        "roomDeleteButton"
-    );
-
-
-roomDeleteButton.onclick =
+document
+.getElementById("roomDeleteButton")
+.onclick =
 async function(){
 
-    const approved =
+    const confirmed =
         confirm(
             "⚠️ DİKKAT!\n\n" +
-            "Sohbetteki TÜM mesajlar, resimler ve GIF'ler silinecek.\n\n" +
+            "Sohbet odasındaki TÜM mesajlar, resimler ve GIF kayıtları silinecek.\n\n" +
             "Bu işlem geri alınamaz.\n\n" +
-            "Odayı gerçekten temizlemek istiyor musunuz?"
+            "Odayı tamamen temizlemek istiyor musunuz?"
         );
 
 
-    if(!approved){
+    if(!confirmed){
 
         return;
 
@@ -2781,13 +3149,6 @@ async function(){
 
 
     try{
-
-        roomDeleteButton.disabled =
-            true;
-
-        roomDeleteButton.textContent =
-            "⏳ Siliniyor...";
-
 
         await database
         .ref("messages")
@@ -2798,18 +3159,8 @@ async function(){
             1;
 
 
-        allMessages =
-            [];
-
-
-        renderPagination();
-
-        renderCurrentPage();
-
-
         alert(
-            "✅ Oda temizlendi.\n\n" +
-            "Mesajlar, resimler ve GIF'ler silindi."
+            "✅ Sohbet odası temizlendi."
         );
 
     }
@@ -2821,21 +3172,10 @@ async function(){
             error
         );
 
-
         alert(
-            "❌ Oda temizlenemedi.\n\n" +
+            "❌ Oda silinemedi.\n\n" +
             error.message
         );
-
-    }
-
-    finally{
-
-        roomDeleteButton.disabled =
-            false;
-
-        roomDeleteButton.textContent =
-            "🗑️ Odayı Sil";
 
     }
 
@@ -2864,7 +3204,9 @@ function setOnline(){
             username,
 
         timestamp:
-            firebase.database.ServerValue.TIMESTAMP
+            firebase.database
+            .ServerValue
+            .TIMESTAMP
 
     });
 
@@ -2923,7 +3265,8 @@ function setOnline(){
             )
             .textContent =
                 names.length
-                ? "👥 " + names.join(", ")
+                ? "👥 " +
+                  names.join(", ")
                 : "👥 Kimse yok";
 
         }
@@ -2936,7 +3279,9 @@ function setOnline(){
    SES DURUMU
 ========================================================= */
 
-function showVoiceStatus(text){
+function showVoiceStatus(
+    text
+){
 
     const status =
         document.getElementById(
@@ -2967,7 +3312,7 @@ function hideVoiceStatus(){
 
 
 /* =========================================================
-   SESLİ SOHBET
+   MİKROFON
 ========================================================= */
 
 async function startVoiceChat(){
@@ -3078,6 +3423,7 @@ async function startVoiceChat(){
     catch(error){
 
         console.error(
+            "Mikrofon hatası:",
             error
         );
 
@@ -3207,6 +3553,7 @@ function startVoiceListener(){
             catch(error){
 
                 console.error(
+                    "Çağrı cevaplama hatası:",
                     error
                 );
 
@@ -3219,7 +3566,7 @@ function startVoiceListener(){
 
 
 /* =========================================================
-   ÇAĞRI OLUŞTUR
+   ÇAĞRI BAŞLAT
 ========================================================= */
 
 async function createCall(){
@@ -3296,7 +3643,8 @@ async function createCall(){
 
     localStream
     .getTracks()
-    .forEach(function(track){
+    .forEach(
+    function(track){
 
         pc.addTrack(
             track,
@@ -3320,7 +3668,15 @@ async function createCall(){
 
 
         audio.play()
-        .catch(function(){});
+        .catch(
+        function(error){
+
+            console.log(
+                "Ses oynatma hatası:",
+                error
+            );
+
+        });
 
 
         showVoiceStatus(
@@ -3442,7 +3798,9 @@ async function createCall(){
 
                 catch(error){
 
-                    console.log(error);
+                    console.log(
+                        error
+                    );
 
                 }
 
@@ -3485,7 +3843,8 @@ async function answerCall(
 
     localStream
     .getTracks()
-    .forEach(function(track){
+    .forEach(
+    function(track){
 
         pc.addTrack(
             track,
@@ -3509,7 +3868,14 @@ async function answerCall(
 
 
         audio.play()
-        .catch(function(){});
+        .catch(
+        function(error){
+
+            console.log(
+                error
+            );
+
+        });
 
 
         showVoiceStatus(
@@ -3600,7 +3966,9 @@ async function answerCall(
 
                 catch(error){
 
-                    console.log(error);
+                    console.log(
+                        error
+                    );
 
                 }
 
@@ -3626,7 +3994,8 @@ function stopVoiceChat(){
 
         localStream
         .getTracks()
-        .forEach(function(track){
+        .forEach(
+        function(track){
 
             track.stop();
 
@@ -3641,7 +4010,8 @@ function stopVoiceChat(){
 
     Object
     .keys(peerConnections)
-    .forEach(function(id){
+    .forEach(
+    function(id){
 
         try{
 
@@ -3649,7 +4019,13 @@ function stopVoiceChat(){
 
         }
 
-        catch(error){}
+        catch(error){
+
+            console.log(
+                error
+            );
+
+        }
 
     });
 
@@ -3703,10 +4079,10 @@ function stopVoiceChat(){
                     call &&
                     (
                         call.caller ===
-                            username ||
+                        username ||
 
                         call.receiver ===
-                            username
+                        username
                     )
                 ){
 
@@ -3792,7 +4168,7 @@ document.addEventListener(
                 event.target
             ) &&
             event.target !==
-                colorMainButton
+                colorButton
         ){
 
             colorPanel.classList.remove(
@@ -3806,7 +4182,7 @@ document.addEventListener(
 
 
 /* =========================================================
-   KLAVYE
+   TELEFON KLAVYESİ
 ========================================================= */
 
 if(window.visualViewport){
@@ -3815,10 +4191,26 @@ if(window.visualViewport){
         "resize",
         function(){
 
-            /*
-               Sayfa sisteminde artık
-               sürekli aşağı-yukarı kaydırma yok.
-            */
+            setTimeout(
+                function(){
+
+                    const chat =
+                        document.getElementById(
+                            "chat"
+                        );
+
+                    if(chat){
+
+                        /*
+                           Kullanıcı hangi sayfadaysa
+                           o sayfada kalır.
+                        */
+
+                    }
+
+                },
+                100
+            );
 
         }
     );
