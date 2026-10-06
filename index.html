@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="tr">
 <head>
@@ -174,6 +173,7 @@ body {
 }
 
 /* MESAJ ALANI */
+/* DÜZELTİLDİ */
 
 .chat {
     position: absolute;
@@ -182,14 +182,16 @@ body {
     right: 0;
     bottom: 108px;
     overflow-y: auto;
-    padding: 25px 16px 35px;
+    overflow-x: hidden;
+    padding: 25px 16px 130px;
     max-width: 850px;
     width: 100%;
     margin: auto;
     scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
 }
 
-/* MESAJ - BALON YOK */
+/* MESAJ */
 
 .message {
     margin-bottom: 18px;
@@ -320,8 +322,6 @@ body {
     font-size: 13px;
     font-weight: bold;
 }
-
-/* RESİM BUTONU */
 
 .image-button {
     font-size: 20px;
@@ -537,6 +537,7 @@ body {
 }
 
 /* MOBİL */
+/* DÜZELTİLDİ */
 
 @media (max-width:600px) {
 
@@ -581,8 +582,11 @@ body {
 
     .chat {
         top: 62px;
-        bottom: 94px;
-        padding: 15px 10px 30px;
+        bottom: 108px;
+        padding: 15px 10px 130px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
     }
 
     .image-message,
@@ -871,8 +875,6 @@ body {
 
         <div class="tools-row">
 
-            <!-- EMOJI -->
-
             <button
                 class="tool-button"
                 id="emojiButton"
@@ -881,9 +883,6 @@ body {
                 😀
             </button>
 
-
-            <!-- GIPHY -->
-
             <button
                 class="tool-button gif-button"
                 id="gifButton"
@@ -891,9 +890,6 @@ body {
             >
                 GIF
             </button>
-
-
-            <!-- CİHAZDAN RESİM / GIF -->
 
             <button
                 class="tool-button image-button"
@@ -908,9 +904,6 @@ body {
                 id="imageInput"
                 accept="image/*,.gif"
             >
-
-
-            <!-- RENK -->
 
             <span class="color-label">
                 🎨
@@ -1113,9 +1106,7 @@ document
 });
 
 
-/* =========================
-   CİHAZDAN RESİM / GIF
-========================= */
+/* CİHAZDAN RESİM / GIF */
 
 const imageButton =
     document.getElementById("imageButton");
@@ -1150,12 +1141,6 @@ imageInput.onchange = function(event) {
     }
 
 
-    /*
-       GIF HAREKETLİLİĞİNİ KORUMAK İÇİN
-       DOSYANIN TAMAMINI DATA URL OLARAK
-       OKUYORUZ.
-    */
-
     const reader =
         new FileReader();
 
@@ -1165,11 +1150,6 @@ imageInput.onchange = function(event) {
         const imageData =
             e.target.result;
 
-
-        /*
-           Çok büyük dosyalar Firebase
-           Realtime Database için sorun çıkarabilir.
-        */
 
         if (imageData.length > 3500000) {
 
@@ -1590,9 +1570,7 @@ function loadMessages() {
             }
 
 
-            /*
-               GIPHY GIF
-            */
+            /* GIPHY GIF */
 
             if (
                 message.type === "gif" &&
@@ -1640,15 +1618,7 @@ function loadMessages() {
             }
 
 
-            /*
-               CİHAZDAN GELEN RESİM/GIF
-
-               Burada data:image/gif;base64...
-               doğrudan img.src'ye veriliyor.
-
-               Böylece GIF dosyasının animasyonu
-               kaybolmuyor.
-            */
+            /* CİHAZDAN RESİM / GIF */
 
             if (
                 message.type === "image" &&
@@ -1706,9 +1676,7 @@ function loadMessages() {
             }
 
 
-            /*
-               NORMAL MESAJ
-            */
+            /* NORMAL MESAJ */
 
             const bubble =
                 document.createElement("div");
@@ -1737,8 +1705,14 @@ function loadMessages() {
         });
 
 
-        chat.scrollTop =
-            chat.scrollHeight;
+        /* MESAJLARI EN ALTA GETİR */
+
+        setTimeout(function() {
+
+            chat.scrollTop =
+                chat.scrollHeight;
+
+        }, 50);
 
     });
 
@@ -2654,4 +2628,3 @@ document.addEventListener(
 
 </body>
 </html>
-```
