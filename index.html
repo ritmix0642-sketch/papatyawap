@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="tr">
 <head>
@@ -6,345 +7,326 @@
 <title>Ritmix Sohbet</title>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 
 <style>
-
-* {
-    box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent;
+*{
+    box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
 }
 
-html,
-body {
-    margin: 0;
-    width: 100%;
-    height: 100%;
+html,body{
+    margin:0;
+    width:100%;
+    height:100%;
 }
 
-body {
-    font-family: Arial, Helvetica, sans-serif;
-    color: #222;
-    background: #f5f2eb;
-    overflow: hidden;
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    color:#222;
+    background:#f5f2eb;
+    overflow:hidden;
 }
-
 
 /* =========================
    GİRİŞ
 ========================= */
 
-#login {
-    width: 100%;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    background: #f5f2eb;
+#login{
+    width:100%;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    background:#f5f2eb;
 }
 
-.login-box {
-    width: 100%;
-    max-width: 420px;
-    padding: 38px 28px;
-    text-align: center;
-    background: #fffdf7;
-    border: 1px solid #e5dfd2;
-    border-radius: 24px;
-    box-shadow: 0 15px 45px rgba(0,0,0,.10);
+.login-box{
+    width:100%;
+    max-width:420px;
+    padding:38px 28px;
+    text-align:center;
+    background:#fffdf7;
+    border:1px solid #e5dfd2;
+    border-radius:24px;
+    box-shadow:0 15px 45px rgba(0,0,0,.10);
 }
 
-.login-box h1 {
-    margin: 0;
-    font-size: 28px;
+.login-box h1{
+    margin:0;
+    font-size:28px;
 }
 
-.subtitle {
-    margin: 10px 0 28px;
-    color: #77736b;
-    font-size: 14px;
+.subtitle{
+    margin:10px 0 28px;
+    color:#77736b;
+    font-size:14px;
 }
 
-#usernameInput {
-    width: 100%;
-    height: 52px;
-    padding: 0 17px;
-    border: 1px solid #d8d3c8;
-    border-radius: 15px;
-    outline: none;
-    background: #fff;
-    color: #222;
-    font-size: 16px;
+#usernameInput{
+    width:100%;
+    height:52px;
+    padding:0 17px;
+    border:1px solid #d8d3c8;
+    border-radius:15px;
+    outline:none;
+    background:#fff;
+    color:#222;
+    font-size:16px;
 }
 
-#loginButton {
-    width: 100%;
-    height: 52px;
-    margin-top: 13px;
-    border: 0;
-    border-radius: 15px;
-    background: #333;
-    color: white;
-    font-size: 15px;
-    font-weight: bold;
-    cursor: pointer;
+#loginButton{
+    width:100%;
+    height:52px;
+    margin-top:13px;
+    border:0;
+    border-radius:15px;
+    background:#333;
+    color:white;
+    font-size:15px;
+    font-weight:bold;
+    cursor:pointer;
 }
-
 
 /* =========================
-   SOHBET
+   SOHBET SAYFASI
 ========================= */
 
-#chatPage {
-    display: none;
-    width: 100%;
-    height: 100vh;
-    overflow: hidden;
-    position: relative;
-    background: #f5f2eb;
+#chatPage{
+    display:none;
+    width:100%;
+    height:100vh;
+    overflow:hidden;
+    position:relative;
+    background:#f5f2eb;
 }
-
 
 /* =========================
    ÜST BAR
 ========================= */
 
-.header {
-    position: relative;
-    z-index: 20;
-    height: 76px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 15px;
-    padding: 10px 18px;
-    background: #fffdf7;
-    border-bottom: 1px solid #ded9cf;
+.header{
+    position:relative;
+    z-index:20;
+    height:76px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:15px;
+    padding:10px 18px;
+    background:#fffdf7;
+    border-bottom:1px solid #ded9cf;
 }
 
-.header-info {
-    min-width: 0;
-    flex: 1;
+.header-info{
+    min-width:0;
+    flex:1;
 }
 
-.header-title {
-    font-size: 18px;
-    font-weight: bold;
+.header-title{
+    font-size:18px;
+    font-weight:bold;
 }
 
-.online {
-    margin-top: 5px;
-    color: #159957;
-    font-size: 12px;
+.online{
+    margin-top:5px;
+    color:#159957;
+    font-size:12px;
 }
 
-.online-users {
-    margin-top: 4px;
-    color: #77736b;
-    font-size: 11px;
-    max-width: 600px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+.online-users{
+    margin-top:4px;
+    color:#77736b;
+    font-size:11px;
+    max-width:600px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
 }
 
-.header-buttons {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-shrink: 0;
+.header-buttons{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    flex-shrink:0;
 }
 
 .logout,
-.voice-button {
-    min-height: 40px;
-    border: 1px solid #d8d3c8;
-    padding: 9px 13px;
-    border-radius: 12px;
-    cursor: pointer;
-    font-weight: bold;
-    white-space: nowrap;
+.voice-button{
+    min-height:40px;
+    border:1px solid #d8d3c8;
+    padding:9px 13px;
+    border-radius:12px;
+    cursor:pointer;
+    font-weight:bold;
+    white-space:nowrap;
 }
 
-.logout {
-    background: #eeeae1;
+.logout{
+    background:#eeeae1;
 }
 
-.voice-button {
-    background: #d9f4e5;
-    color: #08783f;
-    border-color: #b7dfc8;
+.voice-button{
+    background:#d9f4e5;
+    color:#08783f;
+    border-color:#b7dfc8;
 }
 
-.voice-button.active {
-    background: #ffe0e3;
-    color: #c72f42;
-    border-color: #f1b7bf;
+.voice-button.active{
+    background:#ffe0e3;
+    color:#c72f42;
+    border-color:#f1b7bf;
 }
-
 
 /* =========================
    MESAJ ALANI
 ========================= */
 
-.chat {
-    position: absolute;
-    top: 76px;
-    left: 0;
-    right: 0;
-    bottom: 108px;
+/*
+   EN ÖNEMLİ DÜZELTME:
 
-    overflow-y: auto;
-    overflow-x: hidden;
+   Alt panel mesajların üzerine binmesin diye
+   chat alanının altında ekstra boşluk bırakıyoruz.
+*/
 
-    padding: 25px 16px 45px;
+.chat{
+    position:absolute;
+    top:76px;
+    left:0;
+    right:0;
+    bottom:0;
 
-    max-width: 850px;
-    width: 100%;
-    margin: auto;
+    overflow-y:auto;
+    overflow-x:hidden;
 
-    scroll-behavior: smooth;
+    padding:25px 16px 170px;
 
-    /*
-       Son mesajın alt panelin arkasında
-       kalmasını önlemek için ekstra alan.
-    */
-    scroll-padding-bottom: 40px;
+    max-width:850px;
+    width:100%;
+    margin:auto;
+
+    scroll-behavior:smooth;
+
+    -webkit-overflow-scrolling:touch;
 }
-
 
 /* =========================
    MESAJ
 ========================= */
 
-.message {
-    margin-bottom: 18px;
-    width: 100%;
+.message{
+    margin-bottom:18px;
+    width:100%;
 }
 
-.username {
-    margin-bottom: 4px;
-    color: #2878d4;
-    font-size: 12px;
-    font-weight: bold;
+.username{
+    margin-bottom:4px;
+    color:#2878d4;
+    font-size:12px;
+    font-weight:bold;
 }
 
-.my-message {
-    text-align: right;
+.my-message{
+    text-align:right;
 }
 
-.my-message .username {
-    color: #159957;
+.my-message .username{
+    color:#159957;
 }
 
-.time {
-    margin-left: 7px;
-    color: #8c877d;
-    font-size: 10px;
+.time{
+    margin-left:7px;
+    color:#8c877d;
+    font-size:10px;
 }
 
-.delete {
-    border: 0;
-    background: transparent;
-    color: #e34b5f;
-    font-size: 10px;
-    cursor: pointer;
-    margin-left: 7px;
+.delete{
+    border:0;
+    background:transparent;
+    color:#e34b5f;
+    font-size:10px;
+    cursor:pointer;
+    margin-left:7px;
 }
 
-.bubble {
-    display: block;
-    max-width: 100%;
-    padding: 0;
-    margin: 0;
-
-    background: transparent;
-    border: 0;
-    border-radius: 0;
-
-    line-height: 1.55;
-    word-break: break-word;
-    overflow-wrap: anywhere;
-
-    box-shadow: none;
-    color: #333333;
+.bubble{
+    display:block;
+    max-width:100%;
+    padding:0;
+    margin:0;
+    background:transparent;
+    border:0;
+    line-height:1.55;
+    word-break:break-word;
+    overflow-wrap:anywhere;
+    color:#333333;
 }
-
 
 /* =========================
-   CİHAZDAN RESİM / GIF
-   DÜZELTİLDİ
+   RESİM
 ========================= */
 
-.image-message {
-    display: block;
-
-    width: 100%;
-    max-width: 100%;
-
-    margin-top: 5px;
-    padding-bottom: 20px;
-
-    /*
-       Resim/GIF mesaj alanına sığacak.
-       Alt panelin arkasına taşmayacak.
-    */
-    overflow: visible;
+.image-message{
+    display:inline-block;
+    max-width:100%;
+    margin-top:5px;
 }
 
-.image-message img {
-    display: block;
-
-    width: auto;
-    height: auto;
+.image-message img{
+    display:block;
 
     /*
-       Masaüstünde maksimum 500px.
-       Küçük ekranlarda otomatik küçülür.
+       Artık küçük ekranda 250px ile sınırlanmıyor.
+       Ekrana sığdığı kadar büyüyebiliyor.
     */
-    max-width: min(100%, 500px);
-    max-height: 450px;
 
-    object-fit: contain;
+    max-width:min(100%,650px);
+    max-height:600px;
 
-    border-radius: 12px;
-    cursor: pointer;
+    width:auto;
+    height:auto;
+
+    object-fit:contain;
+
+    border-radius:12px;
+    cursor:pointer;
 }
-
 
 /* =========================
-   GIPHY GIF
+   GIF
 ========================= */
 
-.gif-message {
-    max-width: 280px;
-    display: inline-block;
-    margin-top: 5px;
-    overflow: hidden;
+.gif-message{
+    max-width:min(100%,400px);
+    display:inline-block;
+    margin-top:5px;
+    overflow:hidden;
 }
 
-.gif-message img {
-    width: 100%;
-    max-width: 280px;
-    border-radius: 15px;
-    display: block;
-    cursor: pointer;
+.gif-message img{
+    width:100%;
+    max-width:400px;
+    max-height:600px;
+    object-fit:contain;
+    border-radius:15px;
+    display:block;
+    cursor:pointer;
 }
-
 
 /* =========================
    ALT PANEL
 ========================= */
 
-.input-area {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
+.input-area{
+    position:fixed;
+    bottom:0;
+    left:0;
+    width:100%;
 
-    height: 108px;
-    min-height: 108px;
+    height:108px;
+    min-height:108px;
 
     padding:
         8px
@@ -352,484 +334,394 @@ body {
         calc(8px + env(safe-area-inset-bottom))
         max(10px,env(safe-area-inset-left));
 
-    background: #fffdf7;
-    border-top: 1px solid #ded9cf;
+    background:#fffdf7;
+    border-top:1px solid #ded9cf;
 
-    z-index: 25;
+    z-index:25;
 }
-
 
 /* =========================
    ARAÇLAR
 ========================= */
 
-.tools-row {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    margin-bottom: 7px;
-    min-height: 38px;
+.tools-row{
+    width:100%;
+    display:flex;
+    align-items:center;
+    gap:7px;
+    margin-bottom:7px;
+    min-height:38px;
 }
 
-.tool-button {
-    width: 42px;
-    height: 38px;
-    flex-shrink: 0;
+.tool-button{
+    width:42px;
+    height:38px;
+    flex-shrink:0;
 
-    border: 1px solid #d8d3c8;
-    border-radius: 10px;
+    border:1px solid #d8d3c8;
+    border-radius:10px;
 
-    background: #eeeae1;
-    color: #333;
+    background:#eeeae1;
+    color:#333;
 
-    font-size: 19px;
-    cursor: pointer;
+    font-size:19px;
+    cursor:pointer;
 }
 
-.gif-button {
-    font-size: 13px;
-    font-weight: bold;
+.gif-button{
+    font-size:13px;
+    font-weight:bold;
 }
 
-
-/* =========================
-   RESİM BUTONU
-========================= */
-
-.image-button {
-    font-size: 20px;
+.image-button{
+    font-size:20px;
 }
 
-#imageInput {
-    display: none;
+#imageInput{
+    display:none;
 }
 
-
-/* =========================
-   RENK
-========================= */
-
-.color-label {
-    color: #77736b;
-    font-size: 11px;
-    white-space: nowrap;
+.color-label{
+    color:#77736b;
+    font-size:11px;
+    white-space:nowrap;
 }
 
-.color-buttons {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    min-width: 0;
+.color-buttons{
+    display:flex;
+    align-items:center;
+    gap:5px;
+    min-width:0;
 }
 
-.color-button {
-    width: 21px;
-    height: 21px;
-
-    border-radius: 50%;
-    border: 2px solid rgba(0,0,0,.20);
-
-    cursor: pointer;
-    flex-shrink: 0;
-    padding: 0;
+.color-button{
+    width:21px;
+    height:21px;
+    border-radius:50%;
+    border:2px solid rgba(0,0,0,.20);
+    cursor:pointer;
+    flex-shrink:0;
+    padding:0;
 }
 
-.color-button.selected {
-    border: 3px solid #222;
-    box-shadow: 0 0 7px rgba(0,0,0,.25);
+.color-button.selected{
+    border:3px solid #222;
+    box-shadow:0 0 7px rgba(0,0,0,.25);
 }
 
-.color-white {
-    background: #333333;
-}
-
-.color-pink {
-    background: #ff69b4;
-}
-
-.color-blue {
-    background: #2878d4;
-}
-
-.color-green {
-    background: #159957;
-}
-
-.color-yellow {
-    background: #c99400;
-}
-
-.color-red {
-    background: #e34b5f;
-}
-
+.color-white{background:#333333;}
+.color-pink{background:#ff69b4;}
+.color-blue{background:#2878d4;}
+.color-green{background:#159957;}
+.color-yellow{background:#c99400;}
+.color-red{background:#e34b5f;}
 
 /* =========================
    MESAJ GİRİŞİ
 ========================= */
 
-.message-row {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    gap: 7px;
+.message-row{
+    width:100%;
+    display:flex;
+    align-items:center;
+    gap:7px;
 }
 
-.message-input {
-    flex: 1;
-    width: 100%;
-    min-width: 0;
+.message-input{
+    flex:1;
+    width:100%;
+    min-width:0;
+    height:46px;
 
-    height: 46px;
+    border:1px solid #d8d3c8;
+    outline:none;
+    border-radius:15px;
 
-    border: 1px solid #d8d3c8;
-    outline: none;
-    border-radius: 15px;
+    background:#fff;
+    color:#222;
 
-    background: #fff;
-    color: #222;
-
-    padding: 0 15px;
-    font-size: 15px;
+    padding:0 15px;
+    font-size:15px;
 }
 
-.send {
-    width: 50px;
-    height: 46px;
-    flex-shrink: 0;
+.send{
+    width:50px;
+    height:46px;
+    flex-shrink:0;
 
-    border: 0;
-    border-radius: 15px;
+    border:0;
+    border-radius:15px;
 
-    background: #333;
-    color: white;
+    background:#333;
+    color:white;
 
-    font-size: 20px;
-    cursor: pointer;
+    font-size:20px;
+    cursor:pointer;
 }
-
 
 /* =========================
    EMOJI
 ========================= */
 
-.emoji-panel {
-    display: none;
+.emoji-panel{
+    display:none;
 
-    position: fixed;
-    bottom: 114px;
-    left: 10px;
+    position:fixed;
 
-    width: 300px;
-    max-height: 240px;
+    bottom:114px;
+    left:10px;
 
-    overflow-y: auto;
+    width:300px;
+    max-height:240px;
 
-    padding: 12px;
+    overflow-y:auto;
 
-    background: #fffdf7;
-    border: 1px solid #d8d3c8;
-    border-radius: 18px;
+    padding:12px;
 
-    box-shadow: 0 15px 45px rgba(0,0,0,.20);
+    background:#fffdf7;
+    border:1px solid #d8d3c8;
+    border-radius:18px;
 
-    z-index: 40;
+    box-shadow:0 15px 45px rgba(0,0,0,.20);
+
+    z-index:40;
 }
 
-.emoji-grid {
-    display: grid;
-    grid-template-columns: repeat(8,1fr);
-    gap: 7px;
+.emoji-grid{
+    display:grid;
+    grid-template-columns:repeat(8,1fr);
+    gap:7px;
 }
 
-.emoji-item {
-    border: 0;
-    background: transparent;
-
-    font-size: 25px;
-    cursor: pointer;
-
-    border-radius: 8px;
-    padding: 4px;
+.emoji-item{
+    border:0;
+    background:transparent;
+    font-size:25px;
+    cursor:pointer;
+    border-radius:8px;
+    padding:4px;
 }
-
 
 /* =========================
    GIF PANEL
 ========================= */
 
-.gif-panel {
-    display: none;
+.gif-panel{
+    display:none;
 
-    position: fixed;
+    position:fixed;
 
-    bottom: 114px;
-    left: 60px;
+    bottom:114px;
+    left:60px;
 
-    width: 350px;
-    max-width: calc(100vw - 20px);
+    width:350px;
+    max-width:calc(100vw - 20px);
 
-    height: 430px;
+    height:430px;
 
-    background: #fffdf7;
+    background:#fffdf7;
+    border:1px solid #d8d3c8;
+    border-radius:18px;
 
-    border: 1px solid #d8d3c8;
-    border-radius: 18px;
+    box-shadow:0 15px 45px rgba(0,0,0,.20);
 
-    box-shadow: 0 15px 45px rgba(0,0,0,.20);
+    z-index:40;
 
-    z-index: 40;
-
-    overflow: hidden;
+    overflow:hidden;
 }
 
-.gif-search {
-    display: flex;
-    gap: 7px;
-
-    padding: 10px;
-
-    border-bottom: 1px solid #ded9cf;
+.gif-search{
+    display:flex;
+    gap:7px;
+    padding:10px;
+    border-bottom:1px solid #ded9cf;
 }
 
-.gif-search input {
-    flex: 1;
+.gif-search input{
+    flex:1;
+    height:40px;
 
-    height: 40px;
+    border:1px solid #d8d3c8;
+    outline:none;
+    border-radius:10px;
 
-    border: 1px solid #d8d3c8;
-    outline: none;
-    border-radius: 10px;
+    background:#fff;
 
-    background: #fff;
-
-    padding: 0 12px;
+    padding:0 12px;
 }
 
-.gif-search button {
-    width: 45px;
-
-    border: 0;
-    border-radius: 10px;
-
-    background: #333;
-    color: white;
-
-    font-size: 18px;
-    cursor: pointer;
+.gif-search button{
+    width:45px;
+    border:0;
+    border-radius:10px;
+    background:#333;
+    color:white;
+    font-size:18px;
+    cursor:pointer;
 }
 
-.gif-results {
-    height: 350px;
+.gif-results{
+    height:350px;
+    overflow-y:auto;
 
-    overflow-y: auto;
+    padding:10px;
 
-    padding: 10px;
-
-    display: grid;
-
-    grid-template-columns: repeat(2,1fr);
-
-    gap: 8px;
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:8px;
 }
 
-.gif-result {
-    width: 100%;
-    height: 120px;
+.gif-result{
+    width:100%;
+    height:120px;
 
-    object-fit: cover;
+    object-fit:cover;
 
-    border-radius: 10px;
+    border-radius:10px;
 
-    cursor: pointer;
+    cursor:pointer;
 
-    background: #eeeae1;
+    background:#eeeae1;
 }
 
-.gif-empty {
-    grid-column: 1/-1;
-
-    text-align: center;
-
-    padding: 30px 10px;
-
-    color: #77736b;
-
-    font-size: 13px;
+.gif-empty{
+    grid-column:1/-1;
+    text-align:center;
+    padding:30px 10px;
+    color:#77736b;
+    font-size:13px;
 }
-
 
 /* =========================
-   SES
+   SES DURUMU
 ========================= */
 
-#voiceStatus {
-    display: none;
+#voiceStatus{
+    display:none;
 
-    position: fixed;
+    position:fixed;
 
-    bottom: 120px;
-    left: 50%;
+    bottom:120px;
+    left:50%;
 
-    transform: translateX(-50%);
+    transform:translateX(-50%);
 
-    background: #fffdf7;
+    background:#fffdf7;
 
-    border: 1px solid #d8d3c8;
+    border:1px solid #d8d3c8;
 
-    color: #333;
+    color:#333;
 
-    padding: 11px 18px;
+    padding:11px 18px;
 
-    border-radius: 25px;
+    border-radius:25px;
 
-    font-size: 13px;
+    font-size:13px;
 
-    z-index: 50;
+    z-index:50;
 
-    box-shadow: 0 10px 30px rgba(0,0,0,.20);
+    box-shadow:0 10px 30px rgba(0,0,0,.20);
 
-    white-space: nowrap;
+    white-space:nowrap;
 }
-
 
 /* =========================
    MASAÜSTÜ
 ========================= */
 
-@media (min-width:700px) {
+@media (min-width:700px){
 
-    .input-area {
-        max-width: 850px;
-
-        left: 50%;
-
-        transform: translateX(-50%);
-
-        border-radius: 18px 18px 0 0;
+    .input-area{
+        max-width:850px;
+        left:50%;
+        transform:translateX(-50%);
+        border-radius:18px 18px 0 0;
     }
-}
 
+}
 
 /* =========================
    MOBİL
 ========================= */
 
-@media (max-width:600px) {
+@media (max-width:600px){
 
-    .header {
-        height: 62px;
-        min-height: 62px;
+    .header{
+        height:62px;
+        min-height:62px;
 
-        padding: 7px 9px;
-
-        gap: 7px;
+        padding:7px 9px;
+        gap:7px;
     }
 
-    .header-title {
-        font-size: 14px;
+    .header-title{
+        font-size:14px;
     }
 
-    .online {
-        margin-top: 3px;
-        font-size: 11px;
+    .online{
+        margin-top:3px;
+        font-size:11px;
     }
 
-    .online-users {
-        max-width: 145px;
-        font-size: 10px;
+    .online-users{
+        max-width:145px;
+        font-size:10px;
     }
 
-    .header-buttons {
-        gap: 5px;
+    .header-buttons{
+        gap:5px;
     }
 
     .voice-button,
-    .logout {
-        min-height: 36px;
-
-        padding: 7px 9px;
-
-        font-size: 10px;
-
-        border-radius: 10px;
+    .logout{
+        min-height:36px;
+        padding:7px 9px;
+        font-size:10px;
+        border-radius:10px;
     }
 
-    .voice-button {
-        max-width: 105px;
-
-        overflow: hidden;
-
-        text-overflow: ellipsis;
+    .voice-button{
+        max-width:105px;
+        overflow:hidden;
+        text-overflow:ellipsis;
     }
 
+    .chat{
+        top:62px;
+        bottom:0;
 
-    /* MESAJ ALANI */
-
-    .chat {
-        top: 62px;
-
-        bottom: 94px;
+        /*
+           Alt panelin arkasında kalmaması için
+           ekstra güvenli alan.
+        */
 
         padding:
             15px
             10px
-            55px;
-
-        /*
-           Mobilde son mesajın alt panel
-           arkasında kalmasını önlüyoruz.
-        */
-        scroll-padding-bottom: 55px;
+            145px;
     }
 
-
-    /* CİHAZDAN RESİM/GIF */
-
-    .image-message {
-        width: 100%;
-
-        max-width: 100%;
-
-        padding-bottom: 25px;
+    .image-message{
+        max-width:100%;
     }
 
-    .image-message img {
-
-        /*
-           Telefon ekranına göre otomatik küçülür.
-        */
-        max-width: min(100%, 360px);
-
-        max-height: 360px;
-
-        width: auto;
-
-        height: auto;
-
-        object-fit: contain;
+    .image-message img{
+        max-width:100%;
+        max-height:500px;
     }
 
-
-    /* GIPHY */
-
-    .gif-message {
-        max-width: min(280px, 100%);
+    .gif-message{
+        max-width:100%;
     }
 
-    .gif-message img {
-        max-width: 100%;
+    .gif-message img{
+        max-width:100%;
+        max-height:500px;
     }
 
-
-    /* ALT PANEL */
-
-    .input-area {
-
-        height: 94px;
-
-        min-height: 94px;
+    .input-area{
+        height:94px;
+        min-height:94px;
 
         padding:
             7px
@@ -837,160 +729,117 @@ body {
             calc(7px + env(safe-area-inset-bottom));
     }
 
-
-    .tools-row {
-
-        gap: 5px;
-
-        margin-bottom: 6px;
-
-        min-height: 32px;
+    .tools-row{
+        gap:5px;
+        margin-bottom:6px;
+        min-height:32px;
     }
 
-    .tool-button {
-
-        width: 37px;
-
-        height: 32px;
-
-        border-radius: 9px;
-
-        font-size: 17px;
+    .tool-button{
+        width:37px;
+        height:32px;
+        border-radius:9px;
+        font-size:17px;
     }
 
-    .gif-button {
-        font-size: 11px;
+    .gif-button{
+        font-size:11px;
     }
 
-    .image-button {
-        font-size: 18px;
+    .image-button{
+        font-size:18px;
     }
 
-    .color-label {
-        display: none;
+    .color-label{
+        display:none;
     }
 
-    .color-buttons {
-
-        gap: 4px;
-
-        overflow: hidden;
+    .color-buttons{
+        gap:4px;
+        overflow:hidden;
     }
 
-    .color-button {
-
-        width: 18px;
-
-        height: 18px;
+    .color-button{
+        width:18px;
+        height:18px;
     }
 
-    .message-row {
-        gap: 5px;
+    .message-row{
+        gap:5px;
     }
 
-    .message-input {
-
-        height: 42px;
-
-        font-size: 14px;
-
-        border-radius: 13px;
-
-        padding: 0 12px;
+    .message-input{
+        height:42px;
+        font-size:14px;
+        border-radius:13px;
+        padding:0 12px;
     }
 
-    .send {
-
-        width: 44px;
-
-        height: 42px;
-
-        border-radius: 13px;
-
-        font-size: 18px;
+    .send{
+        width:44px;
+        height:42px;
+        border-radius:13px;
+        font-size:18px;
     }
 
-
-    /* EMOJI */
-
-    .emoji-panel {
-
-        width: calc(100vw - 20px);
-
-        left: 10px;
-
-        bottom: 104px;
+    .emoji-panel{
+        width:calc(100vw - 20px);
+        left:10px;
+        bottom:104px;
     }
 
-
-    /* GIF PANEL */
-
-    .gif-panel {
-
-        left: 10px;
-
-        bottom: 104px;
-
-        width: calc(100vw - 20px);
+    .gif-panel{
+        left:10px;
+        bottom:104px;
+        width:calc(100vw - 20px);
     }
 
-
-    /* SES */
-
-    #voiceStatus {
-
-        bottom: 105px;
-
-        max-width: calc(100vw - 30px);
-
-        overflow: hidden;
-
-        text-overflow: ellipsis;
+    #voiceStatus{
+        bottom:105px;
+        max-width:calc(100vw - 30px);
+        overflow:hidden;
+        text-overflow:ellipsis;
     }
 
 }
-
 
 /* =========================
    ÇOK KÜÇÜK TELEFON
 ========================= */
 
-@media (max-width:380px) {
+@media (max-width:380px){
 
-    .header-title {
-        font-size: 13px;
+    .header-title{
+        font-size:13px;
     }
 
-    .online-users {
-        max-width: 110px;
+    .online-users{
+        max-width:110px;
     }
 
-    .voice-button {
-        max-width: 82px;
-
-        padding: 7px 6px;
+    .voice-button{
+        max-width:82px;
+        padding:7px 6px;
     }
 
-    .logout {
-        padding: 7px;
+    .logout{
+        padding:7px;
     }
 
-    .color-button {
-        width: 16px;
-        height: 16px;
+    .color-button{
+        width:16px;
+        height:16px;
     }
 
-    .tool-button {
-        width: 34px;
+    .tool-button{
+        width:34px;
     }
 
 }
-
 </style>
 </head>
 
 <body>
-
 
 <!-- =========================
      GİRİŞ
@@ -1028,9 +877,6 @@ body {
 
 <div id="chatPage">
 
-
-    <!-- ÜST BAR -->
-
     <div class="header">
 
         <div class="header-info">
@@ -1039,17 +885,11 @@ body {
                 💬 Ritmix Sohbet
             </div>
 
-            <div
-                class="online"
-                id="onlineText"
-            >
+            <div class="online" id="onlineText">
                 🟢 0 kişi çevrimiçi
             </div>
 
-            <div
-                class="online-users"
-                id="onlineUsersText"
-            >
+            <div class="online-users" id="onlineUsersText">
                 👥 Kimse yok
             </div>
 
@@ -1077,7 +917,7 @@ body {
     </div>
 
 
-    <!-- MESAJ ALANI -->
+    <!-- MESAJLAR -->
 
     <div
         class="chat"
@@ -1086,7 +926,7 @@ body {
 
 
     <!-- =========================
-         EMOJI PANEL
+         EMOJI PANELİ
     ========================= -->
 
     <div
@@ -1147,7 +987,7 @@ body {
 
 
     <!-- =========================
-         GIF PANEL
+         GIF PANELİ
     ========================= -->
 
     <div
@@ -1184,16 +1024,12 @@ body {
 
 
     <!-- =========================
-         ALT PANEL
+         ALT MESAJ PANELİ
     ========================= -->
 
     <div class="input-area">
 
-
         <div class="tools-row">
-
-
-            <!-- EMOJI -->
 
             <button
                 class="tool-button"
@@ -1204,8 +1040,6 @@ body {
             </button>
 
 
-            <!-- GIPHY -->
-
             <button
                 class="tool-button gif-button"
                 id="gifButton"
@@ -1214,8 +1048,6 @@ body {
                 GIF
             </button>
 
-
-            <!-- CİHAZDAN RESİM / GIF -->
 
             <button
                 class="tool-button image-button"
@@ -1231,8 +1063,6 @@ body {
                 accept="image/*,.gif"
             >
 
-
-            <!-- RENK -->
 
             <span class="color-label">
                 🎨
@@ -1282,8 +1112,6 @@ body {
         </div>
 
 
-        <!-- MESAJ YAZMA -->
-
         <div class="message-row">
 
             <input
@@ -1308,13 +1136,12 @@ body {
 
 
 <!-- =========================
-     SES DURUMU
+     SES
 ========================= -->
 
 <div id="voiceStatus">
     🎤 Sesli sistem hazırlanıyor...
 </div>
-
 
 <audio
     id="remoteAudio"
@@ -1325,10 +1152,9 @@ body {
 
 <script>
 
-
-/* =========================
+/* =========================================================
    FIREBASE
-========================= */
+========================================================= */
 
 const firebaseConfig = {
 
@@ -1355,26 +1181,29 @@ const firebaseConfig = {
 
 };
 
+
 firebase.initializeApp(firebaseConfig);
 
 const database =
     firebase.database();
 
+const auth =
+    firebase.auth();
 
-/* =========================
+
+/* =========================================================
    GIPHY
-========================= */
+========================================================= */
 
 const GIPHY_API_KEY =
     "wZUjXSQmZ5TEx1UzVzqTY5BVwGcpShCy";
 
 
-/* =========================
+/* =========================================================
    DEĞİŞKENLER
-========================= */
+========================================================= */
 
 let username = "";
-
 let userKey = "";
 
 let localStream = null;
@@ -1389,9 +1218,9 @@ let selectedMessageColor =
     "#333333";
 
 
-/* =========================
+/* =========================================================
    WEBRTC
-========================= */
+========================================================= */
 
 const rtcConfig = {
 
@@ -1412,22 +1241,23 @@ const rtcConfig = {
 };
 
 
-/* =========================
+/* =========================================================
    RENK
-========================= */
+========================================================= */
 
 document
 .querySelectorAll(".color-button")
-.forEach(function(button) {
+.forEach(function(button){
 
-    button.onclick = function() {
+    button.onclick =
+    function(){
 
         selectedMessageColor =
             this.dataset.color;
 
         document
         .querySelectorAll(".color-button")
-        .forEach(function(item) {
+        .forEach(function(item){
 
             item.classList.remove(
                 "selected"
@@ -1444,9 +1274,9 @@ document
 });
 
 
-/* =========================
+/* =========================================================
    EMOJI
-========================= */
+========================================================= */
 
 const emojiButton =
     document.getElementById(
@@ -1465,7 +1295,7 @@ const gifPanel =
 
 
 emojiButton.onclick =
-function() {
+function(){
 
     emojiPanel.style.display =
         emojiPanel.style.display === "block"
@@ -1480,10 +1310,10 @@ function() {
 
 document
 .querySelectorAll(".emoji-item")
-.forEach(function(button) {
+.forEach(function(button){
 
     button.onclick =
-    function() {
+    function(){
 
         const input =
             document.getElementById(
@@ -1500,9 +1330,9 @@ document
 });
 
 
-/* =========================
+/* =========================================================
    CİHAZDAN RESİM / GIF
-========================= */
+========================================================= */
 
 const imageButton =
     document.getElementById(
@@ -1516,7 +1346,7 @@ const imageInput =
 
 
 imageButton.onclick =
-function() {
+function(){
 
     imageInput.click();
 
@@ -1524,15 +1354,19 @@ function() {
 
 
 imageInput.onchange =
-function(event) {
+function(event){
 
     const file =
         event.target.files[0];
 
-    if (!file) return;
+    if(!file){
+
+        return;
+
+    }
 
 
-    if (!file.type.startsWith("image/")) {
+    if(!file.type.startsWith("image/")){
 
         alert(
             "Lütfen bir resim veya GIF seçin."
@@ -1546,42 +1380,33 @@ function(event) {
 
 
     /*
-       GIF'in hareketini korumak için
-       dosyanın tamamını Data URL olarak
-       Firebase'e gönderiyoruz.
+       6 MB sınırı
     */
+
+    if(file.size > 6 * 1024 * 1024){
+
+        alert(
+            "Bu dosya 6 MB'dan büyük.\n\n" +
+            "Lütfen 6 MB veya daha küçük " +
+            "bir resim/GIF seçin."
+        );
+
+        imageInput.value = "";
+
+        return;
+
+    }
+
 
     const reader =
         new FileReader();
 
 
     reader.onload =
-    function(e) {
+    function(e){
 
         const imageData =
             e.target.result;
-
-
-        /*
-           6 MB SINIRI
-
-           Burada yaklaşık 6 MB sınır
-           uygulanıyor.
-        */
-
-        if (imageData.length > 6000000) {
-
-            alert(
-                "Bu dosya çok büyük.\n\n" +
-                "Lütfen 6 MB veya daha küçük " +
-                "bir resim/GIF seçin."
-            );
-
-            imageInput.value = "";
-
-            return;
-
-        }
 
 
         database
@@ -1610,7 +1435,15 @@ function(event) {
                 Date.now()
 
         })
-        .catch(function(error) {
+        .then(function(){
+
+            setTimeout(
+                scrollChatToBottom,
+                100
+            );
+
+        })
+        .catch(function(error){
 
             console.error(
                 "Resim gönderme hatası:",
@@ -1631,7 +1464,7 @@ function(event) {
 
 
     reader.onerror =
-    function() {
+    function(){
 
         alert(
             "Dosya okunamadı."
@@ -1642,14 +1475,20 @@ function(event) {
     };
 
 
+    /*
+       GIF dosyasını değiştirmeden
+       Base64 olarak gönderiyoruz.
+       Böylece animasyon korunuyor.
+    */
+
     reader.readAsDataURL(file);
 
 };
 
 
-/* =========================
+/* =========================================================
    GIF
-========================= */
+========================================================= */
 
 const gifButton =
     document.getElementById(
@@ -1673,7 +1512,7 @@ const gifResults =
 
 
 gifButton.onclick =
-function() {
+function(){
 
     gifPanel.style.display =
         gifPanel.style.display === "block"
@@ -1691,9 +1530,9 @@ gifSearchButton.onclick =
 
 
 gifSearchInput.onkeydown =
-function(event) {
+function(event){
 
-    if (event.key === "Enter") {
+    if(event.key === "Enter"){
 
         event.preventDefault();
 
@@ -1704,13 +1543,13 @@ function(event) {
 };
 
 
-async function searchGIFs() {
+async function searchGIFs(){
 
     const query =
         gifSearchInput.value.trim();
 
 
-    if (!query) {
+    if(!query){
 
         gifResults.innerHTML =
             '<div class="gif-empty">🔎 Önce GIF adı yazın</div>';
@@ -1724,7 +1563,7 @@ async function searchGIFs() {
         '<div class="gif-empty">⏳ GIF aranıyor...</div>';
 
 
-    try {
+    try{
 
         const url =
             "https://api.giphy.com/v1/gifs/search" +
@@ -1745,7 +1584,7 @@ async function searchGIFs() {
             await fetch(url);
 
 
-        if (!response.ok) {
+        if(!response.ok){
 
             throw new Error(
                 "HTTP " +
@@ -1759,11 +1598,11 @@ async function searchGIFs() {
             await response.json();
 
 
-        if (
+        if(
             !data ||
             !data.data ||
             data.data.length === 0
-        ) {
+        ){
 
             gifResults.innerHTML =
                 '<div class="gif-empty">😔 GIF bulunamadı</div>';
@@ -1773,12 +1612,11 @@ async function searchGIFs() {
         }
 
 
-        gifResults.innerHTML =
-            "";
+        gifResults.innerHTML = "";
 
 
         data.data.forEach(
-        function(gif) {
+        function(gif){
 
             const images =
                 gif.images || {};
@@ -1796,7 +1634,11 @@ async function searchGIFs() {
                 previewUrl;
 
 
-            if (!previewUrl) return;
+            if(!previewUrl){
+
+                return;
+
+            }
 
 
             const image =
@@ -1823,7 +1665,7 @@ async function searchGIFs() {
 
 
             image.onclick =
-            function() {
+            function(){
 
                 sendGIF(
                     previewUrl,
@@ -1844,7 +1686,7 @@ async function searchGIFs() {
 
     }
 
-    catch(error) {
+    catch(error){
 
         console.error(
             "GIPHY hatası:",
@@ -1862,9 +1704,13 @@ async function searchGIFs() {
 function sendGIF(
     previewUrl,
     originalUrl
-) {
+){
 
-    if (!username) return;
+    if(!username){
+
+        return;
+
+    }
 
 
     database
@@ -1889,16 +1735,24 @@ function sendGIF(
         timestamp:
             Date.now()
 
+    })
+    .then(function(){
+
+        setTimeout(
+            scrollChatToBottom,
+            100
+        );
+
     });
 
 }
 
 
-/* =========================
+/* =========================================================
    GİRİŞ
-========================= */
+========================================================= */
 
-function enterChat() {
+async function enterChat(){
 
     const input =
         document.getElementById(
@@ -1910,7 +1764,7 @@ function enterChat() {
         input.value.trim();
 
 
-    if (!name) {
+    if(!name){
 
         alert(
             "Lütfen kullanıcı adınızı yazın."
@@ -1923,45 +1777,76 @@ function enterChat() {
     }
 
 
-    username =
-        name;
+    try{
+
+        /*
+           Firebase Anonymous Auth
+
+           Kullanıcı gerçek Firebase hesabını
+           görmez. Sistem güvenlik kurallarında
+           auth != null olarak tanınır.
+        */
+
+        if(!auth.currentUser){
+
+            await auth.signInAnonymously();
+
+        }
 
 
-    document.getElementById(
-        "login"
-    ).style.display =
-        "none";
+        username =
+            name;
 
 
-    document.getElementById(
-        "chatPage"
-    ).style.display =
-        "block";
+        document
+        .getElementById("login")
+        .style.display =
+            "none";
 
 
-    loadMessages();
+        document
+        .getElementById("chatPage")
+        .style.display =
+            "block";
 
-    setOnline();
+
+        loadMessages();
+
+        setOnline();
+
+    }
+
+    catch(error){
+
+        console.error(
+            "Giriş hatası:",
+            error
+        );
+
+        alert(
+            "Sohbete giriş yapılamadı.\n\n" +
+            error.message
+        );
+
+    }
 
 }
 
 
 document
-.getElementById(
-    "loginButton"
-)
+.getElementById("loginButton")
 .onclick =
     enterChat;
 
 
 document
-.getElementById(
-    "usernameInput"
-)
+.getElementById("usernameInput")
 .onkeydown =
-function(event) {
+function(event){
 
-    if (event.key === "Enter") {
+    if(event.key === "Enter"){
+
+        event.preventDefault();
 
         enterChat();
 
@@ -1970,17 +1855,64 @@ function(event) {
 };
 
 
-/* =========================
-   MESAJLAR
-========================= */
+/* =========================================================
+   MESAJLARI AŞAĞI KAYDIR
+========================================================= */
 
-function loadMessages() {
+function scrollChatToBottom(){
+
+    const chat =
+        document.getElementById(
+            "chat"
+        );
+
+
+    if(!chat){
+
+        return;
+
+    }
+
+
+    chat.scrollTop =
+        chat.scrollHeight;
+
+
+    /*
+       Özellikle resim/GIF yüklenirken
+       tarayıcının görüntü boyutu değişirse
+       tekrar aşağı alıyoruz.
+    */
+
+    setTimeout(function(){
+
+        chat.scrollTop =
+            chat.scrollHeight;
+
+    },150);
+
+
+    setTimeout(function(){
+
+        chat.scrollTop =
+            chat.scrollHeight;
+
+    },500);
+
+}
+
+
+/* =========================================================
+   MESAJLAR
+========================================================= */
+
+function loadMessages(){
 
     database
     .ref("messages")
     .on(
         "value",
-        function(snapshot) {
+        function(snapshot){
 
             const chat =
                 document.getElementById(
@@ -1988,18 +1920,21 @@ function loadMessages() {
                 );
 
 
-            chat.innerHTML =
-                "";
+            chat.innerHTML = "";
 
 
             snapshot.forEach(
-            function(child) {
+            function(child){
 
                 const message =
                     child.val();
 
 
-                if (!message) return;
+                if(!message){
+
+                    return;
+
+                }
 
 
                 const box =
@@ -2012,10 +1947,10 @@ function loadMessages() {
                     "message";
 
 
-                if (
+                if(
                     message.username ===
                     username
-                ) {
+                ){
 
                     box.classList.add(
                         "my-message"
@@ -2023,6 +1958,8 @@ function loadMessages() {
 
                 }
 
+
+                /* KULLANICI ADI */
 
                 const user =
                     document.createElement(
@@ -2035,10 +1972,13 @@ function loadMessages() {
 
 
                 user.textContent =
-                    message.username;
+                    message.username ||
+                    "Kullanıcı";
 
 
-                if (message.timestamp) {
+                /* SAAT */
+
+                if(message.timestamp){
 
                     const time =
                         document.createElement(
@@ -2072,15 +2012,12 @@ function loadMessages() {
                 }
 
 
-                /*
-                   Sadece kendi mesajının
-                   Sil butonu görünür.
-                */
+                /* SİL */
 
-                if (
+                if(
                     message.username ===
                     username
-                ) {
+                ){
 
                     const deleteButton =
                         document.createElement(
@@ -2097,9 +2034,17 @@ function loadMessages() {
 
 
                     deleteButton.onclick =
-                    function() {
+                    function(){
 
-                        child.ref.remove();
+                        if(
+                            confirm(
+                                "Bu mesajı silmek istiyor musunuz?"
+                            )
+                        ){
+
+                            child.ref.remove();
+
+                        }
 
                     };
 
@@ -2115,10 +2060,10 @@ function loadMessages() {
                    GIPHY GIF
                 ========================= */
 
-                if (
+                if(
                     message.type === "gif" &&
                     message.gif
-                ) {
+                ){
 
                     const gifBox =
                         document.createElement(
@@ -2136,8 +2081,15 @@ function loadMessages() {
                         );
 
 
+                    /*
+                       preview veya original
+                       kullanılıyor.
+
+                       GIPHY'nin GIF adresi
+                       hareketli kalır.
+                    */
+
                     gifImage.src =
-                        message.preview ||
                         message.gif;
 
 
@@ -2146,7 +2098,7 @@ function loadMessages() {
 
 
                     gifImage.onclick =
-                    function() {
+                    function(){
 
                         window.open(
                             message.gif,
@@ -2185,10 +2137,10 @@ function loadMessages() {
                    CİHAZDAN RESİM / GIF
                 ========================= */
 
-                if (
+                if(
                     message.type === "image" &&
                     message.image
-                ) {
+                ){
 
                     const imageBox =
                         document.createElement(
@@ -2207,11 +2159,9 @@ function loadMessages() {
 
 
                     /*
-                       Data URL doğrudan img.src
-                       olarak kullanılıyor.
-
-                       Böylece GIF'in animasyonu
-                       korunuyor.
+                       data:image/gif;base64...
+                       olduğu için GIF animasyonu
+                       korunur.
                     */
 
                     image.src =
@@ -2228,19 +2178,23 @@ function loadMessages() {
 
 
                     image.onclick =
-                    function() {
+                    function(){
 
                         const newWindow =
                             window.open();
 
 
-                        if (newWindow) {
+                        if(newWindow){
 
                             newWindow.document.write(
+                                '<html><body style="margin:0;background:#000;display:flex;align-items:center;justify-content:center;min-height:100vh;">' +
                                 '<img src="' +
                                 message.image +
-                                '" style="max-width:100%;height:auto;">'
+                                '" style="max-width:100%;max-height:100vh;width:auto;height:auto;">' +
+                                '</body></html>'
                             );
+
+                            newWindow.document.close();
 
                         }
 
@@ -2267,6 +2221,19 @@ function loadMessages() {
                     );
 
 
+                    /*
+                       GIF/resim boyutu belli olduktan
+                       sonra aşağı kaydır.
+                    */
+
+                    image.onload =
+                    function(){
+
+                        scrollChatToBottom();
+
+                    };
+
+
                     return;
 
                 }
@@ -2287,11 +2254,10 @@ function loadMessages() {
 
 
                 bubble.textContent =
-                    message.text ||
-                    "";
+                    message.text || "";
 
 
-                if (message.color) {
+                if(message.color){
 
                     bubble.style.color =
                         message.color;
@@ -2316,13 +2282,7 @@ function loadMessages() {
             });
 
 
-            /*
-               Yeni mesaj geldiğinde
-               en alta kaydır.
-            */
-
-            chat.scrollTop =
-                chat.scrollHeight;
+            scrollChatToBottom();
 
         }
     );
@@ -2330,11 +2290,11 @@ function loadMessages() {
 }
 
 
-/* =========================
+/* =========================================================
    MESAJ GÖNDER
-========================= */
+========================================================= */
 
-function sendMessage() {
+function sendMessage(){
 
     const input =
         document.getElementById(
@@ -2346,10 +2306,14 @@ function sendMessage() {
         input.value.trim();
 
 
-    if (
+    if(
         !text ||
         !username
-    ) return;
+    ){
+
+        return;
+
+    }
 
 
     database
@@ -2371,34 +2335,48 @@ function sendMessage() {
         timestamp:
             Date.now()
 
+    })
+    .then(function(){
+
+        input.value = "";
+
+        input.focus();
+
+        setTimeout(
+            scrollChatToBottom,
+            100
+        );
+
+    })
+    .catch(function(error){
+
+        console.error(
+            "Mesaj gönderme hatası:",
+            error
+        );
+
+        alert(
+            "Mesaj gönderilemedi.\n\n" +
+            error.message
+        );
+
     });
-
-
-    input.value =
-        "";
-
-
-    input.focus();
 
 }
 
 
 document
-.getElementById(
-    "sendButton"
-)
+.getElementById("sendButton")
 .onclick =
     sendMessage;
 
 
 document
-.getElementById(
-    "messageInput"
-)
+.getElementById("messageInput")
 .onkeydown =
-function(event) {
+function(event){
 
-    if (event.key === "Enter") {
+    if(event.key === "Enter"){
 
         event.preventDefault();
 
@@ -2409,11 +2387,11 @@ function(event) {
 };
 
 
-/* =========================
-   ÇEVRİMİÇİ
-========================= */
+/* =========================================================
+   ÇEVRİMİÇİ KULLANICILAR
+========================================================= */
 
-function setOnline() {
+function setOnline(){
 
     const ref =
         database
@@ -2431,9 +2409,7 @@ function setOnline() {
             username,
 
         timestamp:
-            firebase.database
-            .ServerValue
-            .TIMESTAMP
+            firebase.database.ServerValue.TIMESTAMP
 
     });
 
@@ -2446,7 +2422,7 @@ function setOnline() {
     .ref("onlineUsers")
     .on(
         "value",
-        function(snapshot) {
+        function(snapshot){
 
             const count =
                 snapshot.numChildren();
@@ -2466,16 +2442,16 @@ function setOnline() {
 
 
             snapshot.forEach(
-            function(child) {
+            function(child){
 
                 const user =
                     child.val();
 
 
-                if (
+                if(
                     user &&
                     user.username
-                ) {
+                ){
 
                     names.push(
                         user.username
@@ -2492,8 +2468,7 @@ function setOnline() {
             )
             .textContent =
                 names.length
-                ? "👥 " +
-                  names.join(", ")
+                ? "👥 " + names.join(", ")
                 : "👥 Kimse yok";
 
         }
@@ -2502,11 +2477,11 @@ function setOnline() {
 }
 
 
-/* =========================
+/* =========================================================
    SES DURUMU
-========================= */
+========================================================= */
 
-function showVoiceStatus(text) {
+function showVoiceStatus(text){
 
     const status =
         document.getElementById(
@@ -2524,33 +2499,35 @@ function showVoiceStatus(text) {
 }
 
 
-function hideVoiceStatus() {
+function hideVoiceStatus(){
 
-    document.getElementById(
+    document
+    .getElementById(
         "voiceStatus"
-    ).style.display =
+    )
+    .style.display =
         "none";
 
 }
 
 
-/* =========================
+/* =========================================================
    MİKROFON
-========================= */
+========================================================= */
 
-async function startVoiceChat() {
+async function startVoiceChat(){
 
-    try {
+    try{
 
         showVoiceStatus(
             "🎤 Mikrofon açılıyor..."
         );
 
 
-        if (
+        if(
             !navigator.mediaDevices ||
             !navigator.mediaDevices.getUserMedia
-        ) {
+        ){
 
             throw new Error(
                 "Tarayıcınız mikrofon erişimini desteklemiyor."
@@ -2564,11 +2541,9 @@ async function startVoiceChat() {
             .mediaDevices
             .getUserMedia({
 
-                audio:
-                    true,
+                audio:true,
 
-                video:
-                    false
+                video:false
 
             });
 
@@ -2611,17 +2586,17 @@ async function startVoiceChat() {
 
 
         callsSnapshot.forEach(
-        function(child) {
+        function(child){
 
             const call =
                 child.val();
 
 
-            if (
+            if(
                 call &&
                 call.receiver ===
                 username
-            ) {
+            ){
 
                 foundCall =
                     true;
@@ -2637,7 +2612,7 @@ async function startVoiceChat() {
         });
 
 
-        if (!foundCall) {
+        if(!foundCall){
 
             await createCall();
 
@@ -2645,12 +2620,16 @@ async function startVoiceChat() {
 
     }
 
-    catch(error) {
+    catch(error){
 
         console.error(
             "Mikrofon hatası:",
             error
         );
+
+
+        voiceActive =
+            false;
 
 
         alert(
@@ -2660,33 +2639,26 @@ async function startVoiceChat() {
             error.message
         );
 
-
-        voiceActive =
-            false;
-
     }
 
 }
 
 
-/* =========================
+/* =========================================================
    SES BUTONU
-========================= */
+========================================================= */
 
 document
-.getElementById(
-    "voiceButton"
-)
+.getElementById("voiceButton")
 .onclick =
-async function() {
+async function(){
 
-    if (voiceActive) {
+    if(voiceActive){
 
         stopVoiceChat();
 
     }
-
-    else {
+    else{
 
         await startVoiceChat();
 
@@ -2695,14 +2667,17 @@ async function() {
 };
 
 
-/* =========================
+/* =========================================================
    ÇAĞRI DİNLE
-========================= */
+========================================================= */
 
-function startVoiceListener() {
+function startVoiceListener(){
 
-    if (voiceListenerStarted)
+    if(voiceListenerStarted){
+
         return;
+
+    }
 
 
     voiceListenerStarted =
@@ -2713,7 +2688,7 @@ function startVoiceListener() {
     .ref("calls")
     .on(
         "child_added",
-        async function(snapshot) {
+        async function(snapshot){
 
             const call =
                 snapshot.val();
@@ -2723,35 +2698,50 @@ function startVoiceListener() {
                 snapshot.key;
 
 
-            if (!call)
+            if(!call){
+
                 return;
 
+            }
 
-            if (
+
+            if(
                 call.caller ===
                 username
-            )
+            ){
+
                 return;
 
+            }
 
-            if (
+
+            if(
                 call.receiver !==
                 username
-            )
+            ){
+
                 return;
 
+            }
 
-            if (
+
+            if(
                 peerConnections[callId]
-            )
+            ){
+
                 return;
 
+            }
 
-            if (!voiceActive)
+
+            if(!voiceActive){
+
                 return;
 
+            }
 
-            try {
+
+            try{
 
                 await answerCall(
                     callId,
@@ -2760,7 +2750,7 @@ function startVoiceListener() {
 
             }
 
-            catch(error) {
+            catch(error){
 
                 console.error(
                     "Çağrı cevaplama hatası:",
@@ -2775,14 +2765,17 @@ function startVoiceListener() {
 }
 
 
-/* =========================
+/* =========================================================
    ÇAĞRI BAŞLAT
-========================= */
+========================================================= */
 
-async function createCall() {
+async function createCall(){
 
-    if (!localStream)
+    if(!localStream){
+
         return;
+
+    }
 
 
     const usersSnapshot =
@@ -2796,18 +2789,18 @@ async function createCall() {
 
 
     usersSnapshot.forEach(
-    function(child) {
+    function(child){
 
         const user =
             child.val();
 
 
-        if (
+        if(
             user &&
             user.username &&
             user.username !== username &&
             !otherUser
-        ) {
+        ){
 
             otherUser =
                 user.username;
@@ -2817,7 +2810,7 @@ async function createCall() {
     });
 
 
-    if (!otherUser) {
+    if(!otherUser){
 
         showVoiceStatus(
             "🎤 Mikrofon açık - başka kullanıcı bekleniyor"
@@ -2850,8 +2843,7 @@ async function createCall() {
 
     localStream
     .getTracks()
-    .forEach(
-    function(track) {
+    .forEach(function(track){
 
         pc.addTrack(
             track,
@@ -2862,7 +2854,7 @@ async function createCall() {
 
 
     pc.ontrack =
-    function(event) {
+    function(event){
 
         const audio =
             document.getElementById(
@@ -2875,8 +2867,7 @@ async function createCall() {
 
 
         audio.play()
-        .catch(
-        function(error) {
+        .catch(function(error){
 
             console.log(
                 "Ses oynatma hatası:",
@@ -2894,9 +2885,9 @@ async function createCall() {
 
 
     pc.onicecandidate =
-    function(event) {
+    function(event){
 
-        if (event.candidate) {
+        if(event.candidate){
 
             database
             .ref(
@@ -2930,7 +2921,7 @@ async function createCall() {
         receiver:
             otherUser,
 
-        offer: {
+        offer:{
 
             type:
                 offer.type,
@@ -2954,16 +2945,16 @@ async function createCall() {
     )
     .on(
         "value",
-        async function(snapshot) {
+        async function(snapshot){
 
             const answer =
                 snapshot.val();
 
 
-            if (
+            if(
                 answer &&
                 !pc.currentRemoteDescription
-            ) {
+            ){
 
                 await pc.setRemoteDescription(
                     new RTCSessionDescription(
@@ -2985,15 +2976,15 @@ async function createCall() {
     )
     .on(
         "child_added",
-        async function(snapshot) {
+        async function(snapshot){
 
             const candidate =
                 snapshot.val();
 
 
-            if (candidate) {
+            if(candidate){
 
-                try {
+                try{
 
                     await pc.addIceCandidate(
                         new RTCIceCandidate(
@@ -3003,7 +2994,7 @@ async function createCall() {
 
                 }
 
-                catch(error) {
+                catch(error){
 
                     console.log(
                         error
@@ -3019,20 +3010,23 @@ async function createCall() {
 }
 
 
-/* =========================
+/* =========================================================
    ÇAĞRI CEVAPLA
-========================= */
+========================================================= */
 
 async function answerCall(
     callId,
     call
-) {
+){
 
-    if (
+    if(
         !localStream ||
         !voiceActive
-    )
+    ){
+
         return;
+
+    }
 
 
     const pc =
@@ -3047,8 +3041,7 @@ async function answerCall(
 
     localStream
     .getTracks()
-    .forEach(
-    function(track) {
+    .forEach(function(track){
 
         pc.addTrack(
             track,
@@ -3059,7 +3052,7 @@ async function answerCall(
 
 
     pc.ontrack =
-    function(event) {
+    function(event){
 
         const audio =
             document.getElementById(
@@ -3072,8 +3065,7 @@ async function answerCall(
 
 
         audio.play()
-        .catch(
-        function(error) {
+        .catch(function(error){
 
             console.log(
                 error
@@ -3090,9 +3082,9 @@ async function answerCall(
 
 
     pc.onicecandidate =
-    function(event) {
+    function(event){
 
-        if (event.candidate) {
+        if(event.candidate){
 
             database
             .ref(
@@ -3150,15 +3142,15 @@ async function answerCall(
     )
     .on(
         "child_added",
-        async function(snapshot) {
+        async function(snapshot){
 
             const candidate =
                 snapshot.val();
 
 
-            if (candidate) {
+            if(candidate){
 
-                try {
+                try{
 
                     await pc.addIceCandidate(
                         new RTCIceCandidate(
@@ -3168,7 +3160,7 @@ async function answerCall(
 
                 }
 
-                catch(error) {
+                catch(error){
 
                     console.log(
                         error
@@ -3184,22 +3176,21 @@ async function answerCall(
 }
 
 
-/* =========================
+/* =========================================================
    SESİ KAPAT
-========================= */
+========================================================= */
 
-function stopVoiceChat() {
+function stopVoiceChat(){
 
     voiceActive =
         false;
 
 
-    if (localStream) {
+    if(localStream){
 
         localStream
         .getTracks()
-        .forEach(
-        function(track) {
+        .forEach(function(track){
 
             track.stop();
 
@@ -3214,17 +3205,15 @@ function stopVoiceChat() {
 
     Object
     .keys(peerConnections)
-    .forEach(
-    function(id) {
+    .forEach(function(id){
 
-        try {
+        try{
 
-            peerConnections[id]
-            .close();
+            peerConnections[id].close();
 
         }
 
-        catch(error) {
+        catch(error){
 
             console.log(
                 error
@@ -3271,24 +3260,25 @@ function stopVoiceChat() {
     .ref("calls")
     .once(
         "value",
-        function(snapshot) {
+        function(snapshot){
 
             snapshot.forEach(
-            function(child) {
+            function(child){
 
                 const call =
                     child.val();
 
 
-                if (
+                if(
                     call &&
                     (
                         call.caller ===
                             username ||
+
                         call.receiver ===
                             username
                     )
-                ) {
+                ){
 
                     child.ref.remove();
 
@@ -3302,21 +3292,19 @@ function stopVoiceChat() {
 }
 
 
-/* =========================
+/* =========================================================
    ÇIKIŞ
-========================= */
+========================================================= */
 
 document
-.getElementById(
-    "logoutButton"
-)
+.getElementById("logoutButton")
 .onclick =
-function() {
+function(){
 
     stopVoiceChat();
 
 
-    if (userKey) {
+    if(userKey){
 
         database
         .ref(
@@ -3333,21 +3321,21 @@ function() {
 };
 
 
-/* =========================
+/* =========================================================
    DIŞARI TIKLAMA
-========================= */
+========================================================= */
 
 document.addEventListener(
     "click",
-    function(event) {
+    function(event){
 
-        if (
+        if(
             !emojiPanel.contains(
                 event.target
             ) &&
             event.target !==
                 emojiButton
-        ) {
+        ){
 
             emojiPanel.style.display =
                 "none";
@@ -3355,13 +3343,13 @@ document.addEventListener(
         }
 
 
-        if (
+        if(
             !gifPanel.contains(
                 event.target
             ) &&
             event.target !==
                 gifButton
-        ) {
+        ){
 
             gifPanel.style.display =
                 "none";
@@ -3371,7 +3359,30 @@ document.addEventListener(
     }
 );
 
+
+/* =========================================================
+   TELEFON KLAVYESİ AÇILINCA
+   MESAJ ALANINI GÖRÜNÜR TUT
+========================================================= */
+
+if(window.visualViewport){
+
+    window.visualViewport.addEventListener(
+        "resize",
+        function(){
+
+            setTimeout(
+                scrollChatToBottom,
+                100
+            );
+
+        }
+    );
+
+}
+
 </script>
 
 </body>
 </html>
+```
