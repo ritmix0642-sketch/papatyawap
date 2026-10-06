@@ -2,14 +2,21 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+>
+
 <title>Ritmix Sohbet</title>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 
 <style>
+
 * {
     box-sizing: border-box;
     -webkit-tap-highlight-color: transparent;
@@ -215,8 +222,7 @@ body {
 }
 
 /* =========================
-   MESAJLAR
-   BALON YOK
+   MESAJ
 ========================= */
 
 .message {
@@ -255,8 +261,8 @@ body {
 }
 
 /* =========================
-   YENİ MESAJ GÖRÜNÜMÜ
-   BALON / ARKA PLAN YOK
+   YAZI
+   BALON YOK
 ========================= */
 
 .bubble {
@@ -277,6 +283,26 @@ body {
 .my-message .bubble {
     background: transparent;
     border-radius: 0;
+}
+
+/* =========================
+   RESİM MESAJI
+========================= */
+
+.image-message {
+    display: inline-block;
+    max-width: 320px;
+    margin-top: 5px;
+}
+
+.image-message img {
+    display: block;
+    width: auto;
+    max-width: 320px;
+    max-height: 320px;
+    border-radius: 12px;
+    cursor: pointer;
+    object-fit: contain;
 }
 
 /* =========================
@@ -351,6 +377,13 @@ body {
 
 .gif-button {
     font-size: 13px;
+    font-weight: bold;
+}
+
+/* RESİM BUTONU */
+
+.image-button {
+    font-size: 17px;
     font-weight: bold;
 }
 
@@ -654,6 +687,15 @@ body {
         max-width: 100%;
     }
 
+    .image-message {
+        max-width: 240px;
+    }
+
+    .image-message img {
+        max-width: 240px;
+        max-height: 240px;
+    }
+
     .input-area {
         height: 94px;
         min-height: 94px;
@@ -679,6 +721,10 @@ body {
 
     .gif-button {
         font-size: 11px;
+    }
+
+    .image-button {
+        font-size: 15px;
     }
 
     .color-label {
@@ -760,11 +806,17 @@ body {
     .tool-button {
         width: 34px;
     }
+
+    .image-button {
+        width: 34px;
+    }
 }
+
 </style>
 </head>
 
 <body>
+
 
 <!-- =========================
      GİRİŞ
@@ -847,7 +899,9 @@ body {
     ></div>
 
 
-    <!-- EMOJI -->
+    <!-- =========================
+         EMOJI
+    ========================= -->
 
     <div
         class="emoji-panel"
@@ -906,7 +960,9 @@ body {
     </div>
 
 
-    <!-- GIF -->
+    <!-- =========================
+         GIF
+    ========================= -->
 
     <div
         class="gif-panel"
@@ -941,11 +997,27 @@ body {
     </div>
 
 
-    <!-- ALT PANEL -->
+    <!-- =========================
+         RESİM SEÇME
+    ========================= -->
+
+    <input
+        type="file"
+        id="imageInput"
+        accept="image/*"
+        style="display:none;"
+    >
+
+
+    <!-- =========================
+         ALT PANEL
+    ========================= -->
 
     <div class="input-area">
 
         <div class="tools-row">
+
+            <!-- EMOJI -->
 
             <button
                 class="tool-button"
@@ -955,6 +1027,9 @@ body {
                 😀
             </button>
 
+
+            <!-- GIF -->
+
             <button
                 class="tool-button gif-button"
                 id="gifButton"
@@ -962,6 +1037,20 @@ body {
             >
                 GIF
             </button>
+
+
+            <!-- RESİM -->
+
+            <button
+                class="tool-button image-button"
+                id="imageButton"
+                title="Resim Gönder"
+            >
+                📷
+            </button>
+
+
+            <!-- RENK -->
 
             <span class="color-label">
                 🎨
@@ -1033,7 +1122,9 @@ body {
 </div>
 
 
-<!-- SES -->
+<!-- =========================
+     SES
+========================= -->
 
 <div id="voiceStatus">
     🎤 Sesli sistem hazırlanıyor...
@@ -1053,18 +1144,34 @@ body {
 ========================= */
 
 const firebaseConfig = {
-    apiKey: "AIzaSyDJ9zkgu_2ZLcD_ObEYwnFfSu6QffN9VQI",
-    authDomain: "papatyawap.firebaseapp.com",
-    databaseURL: "https://papatyawap-default-rtdb.firebaseio.com",
-    projectId: "papatyawap",
-    storageBucket: "papatyawap.firebasestorage.app",
-    messagingSenderId: "29357315689",
-    appId: "1:29357315689:web:78864218c204d291f734f8"
+
+    apiKey:
+        "AIzaSyDJ9zkgu_2ZLcD_ObEYwnFfSu6QffN9VQI",
+
+    authDomain:
+        "papatyawap.firebaseapp.com",
+
+    databaseURL:
+        "https://papatyawap-default-rtdb.firebaseio.com",
+
+    projectId:
+        "papatyawap",
+
+    storageBucket:
+        "papatyawap.firebasestorage.app",
+
+    messagingSenderId:
+        "29357315689",
+
+    appId:
+        "1:29357315689:web:78864218c204d291f734f8"
+
 };
 
 firebase.initializeApp(firebaseConfig);
 
-const database = firebase.database();
+const database =
+    firebase.database();
 
 
 /* =========================
@@ -1080,12 +1187,19 @@ const GIPHY_API_KEY =
 ========================= */
 
 let username = "";
+
 let userKey = "";
+
 let localStream = null;
+
 let peerConnections = {};
+
 let voiceActive = false;
+
 let voiceListenerStarted = false;
-let selectedMessageColor = "#333333";
+
+let selectedMessageColor =
+    "#333333";
 
 
 /* =========================
@@ -1097,11 +1211,13 @@ const rtcConfig = {
     iceServers: [
 
         {
-            urls: "stun:stun.l.google.com:19302"
+            urls:
+                "stun:stun.l.google.com:19302"
         },
 
         {
-            urls: "stun:stun1.l.google.com:19302"
+            urls:
+                "stun:stun1.l.google.com:19302"
         }
 
     ]
@@ -1117,7 +1233,8 @@ document
 .querySelectorAll(".color-button")
 .forEach(function(button) {
 
-    button.onclick = function() {
+    button.onclick =
+    function() {
 
         selectedMessageColor =
             this.dataset.color;
@@ -1126,11 +1243,15 @@ document
         .querySelectorAll(".color-button")
         .forEach(function(item) {
 
-            item.classList.remove("selected");
+            item.classList.remove(
+                "selected"
+            );
 
         });
 
-        this.classList.add("selected");
+        this.classList.add(
+            "selected"
+        );
 
     };
 
@@ -1142,23 +1263,31 @@ document
 ========================= */
 
 const emojiButton =
-    document.getElementById("emojiButton");
+    document.getElementById(
+        "emojiButton"
+    );
 
 const emojiPanel =
-    document.getElementById("emojiPanel");
+    document.getElementById(
+        "emojiPanel"
+    );
 
 const gifPanel =
-    document.getElementById("gifPanel");
+    document.getElementById(
+        "gifPanel"
+    );
 
 
-emojiButton.onclick = function() {
+emojiButton.onclick =
+function() {
 
     emojiPanel.style.display =
         emojiPanel.style.display === "block"
         ? "none"
         : "block";
 
-    gifPanel.style.display = "none";
+    gifPanel.style.display =
+        "none";
 
 };
 
@@ -1167,12 +1296,16 @@ document
 .querySelectorAll(".emoji-item")
 .forEach(function(button) {
 
-    button.onclick = function() {
+    button.onclick =
+    function() {
 
         const input =
-            document.getElementById("messageInput");
+            document.getElementById(
+                "messageInput"
+            );
 
-        input.value += this.textContent;
+        input.value +=
+            this.textContent;
 
         input.focus();
 
@@ -1186,31 +1319,42 @@ document
 ========================= */
 
 const gifButton =
-    document.getElementById("gifButton");
+    document.getElementById(
+        "gifButton"
+    );
 
 const gifSearchInput =
-    document.getElementById("gifSearchInput");
+    document.getElementById(
+        "gifSearchInput"
+    );
 
 const gifSearchButton =
-    document.getElementById("gifSearchButton");
+    document.getElementById(
+        "gifSearchButton"
+    );
 
 const gifResults =
-    document.getElementById("gifResults");
+    document.getElementById(
+        "gifResults"
+    );
 
 
-gifButton.onclick = function() {
+gifButton.onclick =
+function() {
 
     gifPanel.style.display =
         gifPanel.style.display === "block"
         ? "none"
         : "block";
 
-    emojiPanel.style.display = "none";
+    emojiPanel.style.display =
+        "none";
 
 };
 
 
-gifSearchButton.onclick = searchGIFs;
+gifSearchButton.onclick =
+    searchGIFs;
 
 
 gifSearchInput.onkeydown =
@@ -1249,9 +1393,13 @@ async function searchGIFs() {
         const url =
             "https://api.giphy.com/v1/gifs/search" +
             "?api_key=" +
-            encodeURIComponent(GIPHY_API_KEY) +
+            encodeURIComponent(
+                GIPHY_API_KEY
+            ) +
             "&q=" +
-            encodeURIComponent(query) +
+            encodeURIComponent(
+                query
+            ) +
             "&limit=24" +
             "&rating=pg-13" +
             "&lang=tr";
@@ -1262,7 +1410,8 @@ async function searchGIFs() {
         if (!response.ok) {
 
             throw new Error(
-                "HTTP " + response.status
+                "HTTP " +
+                response.status
             );
 
         }
@@ -1285,7 +1434,8 @@ async function searchGIFs() {
 
         gifResults.innerHTML = "";
 
-        data.data.forEach(function(gif) {
+        data.data.forEach(
+        function(gif) {
 
             const images =
                 gif.images || {};
@@ -1303,18 +1453,24 @@ async function searchGIFs() {
             if (!previewUrl) return;
 
             const image =
-                document.createElement("img");
+                document.createElement(
+                    "img"
+                );
 
-            image.className = "gif-result";
+            image.className =
+                "gif-result";
 
-            image.src = previewUrl;
+            image.src =
+                previewUrl;
 
             image.alt =
                 gif.title || "GIF";
 
-            image.loading = "lazy";
+            image.loading =
+                "lazy";
 
-            image.onclick = function() {
+            image.onclick =
+            function() {
 
                 sendGIF(
                     previewUrl,
@@ -1326,7 +1482,9 @@ async function searchGIFs() {
 
             };
 
-            gifResults.appendChild(image);
+            gifResults.appendChild(
+                image
+            );
 
         });
 
@@ -1358,12 +1516,289 @@ function sendGIF(
     .ref("messages")
     .push({
 
-        username: username,
-        type: "gif",
-        gif: originalUrl,
-        preview: previewUrl,
-        color: selectedMessageColor,
-        timestamp: Date.now()
+        username:
+            username,
+
+        type:
+            "gif",
+
+        gif:
+            originalUrl,
+
+        preview:
+            previewUrl,
+
+        color:
+            selectedMessageColor,
+
+        timestamp:
+            Date.now()
+
+    });
+
+}
+
+
+/* =========================
+   RESİM GÖNDERME
+========================= */
+
+const imageButton =
+    document.getElementById(
+        "imageButton"
+    );
+
+const imageInput =
+    document.getElementById(
+        "imageInput"
+    );
+
+
+imageButton.onclick =
+function() {
+
+    imageInput.click();
+
+};
+
+
+imageInput.onchange =
+async function() {
+
+    const file =
+        this.files[0];
+
+    if (!file) return;
+
+
+    if (!file.type.startsWith("image/")) {
+
+        alert(
+            "Lütfen bir resim dosyası seçin."
+        );
+
+        this.value = "";
+
+        return;
+
+    }
+
+
+    if (file.size > 10 * 1024 * 1024) {
+
+        alert(
+            "Resim çok büyük.\n" +
+            "Lütfen 10 MB'dan küçük bir resim seçin."
+        );
+
+        this.value = "";
+
+        return;
+
+    }
+
+
+    try {
+
+        showVoiceStatus(
+            "📷 Resim hazırlanıyor..."
+        );
+
+
+        const compressedImage =
+            await compressImage(file);
+
+
+        database
+        .ref("messages")
+        .push({
+
+            username:
+                username,
+
+            type:
+                "image",
+
+            image:
+                compressedImage,
+
+            color:
+                selectedMessageColor,
+
+            timestamp:
+                Date.now()
+
+        });
+
+
+        hideVoiceStatus();
+
+
+    }
+
+    catch(error) {
+
+        console.error(
+            "Resim gönderme hatası:",
+            error
+        );
+
+        hideVoiceStatus();
+
+        alert(
+            "Resim gönderilemedi."
+        );
+
+    }
+
+
+    this.value = "";
+
+};
+
+
+/* =========================
+   RESİM KÜÇÜLTME
+========================= */
+
+function compressImage(file) {
+
+    return new Promise(
+    function(resolve, reject) {
+
+        const reader =
+            new FileReader();
+
+
+        reader.onload =
+        function(event) {
+
+            const image =
+                new Image();
+
+
+            image.onload =
+            function() {
+
+                const maxSize =
+                    900;
+
+                let width =
+                    image.width;
+
+                let height =
+                    image.height;
+
+
+                if (
+                    width > maxSize ||
+                    height > maxSize
+                ) {
+
+                    if (
+                        width > height
+                    ) {
+
+                        height =
+                            Math.round(
+                                height *
+                                maxSize /
+                                width
+                            );
+
+                        width =
+                            maxSize;
+
+                    }
+
+                    else {
+
+                        width =
+                            Math.round(
+                                width *
+                                maxSize /
+                                height
+                            );
+
+                        height =
+                            maxSize;
+
+                    }
+
+                }
+
+
+                const canvas =
+                    document.createElement(
+                        "canvas"
+                    );
+
+
+                canvas.width =
+                    width;
+
+                canvas.height =
+                    height;
+
+
+                const ctx =
+                    canvas.getContext(
+                        "2d"
+                    );
+
+
+                ctx.drawImage(
+                    image,
+                    0,
+                    0,
+                    width,
+                    height
+                );
+
+
+                const result =
+                    canvas.toDataURL(
+                        "image/jpeg",
+                        0.75
+                    );
+
+
+                resolve(result);
+
+            };
+
+
+            image.onerror =
+            function() {
+
+                reject(
+                    new Error(
+                        "Resim okunamadı."
+                    )
+                );
+
+            };
+
+
+            image.src =
+                event.target.result;
+
+        };
+
+
+        reader.onerror =
+        function() {
+
+            reject(
+                new Error(
+                    "Dosya okunamadı."
+                )
+            );
+
+        };
+
+
+        reader.readAsDataURL(file);
 
     });
 
@@ -1377,10 +1812,13 @@ function sendGIF(
 function enterChat() {
 
     const input =
-        document.getElementById("usernameInput");
+        document.getElementById(
+            "usernameInput"
+        );
 
     const name =
         input.value.trim();
+
 
     if (!name) {
 
@@ -1394,13 +1832,22 @@ function enterChat() {
 
     }
 
-    username = name;
 
-    document.getElementById("login")
-        .style.display = "none";
+    username =
+        name;
 
-    document.getElementById("chatPage")
-        .style.display = "block";
+
+    document.getElementById(
+        "login"
+    ).style.display =
+        "none";
+
+
+    document.getElementById(
+        "chatPage"
+    ).style.display =
+        "block";
+
 
     loadMessages();
 
@@ -1410,12 +1857,17 @@ function enterChat() {
 
 
 document
-.getElementById("loginButton")
-.onclick = enterChat;
+.getElementById(
+    "loginButton"
+)
+.onclick =
+enterChat;
 
 
 document
-.getElementById("usernameInput")
+.getElementById(
+    "usernameInput"
+)
 .onkeydown =
 function(event) {
 
@@ -1436,118 +1888,238 @@ function loadMessages() {
 
     database
     .ref("messages")
-    .on("value", function(snapshot) {
+    .on(
+        "value",
+        function(snapshot) {
 
-        const chat =
-            document.getElementById("chat");
-
-        chat.innerHTML = "";
-
-        snapshot.forEach(function(child) {
-
-            const message =
-                child.val();
-
-            if (!message) return;
-
-            const box =
-                document.createElement("div");
-
-            box.className = "message";
-
-
-            if (
-                message.username === username
-            ) {
-
-                box.classList.add(
-                    "my-message"
+            const chat =
+                document.getElementById(
+                    "chat"
                 );
 
-            }
+            chat.innerHTML =
+                "";
 
 
-            const user =
-                document.createElement("div");
+            snapshot.forEach(
+            function(child) {
 
-            user.className =
-                "username";
+                const message =
+                    child.val();
 
-            user.textContent =
-                message.username;
+                if (!message) return;
 
 
-            if (message.timestamp) {
-
-                const time =
-                    document.createElement("span");
-
-                time.className = "time";
-
-                time.textContent =
-                    new Date(
-                        message.timestamp
-                    ).toLocaleTimeString(
-                        "tr-TR",
-                        {
-                            hour: "2-digit",
-                            minute: "2-digit"
-                        }
+                const box =
+                    document.createElement(
+                        "div"
                     );
 
-                user.appendChild(time);
+                box.className =
+                    "message";
 
-            }
+
+                if (
+                    message.username ===
+                    username
+                ) {
+
+                    box.classList.add(
+                        "my-message"
+                    );
+
+                }
 
 
-            if (
-                message.username === username
-            ) {
+                const user =
+                    document.createElement(
+                        "div"
+                    );
 
-                const deleteButton =
-                    document.createElement("button");
+                user.className =
+                    "username";
 
-                deleteButton.className =
-                    "delete";
+                user.textContent =
+                    message.username;
 
-                deleteButton.textContent =
-                    "Sil";
 
-                deleteButton.onclick =
+                if (message.timestamp) {
+
+                    const time =
+                        document.createElement(
+                            "span"
+                        );
+
+                    time.className =
+                        "time";
+
+                    time.textContent =
+                        new Date(
+                            message.timestamp
+                        ).toLocaleTimeString(
+                            "tr-TR",
+                            {
+                                hour:
+                                    "2-digit",
+                                minute:
+                                    "2-digit"
+                            }
+                        );
+
+                    user.appendChild(
+                        time
+                    );
+
+                }
+
+
+                if (
+                    message.username ===
+                    username
+                ) {
+
+                    const deleteButton =
+                        document.createElement(
+                            "button"
+                        );
+
+                    deleteButton.className =
+                        "delete";
+
+                    deleteButton.textContent =
+                        "Sil";
+
+
+                    deleteButton.onclick =
                     function() {
 
                         child.ref.remove();
 
                     };
 
-                user.appendChild(
-                    deleteButton
-                );
 
-            }
+                    user.appendChild(
+                        deleteButton
+                    );
+
+                }
 
 
-            if (
-                message.type === "gif" &&
-                message.gif
-            ) {
+                /* =====================
+                   RESİM
+                ===================== */
 
-                const gifBox =
-                    document.createElement("div");
+                if (
+                    message.type ===
+                    "image" &&
+                    message.image
+                ) {
 
-                gifBox.className =
-                    "gif-message";
+                    const imageBox =
+                        document.createElement(
+                            "div"
+                        );
 
-                const gifImage =
-                    document.createElement("img");
+                    imageBox.className =
+                        "image-message";
 
-                gifImage.src =
-                    message.preview ||
-                    message.gif;
 
-                gifImage.alt = "GIF";
+                    const image =
+                        document.createElement(
+                            "img"
+                        );
 
-                gifImage.onclick =
+
+                    image.src =
+                        message.image;
+
+                    image.alt =
+                        "Gönderilen resim";
+
+
+                    image.onclick =
+                    function() {
+
+                        const newWindow =
+                            window.open(
+                                "",
+                                "_blank"
+                            );
+
+                        if (newWindow) {
+
+                            newWindow.document.write(
+                                "<title>Ritmix Resim</title>" +
+                                "<body style='margin:0;background:#f3f0e8;display:flex;align-items:center;justify-content:center;min-height:100vh'>" +
+                                "<img src='" +
+                                message.image +
+                                "' style='max-width:100%;max-height:100vh;object-fit:contain'>" +
+                                "</body>"
+                            );
+
+                            newWindow.document.close();
+
+                        }
+
+                    };
+
+
+                    imageBox.appendChild(
+                        image
+                    );
+
+
+                    box.appendChild(
+                        user
+                    );
+
+                    box.appendChild(
+                        imageBox
+                    );
+
+                    chat.appendChild(
+                        box
+                    );
+
+                    return;
+
+                }
+
+
+                /* =====================
+                   GIF
+                ===================== */
+
+                if (
+                    message.type ===
+                    "gif" &&
+                    message.gif
+                ) {
+
+                    const gifBox =
+                        document.createElement(
+                            "div"
+                        );
+
+                    gifBox.className =
+                        "gif-message";
+
+
+                    const gifImage =
+                        document.createElement(
+                            "img"
+                        );
+
+
+                    gifImage.src =
+                        message.preview ||
+                        message.gif;
+
+                    gifImage.alt =
+                        "GIF";
+
+
+                    gifImage.onclick =
                     function() {
 
                         window.open(
@@ -1557,52 +2129,75 @@ function loadMessages() {
 
                     };
 
-                gifBox.appendChild(
-                    gifImage
+
+                    gifBox.appendChild(
+                        gifImage
+                    );
+
+
+                    box.appendChild(
+                        user
+                    );
+
+                    box.appendChild(
+                        gifBox
+                    );
+
+                    chat.appendChild(
+                        box
+                    );
+
+                    return;
+
+                }
+
+
+                /* =====================
+                   NORMAL YAZI
+                ===================== */
+
+                const bubble =
+                    document.createElement(
+                        "div"
+                    );
+
+                bubble.className =
+                    "bubble";
+
+
+                bubble.textContent =
+                    message.text || "";
+
+
+                if (message.color) {
+
+                    bubble.style.color =
+                        message.color;
+
+                }
+
+
+                box.appendChild(
+                    user
                 );
 
-                box.appendChild(user);
-
-                box.appendChild(gifBox);
-
-                chat.appendChild(box);
-
-                return;
-
-            }
+                box.appendChild(
+                    bubble
+                );
 
 
-            const bubble =
-                document.createElement("div");
+                chat.appendChild(
+                    box
+                );
 
-            bubble.className =
-                "bubble";
-
-            bubble.textContent =
-                message.text || "";
+            });
 
 
-            if (message.color) {
+            chat.scrollTop =
+                chat.scrollHeight;
 
-                bubble.style.color =
-                    message.color;
-
-            }
-
-
-            box.appendChild(user);
-
-            box.appendChild(bubble);
-
-            chat.appendChild(box);
-
-        });
-
-
-        chat.scrollTop =
-            chat.scrollHeight;
-
-    });
+        }
+    );
 
 }
 
@@ -1621,6 +2216,7 @@ function sendMessage() {
     const text =
         input.value.trim();
 
+
     if (
         !text ||
         !username
@@ -1631,16 +2227,26 @@ function sendMessage() {
     .ref("messages")
     .push({
 
-        username: username,
-        text: text,
-        color: selectedMessageColor,
-        type: "text",
-        timestamp: Date.now()
+        username:
+            username,
+
+        text:
+            text,
+
+        color:
+            selectedMessageColor,
+
+        type:
+            "text",
+
+        timestamp:
+            Date.now()
 
     });
 
 
-    input.value = "";
+    input.value =
+        "";
 
     input.focus();
 
@@ -1648,12 +2254,17 @@ function sendMessage() {
 
 
 document
-.getElementById("sendButton")
-.onclick = sendMessage;
+.getElementById(
+    "sendButton"
+)
+.onclick =
+sendMessage;
 
 
 document
-.getElementById("messageInput")
+.getElementById(
+    "messageInput"
+)
 .onkeydown =
 function(event) {
 
@@ -1679,68 +2290,84 @@ function setOnline() {
         .ref("onlineUsers")
         .push();
 
-    userKey = ref.key;
+
+    userKey =
+        ref.key;
 
 
     ref.set({
 
-        username: username,
+        username:
+            username,
 
         timestamp:
-            firebase.database.ServerValue.TIMESTAMP
+            firebase.database
+            .ServerValue
+            .TIMESTAMP
 
     });
 
 
-    ref.onDisconnect().remove();
+    ref.onDisconnect()
+       .remove();
 
 
     database
     .ref("onlineUsers")
-    .on("value", function(snapshot) {
+    .on(
+        "value",
+        function(snapshot) {
 
-        const count =
-            snapshot.numChildren();
-
-        document
-        .getElementById("onlineText")
-        .textContent =
-            "🟢 " +
-            count +
-            " kişi çevrimiçi";
+            const count =
+                snapshot.numChildren();
 
 
-        const names = [];
+            document
+            .getElementById(
+                "onlineText"
+            )
+            .textContent =
+                "🟢 " +
+                count +
+                " kişi çevrimiçi";
 
-        snapshot.forEach(function(child) {
 
-            const user =
-                child.val();
+            const names = [];
 
-            if (
-                user &&
-                user.username
-            ) {
 
-                names.push(
+            snapshot.forEach(
+            function(child) {
+
+                const user =
+                    child.val();
+
+
+                if (
+                    user &&
                     user.username
-                );
+                ) {
 
-            }
+                    names.push(
+                        user.username
+                    );
 
-        });
+                }
+
+            });
 
 
-        document
-        .getElementById(
-            "onlineUsersText"
-        )
-        .textContent =
-            names.length
-            ? "👥 " + names.join(", ")
-            : "👥 Kimse yok";
+            document
+            .getElementById(
+                "onlineUsersText"
+            )
+            .textContent =
+                names.length
+                ? "👥 " +
+                  names.join(", ")
+                : "👥 Kimse yok";
 
-    });
+        }
+    );
 
 }
 
@@ -1756,7 +2383,10 @@ function showVoiceStatus(text) {
             "voiceStatus"
         );
 
-    status.textContent = text;
+
+    status.textContent =
+        text;
+
 
     status.style.display =
         "block";
@@ -1804,13 +2434,17 @@ async function startVoiceChat() {
             .mediaDevices
             .getUserMedia({
 
-                audio: true,
-                video: false
+                audio:
+                    true,
+
+                video:
+                    false
 
             });
 
 
-        voiceActive = true;
+        voiceActive =
+            true;
 
 
         const button =
@@ -1821,6 +2455,7 @@ async function startVoiceChat() {
 
         button.textContent =
             "🔴 Sesi Kapat";
+
 
         button.classList.add(
             "active"
@@ -1841,31 +2476,35 @@ async function startVoiceChat() {
             .once("value");
 
 
-        let foundCall = false;
+        let foundCall =
+            false;
 
 
         callsSnapshot.forEach(
-            function(child) {
+        function(child) {
 
-                const call =
-                    child.val();
+            const call =
+                child.val();
 
-                if (
-                    call &&
-                    call.receiver === username
-                ) {
 
-                    foundCall = true;
+            if (
+                call &&
+                call.receiver ===
+                username
+            ) {
 
-                    answerCall(
-                        child.key,
-                        call
-                    );
+                foundCall =
+                    true;
 
-                }
+
+                answerCall(
+                    child.key,
+                    call
+                );
 
             }
-        );
+
+        });
 
 
         if (!foundCall) {
@@ -1883,6 +2522,7 @@ async function startVoiceChat() {
             error
         );
 
+
         alert(
             "Mikrofon açılamadı.\n\n" +
             error.name +
@@ -1890,7 +2530,9 @@ async function startVoiceChat() {
             error.message
         );
 
-        voiceActive = false;
+
+        voiceActive =
+            false;
 
     }
 
@@ -1902,7 +2544,9 @@ async function startVoiceChat() {
 ========================= */
 
 document
-.getElementById("voiceButton")
+.getElementById(
+    "voiceButton"
+)
 .onclick =
 async function() {
 
@@ -1911,6 +2555,7 @@ async function() {
         stopVoiceChat();
 
     }
+
     else {
 
         await startVoiceChat();
@@ -1926,9 +2571,12 @@ async function() {
 
 function startVoiceListener() {
 
-    if (voiceListenerStarted) return;
+    if (voiceListenerStarted)
+        return;
 
-    voiceListenerStarted = true;
+
+    voiceListenerStarted =
+        true;
 
 
     database
@@ -1940,24 +2588,37 @@ function startVoiceListener() {
             const call =
                 snapshot.val();
 
+
             const callId =
                 snapshot.key;
 
-            if (!call) return;
+
+            if (!call)
+                return;
+
 
             if (
-                call.caller === username
-            ) return;
+                call.caller ===
+                username
+            )
+                return;
+
 
             if (
-                call.receiver !== username
-            ) return;
+                call.receiver !==
+                username
+            )
+                return;
+
 
             if (
                 peerConnections[callId]
-            ) return;
+            )
+                return;
 
-            if (!voiceActive) return;
+
+            if (!voiceActive)
+                return;
 
 
             try {
@@ -1990,7 +2651,8 @@ function startVoiceListener() {
 
 async function createCall() {
 
-    if (!localStream) return;
+    if (!localStream)
+        return;
 
 
     const usersSnapshot =
@@ -1999,29 +2661,30 @@ async function createCall() {
         .once("value");
 
 
-    let otherUser = null;
+    let otherUser =
+        null;
 
 
     usersSnapshot.forEach(
-        function(child) {
+    function(child) {
 
-            const user =
-                child.val();
+        const user =
+            child.val();
 
-            if (
-                user &&
-                user.username &&
-                user.username !== username &&
-                !otherUser
-            ) {
 
-                otherUser =
-                    user.username;
+        if (
+            user &&
+            user.username &&
+            user.username !== username &&
+            !otherUser
+        ) {
 
-            }
+            otherUser =
+                user.username;
 
         }
-    );
+
+    });
 
 
     if (!otherUser) {
@@ -2040,6 +2703,7 @@ async function createCall() {
         .ref("calls")
         .push();
 
+
     const callId =
         callRef.key;
 
@@ -2056,7 +2720,8 @@ async function createCall() {
 
     localStream
     .getTracks()
-    .forEach(function(track) {
+    .forEach(
+    function(track) {
 
         pc.addTrack(
             track,
@@ -2074,11 +2739,14 @@ async function createCall() {
                 "remoteAudio"
             );
 
+
         audio.srcObject =
             event.streams[0];
 
+
         audio.play()
-        .catch(function(error) {
+        .catch(
+        function(error) {
 
             console.log(
                 "Ses oynatma hatası:",
@@ -2086,6 +2754,7 @@ async function createCall() {
             );
 
         });
+
 
         showVoiceStatus(
             "🔊 Ses bağlantısı aktif"
@@ -2117,6 +2786,7 @@ async function createCall() {
     const offer =
         await pc.createOffer();
 
+
     await pc.setLocalDescription(
         offer
     );
@@ -2124,19 +2794,24 @@ async function createCall() {
 
     await callRef.set({
 
-        caller: username,
+        caller:
+            username,
 
-        receiver: otherUser,
+        receiver:
+            otherUser,
 
         offer: {
 
-            type: offer.type,
+            type:
+                offer.type,
 
-            sdp: offer.sdp
+            sdp:
+                offer.sdp
 
         },
 
-        created: Date.now()
+        created:
+            Date.now()
 
     });
 
@@ -2154,12 +2829,14 @@ async function createCall() {
             const answer =
                 snapshot.val();
 
+
             if (
                 answer &&
                 !pc.currentRemoteDescription
             ) {
 
-                await pc.setRemoteDescription(
+                await pc
+                .setRemoteDescription(
                     new RTCSessionDescription(
                         answer
                     )
@@ -2184,11 +2861,13 @@ async function createCall() {
             const candidate =
                 snapshot.val();
 
+
             if (candidate) {
 
                 try {
 
-                    await pc.addIceCandidate(
+                    await pc
+                    .addIceCandidate(
                         new RTCIceCandidate(
                             candidate
                         )
@@ -2198,7 +2877,9 @@ async function createCall() {
 
                 catch(error) {
 
-                    console.log(error);
+                    console.log(
+                        error
+                    );
 
                 }
 
@@ -2222,7 +2903,8 @@ async function answerCall(
     if (
         !localStream ||
         !voiceActive
-    ) return;
+    )
+        return;
 
 
     const pc =
@@ -2237,7 +2919,8 @@ async function answerCall(
 
     localStream
     .getTracks()
-    .forEach(function(track) {
+    .forEach(
+    function(track) {
 
         pc.addTrack(
             track,
@@ -2255,15 +2938,21 @@ async function answerCall(
                 "remoteAudio"
             );
 
+
         audio.srcObject =
             event.streams[0];
 
-        audio.play()
-        .catch(function(error) {
 
-            console.log(error);
+        audio.play()
+        .catch(
+        function(error) {
+
+            console.log(
+                error
+            );
 
         });
+
 
         showVoiceStatus(
             "🔊 Ses bağlantısı aktif"
@@ -2316,9 +3005,11 @@ async function answerCall(
     )
     .set({
 
-        type: answer.type,
+        type:
+            answer.type,
 
-        sdp: answer.sdp
+        sdp:
+            answer.sdp
 
     });
 
@@ -2336,11 +3027,13 @@ async function answerCall(
             const candidate =
                 snapshot.val();
 
+
             if (candidate) {
 
                 try {
 
-                    await pc.addIceCandidate(
+                    await pc
+                    .addIceCandidate(
                         new RTCIceCandidate(
                             candidate
                         )
@@ -2350,7 +3043,9 @@ async function answerCall(
 
                 catch(error) {
 
-                    console.log(error);
+                    console.log(
+                        error
+                    );
 
                 }
 
@@ -2368,44 +3063,52 @@ async function answerCall(
 
 function stopVoiceChat() {
 
-    voiceActive = false;
+    voiceActive =
+        false;
 
 
     if (localStream) {
 
         localStream
         .getTracks()
-        .forEach(function(track) {
+        .forEach(
+        function(track) {
 
             track.stop();
 
         });
 
-        localStream = null;
+        localStream =
+            null;
 
     }
 
 
     Object
     .keys(peerConnections)
-    .forEach(function(id) {
+    .forEach(
+    function(id) {
 
         try {
 
-            peerConnections[id].close();
+            peerConnections[id]
+                .close();
 
         }
 
         catch(error) {
 
-            console.log(error);
+            console.log(
+                error
+            );
 
         }
 
     });
 
 
-    peerConnections = {};
+    peerConnections =
+        {};
 
 
     const audio =
@@ -2413,7 +3116,9 @@ function stopVoiceChat() {
             "remoteAudio"
         );
 
-    audio.srcObject = null;
+
+    audio.srcObject =
+        null;
 
 
     const button =
@@ -2421,8 +3126,10 @@ function stopVoiceChat() {
             "voiceButton"
         );
 
+
     button.textContent =
         "🎤 Sesli Sohbet";
+
 
     button.classList.remove(
         "active"
@@ -2439,25 +3146,27 @@ function stopVoiceChat() {
         function(snapshot) {
 
             snapshot.forEach(
-                function(child) {
+            function(child) {
 
-                    const call =
-                        child.val();
+                const call =
+                    child.val();
 
-                    if (
-                        call &&
-                        (
-                            call.caller === username ||
-                            call.receiver === username
-                        )
-                    ) {
 
-                        child.ref.remove();
+                if (
+                    call &&
+                    (
+                        call.caller ===
+                        username ||
+                        call.receiver ===
+                        username
+                    )
+                ) {
 
-                    }
+                    child.ref.remove();
 
                 }
-            );
+
+            });
 
         }
     );
@@ -2470,7 +3179,9 @@ function stopVoiceChat() {
 ========================= */
 
 document
-.getElementById("logoutButton")
+.getElementById(
+    "logoutButton"
+)
 .onclick =
 function() {
 
@@ -2506,7 +3217,8 @@ document.addEventListener(
             !emojiPanel.contains(
                 event.target
             ) &&
-            event.target !== emojiButton
+            event.target !==
+            emojiButton
         ) {
 
             emojiPanel.style.display =
@@ -2519,7 +3231,8 @@ document.addEventListener(
             !gifPanel.contains(
                 event.target
             ) &&
-            event.target !== gifButton
+            event.target !==
+            gifButton
         ) {
 
             gifPanel.style.display =
