@@ -2,28 +2,20 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-
 <meta charset="UTF-8">
-
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
->
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Ritmix Sohbet</title>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 
 <style>
-
 * {
     box-sizing: border-box;
     -webkit-tap-highlight-color: transparent;
 }
 
-html,
-body {
+html, body {
     margin: 0;
     width: 100%;
     height: 100%;
@@ -32,13 +24,11 @@ body {
 body {
     font-family: Arial, Helvetica, sans-serif;
     color: #222;
-    background: #f3f0e8;
+    background: #f5f2eb;
     overflow: hidden;
 }
 
-/* =========================
-   GİRİŞ
-========================= */
+/* GİRİŞ */
 
 #login {
     width: 100%;
@@ -47,7 +37,7 @@ body {
     align-items: center;
     justify-content: center;
     padding: 20px;
-    background: #f3f0e8;
+    background: #f5f2eb;
 }
 
 .login-box {
@@ -58,18 +48,16 @@ body {
     background: #fffdf7;
     border: 1px solid #e5dfd2;
     border-radius: 24px;
-    box-shadow: 0 15px 45px rgba(0,0,0,.12);
+    box-shadow: 0 15px 45px rgba(0,0,0,.10);
 }
 
 .login-box h1 {
     margin: 0;
     font-size: 28px;
-    color: #252525;
 }
 
 .subtitle {
-    margin-top: 10px;
-    margin-bottom: 28px;
+    margin: 10px 0 28px;
     color: #77736b;
     font-size: 14px;
 }
@@ -86,10 +74,6 @@ body {
     font-size: 16px;
 }
 
-#usernameInput:focus {
-    border-color: #777;
-}
-
 #loginButton {
     width: 100%;
     height: 52px;
@@ -103,9 +87,7 @@ body {
     cursor: pointer;
 }
 
-/* =========================
-   SOHBET
-========================= */
+/* SOHBET */
 
 #chatPage {
     display: none;
@@ -113,12 +95,10 @@ body {
     height: 100vh;
     overflow: hidden;
     position: relative;
-    background: #f3f0e8;
+    background: #f5f2eb;
 }
 
-/* =========================
-   ÜST BAR
-========================= */
+/* ÜST BAR */
 
 .header {
     position: relative;
@@ -141,7 +121,6 @@ body {
 .header-title {
     font-size: 18px;
     font-weight: bold;
-    color: #222;
 }
 
 .online {
@@ -171,7 +150,6 @@ body {
 .voice-button {
     min-height: 40px;
     border: 1px solid #d8d3c8;
-    color: #222;
     padding: 9px 13px;
     border-radius: 12px;
     cursor: pointer;
@@ -195,9 +173,7 @@ body {
     border-color: #f1b7bf;
 }
 
-/* =========================
-   MESAJ ALANI
-========================= */
+/* MESAJ ALANI */
 
 .chat {
     position: absolute;
@@ -205,25 +181,15 @@ body {
     left: 0;
     right: 0;
     bottom: 108px;
-
     overflow-y: auto;
-
-    padding:
-        25px
-        16px
-        35px;
-
+    padding: 25px 16px 35px;
     max-width: 850px;
     width: 100%;
     margin: auto;
-
     scroll-behavior: smooth;
-    z-index: 5;
 }
 
-/* =========================
-   MESAJ
-========================= */
+/* MESAJ - BALON YOK */
 
 .message {
     margin-bottom: 18px;
@@ -260,11 +226,6 @@ body {
     margin-left: 7px;
 }
 
-/* =========================
-   YAZI
-   BALON YOK
-========================= */
-
 .bubble {
     display: block;
     max-width: 100%;
@@ -280,38 +241,28 @@ body {
     color: #333333;
 }
 
-.my-message .bubble {
-    background: transparent;
-    border-radius: 0;
-}
-
-/* =========================
-   RESİM MESAJI
-========================= */
+/* RESİM / GIF */
 
 .image-message {
     display: inline-block;
-    max-width: 320px;
+    max-width: 300px;
     margin-top: 5px;
 }
 
 .image-message img {
     display: block;
+    max-width: 300px;
+    max-height: 300px;
     width: auto;
-    max-width: 320px;
-    max-height: 320px;
+    height: auto;
     border-radius: 12px;
     cursor: pointer;
-    object-fit: contain;
 }
 
-/* =========================
-   GIF
-========================= */
+/* GIF */
 
 .gif-message {
     max-width: 280px;
-    border-radius: 15px;
     display: inline-block;
     margin-top: 5px;
     overflow: hidden;
@@ -325,34 +276,24 @@ body {
     cursor: pointer;
 }
 
-/* =========================
-   ALT PANEL
-========================= */
+/* ALT PANEL */
 
 .input-area {
     position: fixed;
     bottom: 0;
     left: 0;
     width: 100%;
-
     height: 108px;
     min-height: 108px;
-
-    padding:
-        8px
-        max(10px,env(safe-area-inset-right))
-        calc(8px + env(safe-area-inset-bottom))
-        max(10px,env(safe-area-inset-left));
-
+    padding: 8px max(10px,env(safe-area-inset-right))
+             calc(8px + env(safe-area-inset-bottom))
+             max(10px,env(safe-area-inset-left));
     background: #fffdf7;
     border-top: 1px solid #ded9cf;
-
     z-index: 25;
 }
 
-/* =========================
-   ARAÇLAR
-========================= */
+/* ARAÇLAR */
 
 .tools-row {
     width: 100%;
@@ -383,8 +324,11 @@ body {
 /* RESİM BUTONU */
 
 .image-button {
-    font-size: 17px;
-    font-weight: bold;
+    font-size: 20px;
+}
+
+#imageInput {
+    display: none;
 }
 
 .color-label {
@@ -415,33 +359,14 @@ body {
     box-shadow: 0 0 7px rgba(0,0,0,.25);
 }
 
-.color-white {
-    background: #333333;
-}
+.color-white { background: #333333; }
+.color-pink { background: #ff69b4; }
+.color-blue { background: #2878d4; }
+.color-green { background: #159957; }
+.color-yellow { background: #c99400; }
+.color-red { background: #e34b5f; }
 
-.color-pink {
-    background: #ff69b4;
-}
-
-.color-blue {
-    background: #2878d4;
-}
-
-.color-green {
-    background: #159957;
-}
-
-.color-yellow {
-    background: #c99400;
-}
-
-.color-red {
-    background: #e34b5f;
-}
-
-/* =========================
-   MESAJ GİRİŞİ
-========================= */
+/* MESAJ GİRİŞİ */
 
 .message-row {
     width: 100%;
@@ -458,14 +383,10 @@ body {
     border: 1px solid #d8d3c8;
     outline: none;
     border-radius: 15px;
-    background: #ffffff;
+    background: #fff;
     color: #222;
     padding: 0 15px;
     font-size: 15px;
-}
-
-.message-input::placeholder {
-    color: #99948a;
 }
 
 .send {
@@ -480,9 +401,7 @@ body {
     cursor: pointer;
 }
 
-/* =========================
-   EMOJI
-========================= */
+/* EMOJI */
 
 .emoji-panel {
     display: none;
@@ -515,9 +434,7 @@ body {
     padding: 4px;
 }
 
-/* =========================
-   GIF PANEL
-========================= */
+/* GIF PANEL */
 
 .gif-panel {
     display: none;
@@ -548,8 +465,7 @@ body {
     border: 1px solid #d8d3c8;
     outline: none;
     border-radius: 10px;
-    background: #ffffff;
-    color: #222;
+    background: #fff;
     padding: 0 12px;
 }
 
@@ -589,9 +505,7 @@ body {
     font-size: 13px;
 }
 
-/* =========================
-   SES
-========================= */
+/* SES */
 
 #voiceStatus {
     display: none;
@@ -610,9 +524,7 @@ body {
     white-space: nowrap;
 }
 
-/* =========================
-   MASAÜSTÜ
-========================= */
+/* MASAÜSTÜ */
 
 @media (min-width:700px) {
 
@@ -622,15 +534,9 @@ body {
         transform: translateX(-50%);
         border-radius: 18px 18px 0 0;
     }
-
-    .chat {
-        max-width: 850px;
-    }
 }
 
-/* =========================
-   MOBİL
-========================= */
+/* MOBİL */
 
 @media (max-width:600px) {
 
@@ -676,34 +582,19 @@ body {
     .chat {
         top: 62px;
         bottom: 94px;
-        padding:
-            15px
-            10px
-            30px;
-        max-width: none;
+        padding: 15px 10px 30px;
     }
 
-    .bubble {
-        max-width: 100%;
-    }
-
-    .image-message {
-        max-width: 240px;
-    }
-
+    .image-message,
     .image-message img {
-        max-width: 240px;
-        max-height: 240px;
+        max-width: 250px;
+        max-height: 250px;
     }
 
     .input-area {
         height: 94px;
         min-height: 94px;
-
-        padding:
-            7px
-            8px
-            calc(7px + env(safe-area-inset-bottom));
+        padding: 7px 8px calc(7px + env(safe-area-inset-bottom));
     }
 
     .tools-row {
@@ -724,7 +615,7 @@ body {
     }
 
     .image-button {
-        font-size: 15px;
+        font-size: 18px;
     }
 
     .color-label {
@@ -806,21 +697,13 @@ body {
     .tool-button {
         width: 34px;
     }
-
-    .image-button {
-        width: 34px;
-    }
 }
-
 </style>
 </head>
 
 <body>
 
-
-<!-- =========================
-     GİRİŞ
-========================= -->
+<!-- GİRİŞ -->
 
 <div id="login">
 
@@ -848,9 +731,7 @@ body {
 </div>
 
 
-<!-- =========================
-     SOHBET
-========================= -->
+<!-- SOHBET -->
 
 <div id="chatPage">
 
@@ -893,20 +774,12 @@ body {
     </div>
 
 
-    <div
-        class="chat"
-        id="chat"
-    ></div>
+    <div class="chat" id="chat"></div>
 
 
-    <!-- =========================
-         EMOJI
-    ========================= -->
+    <!-- EMOJI -->
 
-    <div
-        class="emoji-panel"
-        id="emojiPanel"
-    >
+    <div class="emoji-panel" id="emojiPanel">
 
         <div class="emoji-grid">
 
@@ -960,14 +833,9 @@ body {
     </div>
 
 
-    <!-- =========================
-         GIF
-    ========================= -->
+    <!-- GIF PANEL -->
 
-    <div
-        class="gif-panel"
-        id="gifPanel"
-    >
+    <div class="gif-panel" id="gifPanel">
 
         <div class="gif-search">
 
@@ -997,21 +865,7 @@ body {
     </div>
 
 
-    <!-- =========================
-         RESİM SEÇME
-    ========================= -->
-
-    <input
-        type="file"
-        id="imageInput"
-        accept="image/*"
-        style="display:none;"
-    >
-
-
-    <!-- =========================
-         ALT PANEL
-    ========================= -->
+    <!-- ALT PANEL -->
 
     <div class="input-area">
 
@@ -1028,7 +882,7 @@ body {
             </button>
 
 
-            <!-- GIF -->
+            <!-- GIPHY -->
 
             <button
                 class="tool-button gif-button"
@@ -1039,15 +893,21 @@ body {
             </button>
 
 
-            <!-- RESİM -->
+            <!-- CİHAZDAN RESİM / GIF -->
 
             <button
                 class="tool-button image-button"
                 id="imageButton"
-                title="Resim Gönder"
+                title="Cihazdan resim veya GIF yükle"
             >
                 📷
             </button>
+
+            <input
+                type="file"
+                id="imageInput"
+                accept="image/*,.gif"
+            >
 
 
             <!-- RENK -->
@@ -1122,9 +982,7 @@ body {
 </div>
 
 
-<!-- =========================
-     SES
-========================= -->
+<!-- SES -->
 
 <div id="voiceStatus">
     🎤 Sesli sistem hazırlanıyor...
@@ -1139,102 +997,63 @@ body {
 
 <script>
 
-/* =========================
-   FIREBASE
-========================= */
+/* FIREBASE */
 
 const firebaseConfig = {
-
-    apiKey:
-        "AIzaSyDJ9zkgu_2ZLcD_ObEYwnFfSu6QffN9VQI",
-
-    authDomain:
-        "papatyawap.firebaseapp.com",
-
-    databaseURL:
-        "https://papatyawap-default-rtdb.firebaseio.com",
-
-    projectId:
-        "papatyawap",
-
-    storageBucket:
-        "papatyawap.firebasestorage.app",
-
-    messagingSenderId:
-        "29357315689",
-
-    appId:
-        "1:29357315689:web:78864218c204d291f734f8"
-
+    apiKey: "AIzaSyDJ9zkgu_2ZLcD_ObEYwnFfSu6QffN9VQI",
+    authDomain: "papatyawap.firebaseapp.com",
+    databaseURL: "https://papatyawap-default-rtdb.firebaseio.com",
+    projectId: "papatyawap",
+    storageBucket: "papatyawap.firebasestorage.app",
+    messagingSenderId: "29357315689",
+    appId: "1:29357315689:web:78864218c204d291f734f8"
 };
 
 firebase.initializeApp(firebaseConfig);
 
-const database =
-    firebase.database();
+const database = firebase.database();
 
 
-/* =========================
-   GIPHY
-========================= */
+/* GIPHY */
 
 const GIPHY_API_KEY =
     "wZUjXSQmZ5TEx1UzVzqTY5BVwGcpShCy";
 
 
-/* =========================
-   DEĞİŞKENLER
-========================= */
+/* DEĞİŞKENLER */
 
 let username = "";
-
 let userKey = "";
-
 let localStream = null;
-
 let peerConnections = {};
-
 let voiceActive = false;
-
 let voiceListenerStarted = false;
-
-let selectedMessageColor =
-    "#333333";
+let selectedMessageColor = "#333333";
 
 
-/* =========================
-   WEBRTC
-========================= */
+/* WEBRTC */
 
 const rtcConfig = {
 
     iceServers: [
-
         {
-            urls:
-                "stun:stun.l.google.com:19302"
+            urls: "stun:stun.l.google.com:19302"
         },
-
         {
-            urls:
-                "stun:stun1.l.google.com:19302"
+            urls: "stun:stun1.l.google.com:19302"
         }
-
     ]
 
 };
 
 
-/* =========================
-   RENK
-========================= */
+/* RENK */
 
 document
 .querySelectorAll(".color-button")
 .forEach(function(button) {
 
-    button.onclick =
-    function() {
+    button.onclick = function() {
 
         selectedMessageColor =
             this.dataset.color;
@@ -1243,69 +1062,49 @@ document
         .querySelectorAll(".color-button")
         .forEach(function(item) {
 
-            item.classList.remove(
-                "selected"
-            );
+            item.classList.remove("selected");
 
         });
 
-        this.classList.add(
-            "selected"
-        );
+        this.classList.add("selected");
 
     };
 
 });
 
 
-/* =========================
-   EMOJI
-========================= */
+/* EMOJI */
 
 const emojiButton =
-    document.getElementById(
-        "emojiButton"
-    );
+    document.getElementById("emojiButton");
 
 const emojiPanel =
-    document.getElementById(
-        "emojiPanel"
-    );
+    document.getElementById("emojiPanel");
 
 const gifPanel =
-    document.getElementById(
-        "gifPanel"
-    );
+    document.getElementById("gifPanel");
 
-
-emojiButton.onclick =
-function() {
+emojiButton.onclick = function() {
 
     emojiPanel.style.display =
         emojiPanel.style.display === "block"
         ? "none"
         : "block";
 
-    gifPanel.style.display =
-        "none";
+    gifPanel.style.display = "none";
 
 };
-
 
 document
 .querySelectorAll(".emoji-item")
 .forEach(function(button) {
 
-    button.onclick =
-    function() {
+    button.onclick = function() {
 
         const input =
-            document.getElementById(
-                "messageInput"
-            );
+            document.getElementById("messageInput");
 
-        input.value +=
-            this.textContent;
+        input.value += this.textContent;
 
         input.focus();
 
@@ -1315,40 +1114,156 @@ document
 
 
 /* =========================
-   GIF
+   CİHAZDAN RESİM / GIF
 ========================= */
 
+const imageButton =
+    document.getElementById("imageButton");
+
+const imageInput =
+    document.getElementById("imageInput");
+
+
+imageButton.onclick = function() {
+
+    imageInput.click();
+
+};
+
+
+imageInput.onchange = function(event) {
+
+    const file =
+        event.target.files[0];
+
+    if (!file) return;
+
+
+    if (!file.type.startsWith("image/")) {
+
+        alert("Lütfen bir resim veya GIF seçin.");
+
+        imageInput.value = "";
+
+        return;
+
+    }
+
+
+    /*
+       GIF HAREKETLİLİĞİNİ KORUMAK İÇİN
+       DOSYANIN TAMAMINI DATA URL OLARAK
+       OKUYORUZ.
+    */
+
+    const reader =
+        new FileReader();
+
+
+    reader.onload = function(e) {
+
+        const imageData =
+            e.target.result;
+
+
+        /*
+           Çok büyük dosyalar Firebase
+           Realtime Database için sorun çıkarabilir.
+        */
+
+        if (imageData.length > 3500000) {
+
+            alert(
+                "Bu dosya çok büyük.\n\n" +
+                "Lütfen 2 MB civarında veya daha küçük " +
+                "bir resim/GIF seçin."
+            );
+
+            imageInput.value = "";
+
+            return;
+
+        }
+
+
+        database
+        .ref("messages")
+        .push({
+
+            username: username,
+
+            type: "image",
+
+            image: imageData,
+
+            filename: file.name,
+
+            mimeType: file.type,
+
+            color: selectedMessageColor,
+
+            timestamp: Date.now()
+
+        })
+        .catch(function(error) {
+
+            console.error(
+                "Resim gönderme hatası:",
+                error
+            );
+
+            alert(
+                "Resim gönderilemedi.\n\n" +
+                error.message
+            );
+
+        });
+
+
+        imageInput.value = "";
+
+    };
+
+
+    reader.onerror = function() {
+
+        alert(
+            "Dosya okunamadı."
+        );
+
+        imageInput.value = "";
+
+    };
+
+
+    reader.readAsDataURL(file);
+
+};
+
+
+/* GIF */
+
 const gifButton =
-    document.getElementById(
-        "gifButton"
-    );
+    document.getElementById("gifButton");
 
 const gifSearchInput =
-    document.getElementById(
-        "gifSearchInput"
-    );
+    document.getElementById("gifSearchInput");
 
 const gifSearchButton =
-    document.getElementById(
-        "gifSearchButton"
-    );
+    document.getElementById("gifSearchButton");
 
 const gifResults =
-    document.getElementById(
-        "gifResults"
-    );
+    document.getElementById("gifResults");
 
 
-gifButton.onclick =
-function() {
+gifButton.onclick = function() {
 
     gifPanel.style.display =
         gifPanel.style.display === "block"
         ? "none"
         : "block";
 
-    emojiPanel.style.display =
-        "none";
+    emojiPanel.style.display = "none";
 
 };
 
@@ -1393,13 +1308,9 @@ async function searchGIFs() {
         const url =
             "https://api.giphy.com/v1/gifs/search" +
             "?api_key=" +
-            encodeURIComponent(
-                GIPHY_API_KEY
-            ) +
+            encodeURIComponent(GIPHY_API_KEY) +
             "&q=" +
-            encodeURIComponent(
-                query
-            ) +
+            encodeURIComponent(query) +
             "&limit=24" +
             "&rating=pg-13" +
             "&lang=tr";
@@ -1410,8 +1321,7 @@ async function searchGIFs() {
         if (!response.ok) {
 
             throw new Error(
-                "HTTP " +
-                response.status
+                "HTTP " + response.status
             );
 
         }
@@ -1434,8 +1344,7 @@ async function searchGIFs() {
 
         gifResults.innerHTML = "";
 
-        data.data.forEach(
-        function(gif) {
+        data.data.forEach(function(gif) {
 
             const images =
                 gif.images || {};
@@ -1453,9 +1362,7 @@ async function searchGIFs() {
             if (!previewUrl) return;
 
             const image =
-                document.createElement(
-                    "img"
-                );
+                document.createElement("img");
 
             image.className =
                 "gif-result";
@@ -1466,11 +1373,9 @@ async function searchGIFs() {
             image.alt =
                 gif.title || "GIF";
 
-            image.loading =
-                "lazy";
+            image.loading = "lazy";
 
-            image.onclick =
-            function() {
+            image.onclick = function() {
 
                 sendGIF(
                     previewUrl,
@@ -1482,9 +1387,7 @@ async function searchGIFs() {
 
             };
 
-            gifResults.appendChild(
-                image
-            );
+            gifResults.appendChild(image);
 
         });
 
@@ -1516,309 +1419,32 @@ function sendGIF(
     .ref("messages")
     .push({
 
-        username:
-            username,
+        username: username,
 
-        type:
-            "gif",
+        type: "gif",
 
-        gif:
-            originalUrl,
+        gif: originalUrl,
 
-        preview:
-            previewUrl,
+        preview: previewUrl,
 
-        color:
-            selectedMessageColor,
+        color: selectedMessageColor,
 
-        timestamp:
-            Date.now()
+        timestamp: Date.now()
 
     });
 
 }
 
 
-/* =========================
-   RESİM GÖNDERME
-========================= */
-
-const imageButton =
-    document.getElementById(
-        "imageButton"
-    );
-
-const imageInput =
-    document.getElementById(
-        "imageInput"
-    );
-
-
-imageButton.onclick =
-function() {
-
-    imageInput.click();
-
-};
-
-
-imageInput.onchange =
-async function() {
-
-    const file =
-        this.files[0];
-
-    if (!file) return;
-
-
-    if (!file.type.startsWith("image/")) {
-
-        alert(
-            "Lütfen bir resim dosyası seçin."
-        );
-
-        this.value = "";
-
-        return;
-
-    }
-
-
-    if (file.size > 10 * 1024 * 1024) {
-
-        alert(
-            "Resim çok büyük.\n" +
-            "Lütfen 10 MB'dan küçük bir resim seçin."
-        );
-
-        this.value = "";
-
-        return;
-
-    }
-
-
-    try {
-
-        showVoiceStatus(
-            "📷 Resim hazırlanıyor..."
-        );
-
-
-        const compressedImage =
-            await compressImage(file);
-
-
-        database
-        .ref("messages")
-        .push({
-
-            username:
-                username,
-
-            type:
-                "image",
-
-            image:
-                compressedImage,
-
-            color:
-                selectedMessageColor,
-
-            timestamp:
-                Date.now()
-
-        });
-
-
-        hideVoiceStatus();
-
-
-    }
-
-    catch(error) {
-
-        console.error(
-            "Resim gönderme hatası:",
-            error
-        );
-
-        hideVoiceStatus();
-
-        alert(
-            "Resim gönderilemedi."
-        );
-
-    }
-
-
-    this.value = "";
-
-};
-
-
-/* =========================
-   RESİM KÜÇÜLTME
-========================= */
-
-function compressImage(file) {
-
-    return new Promise(
-    function(resolve, reject) {
-
-        const reader =
-            new FileReader();
-
-
-        reader.onload =
-        function(event) {
-
-            const image =
-                new Image();
-
-
-            image.onload =
-            function() {
-
-                const maxSize =
-                    900;
-
-                let width =
-                    image.width;
-
-                let height =
-                    image.height;
-
-
-                if (
-                    width > maxSize ||
-                    height > maxSize
-                ) {
-
-                    if (
-                        width > height
-                    ) {
-
-                        height =
-                            Math.round(
-                                height *
-                                maxSize /
-                                width
-                            );
-
-                        width =
-                            maxSize;
-
-                    }
-
-                    else {
-
-                        width =
-                            Math.round(
-                                width *
-                                maxSize /
-                                height
-                            );
-
-                        height =
-                            maxSize;
-
-                    }
-
-                }
-
-
-                const canvas =
-                    document.createElement(
-                        "canvas"
-                    );
-
-
-                canvas.width =
-                    width;
-
-                canvas.height =
-                    height;
-
-
-                const ctx =
-                    canvas.getContext(
-                        "2d"
-                    );
-
-
-                ctx.drawImage(
-                    image,
-                    0,
-                    0,
-                    width,
-                    height
-                );
-
-
-                const result =
-                    canvas.toDataURL(
-                        "image/jpeg",
-                        0.75
-                    );
-
-
-                resolve(result);
-
-            };
-
-
-            image.onerror =
-            function() {
-
-                reject(
-                    new Error(
-                        "Resim okunamadı."
-                    )
-                );
-
-            };
-
-
-            image.src =
-                event.target.result;
-
-        };
-
-
-        reader.onerror =
-        function() {
-
-            reject(
-                new Error(
-                    "Dosya okunamadı."
-                )
-            );
-
-        };
-
-
-        reader.readAsDataURL(file);
-
-    });
-
-}
-
-
-/* =========================
-   GİRİŞ
-========================= */
+/* GİRİŞ */
 
 function enterChat() {
 
     const input =
-        document.getElementById(
-            "usernameInput"
-        );
+        document.getElementById("usernameInput");
 
     const name =
         input.value.trim();
-
 
     if (!name) {
 
@@ -1832,22 +1458,13 @@ function enterChat() {
 
     }
 
+    username = name;
 
-    username =
-        name;
+    document.getElementById("login")
+        .style.display = "none";
 
-
-    document.getElementById(
-        "login"
-    ).style.display =
-        "none";
-
-
-    document.getElementById(
-        "chatPage"
-    ).style.display =
-        "block";
-
+    document.getElementById("chatPage")
+        .style.display = "block";
 
     loadMessages();
 
@@ -1857,17 +1474,12 @@ function enterChat() {
 
 
 document
-.getElementById(
-    "loginButton"
-)
-.onclick =
-enterChat;
+.getElementById("loginButton")
+.onclick = enterChat;
 
 
 document
-.getElementById(
-    "usernameInput"
-)
+.getElementById("usernameInput")
 .onkeydown =
 function(event) {
 
@@ -1880,246 +1492,130 @@ function(event) {
 };
 
 
-/* =========================
-   MESAJLAR
-========================= */
+/* MESAJLAR */
 
 function loadMessages() {
 
     database
     .ref("messages")
-    .on(
-        "value",
-        function(snapshot) {
+    .on("value", function(snapshot) {
 
-            const chat =
-                document.getElementById(
-                    "chat"
+        const chat =
+            document.getElementById("chat");
+
+        chat.innerHTML = "";
+
+        snapshot.forEach(function(child) {
+
+            const message =
+                child.val();
+
+            if (!message) return;
+
+            const box =
+                document.createElement("div");
+
+            box.className = "message";
+
+
+            if (
+                message.username === username
+            ) {
+
+                box.classList.add(
+                    "my-message"
                 );
 
-            chat.innerHTML =
-                "";
+            }
 
 
-            snapshot.forEach(
-            function(child) {
+            const user =
+                document.createElement("div");
 
-                const message =
-                    child.val();
+            user.className =
+                "username";
 
-                if (!message) return;
+            user.textContent =
+                message.username;
 
 
-                const box =
-                    document.createElement(
-                        "div"
+            if (message.timestamp) {
+
+                const time =
+                    document.createElement("span");
+
+                time.className =
+                    "time";
+
+                time.textContent =
+                    new Date(
+                        message.timestamp
+                    ).toLocaleTimeString(
+                        "tr-TR",
+                        {
+                            hour: "2-digit",
+                            minute: "2-digit"
+                        }
                     );
 
-                box.className =
-                    "message";
+                user.appendChild(time);
+
+            }
 
 
-                if (
-                    message.username ===
-                    username
-                ) {
+            if (
+                message.username === username
+            ) {
 
-                    box.classList.add(
-                        "my-message"
-                    );
+                const deleteButton =
+                    document.createElement("button");
 
-                }
+                deleteButton.className =
+                    "delete";
 
+                deleteButton.textContent =
+                    "Sil";
 
-                const user =
-                    document.createElement(
-                        "div"
-                    );
-
-                user.className =
-                    "username";
-
-                user.textContent =
-                    message.username;
-
-
-                if (message.timestamp) {
-
-                    const time =
-                        document.createElement(
-                            "span"
-                        );
-
-                    time.className =
-                        "time";
-
-                    time.textContent =
-                        new Date(
-                            message.timestamp
-                        ).toLocaleTimeString(
-                            "tr-TR",
-                            {
-                                hour:
-                                    "2-digit",
-                                minute:
-                                    "2-digit"
-                            }
-                        );
-
-                    user.appendChild(
-                        time
-                    );
-
-                }
-
-
-                if (
-                    message.username ===
-                    username
-                ) {
-
-                    const deleteButton =
-                        document.createElement(
-                            "button"
-                        );
-
-                    deleteButton.className =
-                        "delete";
-
-                    deleteButton.textContent =
-                        "Sil";
-
-
-                    deleteButton.onclick =
+                deleteButton.onclick =
                     function() {
 
                         child.ref.remove();
 
                     };
 
+                user.appendChild(
+                    deleteButton
+                );
 
-                    user.appendChild(
-                        deleteButton
-                    );
-
-                }
-
-
-                /* =====================
-                   RESİM
-                ===================== */
-
-                if (
-                    message.type ===
-                    "image" &&
-                    message.image
-                ) {
-
-                    const imageBox =
-                        document.createElement(
-                            "div"
-                        );
-
-                    imageBox.className =
-                        "image-message";
+            }
 
 
-                    const image =
-                        document.createElement(
-                            "img"
-                        );
+            /*
+               GIPHY GIF
+            */
 
+            if (
+                message.type === "gif" &&
+                message.gif
+            ) {
 
-                    image.src =
-                        message.image;
+                const gifBox =
+                    document.createElement("div");
 
-                    image.alt =
-                        "Gönderilen resim";
+                gifBox.className =
+                    "gif-message";
 
+                const gifImage =
+                    document.createElement("img");
 
-                    image.onclick =
-                    function() {
+                gifImage.src =
+                    message.preview ||
+                    message.gif;
 
-                        const newWindow =
-                            window.open(
-                                "",
-                                "_blank"
-                            );
+                gifImage.alt =
+                    "GIF";
 
-                        if (newWindow) {
-
-                            newWindow.document.write(
-                                "<title>Ritmix Resim</title>" +
-                                "<body style='margin:0;background:#f3f0e8;display:flex;align-items:center;justify-content:center;min-height:100vh'>" +
-                                "<img src='" +
-                                message.image +
-                                "' style='max-width:100%;max-height:100vh;object-fit:contain'>" +
-                                "</body>"
-                            );
-
-                            newWindow.document.close();
-
-                        }
-
-                    };
-
-
-                    imageBox.appendChild(
-                        image
-                    );
-
-
-                    box.appendChild(
-                        user
-                    );
-
-                    box.appendChild(
-                        imageBox
-                    );
-
-                    chat.appendChild(
-                        box
-                    );
-
-                    return;
-
-                }
-
-
-                /* =====================
-                   GIF
-                ===================== */
-
-                if (
-                    message.type ===
-                    "gif" &&
-                    message.gif
-                ) {
-
-                    const gifBox =
-                        document.createElement(
-                            "div"
-                        );
-
-                    gifBox.className =
-                        "gif-message";
-
-
-                    const gifImage =
-                        document.createElement(
-                            "img"
-                        );
-
-
-                    gifImage.src =
-                        message.preview ||
-                        message.gif;
-
-                    gifImage.alt =
-                        "GIF";
-
-
-                    gifImage.onclick =
+                gifImage.onclick =
                     function() {
 
                         window.open(
@@ -2129,82 +1625,127 @@ function loadMessages() {
 
                     };
 
-
-                    gifBox.appendChild(
-                        gifImage
-                    );
-
-
-                    box.appendChild(
-                        user
-                    );
-
-                    box.appendChild(
-                        gifBox
-                    );
-
-                    chat.appendChild(
-                        box
-                    );
-
-                    return;
-
-                }
-
-
-                /* =====================
-                   NORMAL YAZI
-                ===================== */
-
-                const bubble =
-                    document.createElement(
-                        "div"
-                    );
-
-                bubble.className =
-                    "bubble";
-
-
-                bubble.textContent =
-                    message.text || "";
-
-
-                if (message.color) {
-
-                    bubble.style.color =
-                        message.color;
-
-                }
-
-
-                box.appendChild(
-                    user
+                gifBox.appendChild(
+                    gifImage
                 );
 
-                box.appendChild(
-                    bubble
+                box.appendChild(user);
+
+                box.appendChild(gifBox);
+
+                chat.appendChild(box);
+
+                return;
+
+            }
+
+
+            /*
+               CİHAZDAN GELEN RESİM/GIF
+
+               Burada data:image/gif;base64...
+               doğrudan img.src'ye veriliyor.
+
+               Böylece GIF dosyasının animasyonu
+               kaybolmuyor.
+            */
+
+            if (
+                message.type === "image" &&
+                message.image
+            ) {
+
+                const imageBox =
+                    document.createElement("div");
+
+                imageBox.className =
+                    "image-message";
+
+                const image =
+                    document.createElement("img");
+
+                image.src =
+                    message.image;
+
+                image.alt =
+                    message.filename ||
+                    "Resim";
+
+                image.loading = "lazy";
+
+                image.onclick =
+                    function() {
+
+                        const newWindow =
+                            window.open();
+
+                        if (newWindow) {
+
+                            newWindow.document.write(
+                                '<img src="' +
+                                message.image +
+                                '" style="max-width:100%;height:auto;">'
+                            );
+
+                        }
+
+                    };
+
+                imageBox.appendChild(
+                    image
                 );
 
+                box.appendChild(user);
 
-                chat.appendChild(
-                    box
-                );
+                box.appendChild(imageBox);
 
-            });
+                chat.appendChild(box);
+
+                return;
+
+            }
 
 
-            chat.scrollTop =
-                chat.scrollHeight;
+            /*
+               NORMAL MESAJ
+            */
 
-        }
-    );
+            const bubble =
+                document.createElement("div");
+
+            bubble.className =
+                "bubble";
+
+            bubble.textContent =
+                message.text || "";
+
+
+            if (message.color) {
+
+                bubble.style.color =
+                    message.color;
+
+            }
+
+
+            box.appendChild(user);
+
+            box.appendChild(bubble);
+
+            chat.appendChild(box);
+
+        });
+
+
+        chat.scrollTop =
+            chat.scrollHeight;
+
+    });
 
 }
 
 
-/* =========================
-   MESAJ GÖNDER
-========================= */
+/* MESAJ GÖNDER */
 
 function sendMessage() {
 
@@ -2216,7 +1757,6 @@ function sendMessage() {
     const text =
         input.value.trim();
 
-
     if (
         !text ||
         !username
@@ -2227,26 +1767,20 @@ function sendMessage() {
     .ref("messages")
     .push({
 
-        username:
-            username,
+        username: username,
 
-        text:
-            text,
+        text: text,
 
-        color:
-            selectedMessageColor,
+        color: selectedMessageColor,
 
-        type:
-            "text",
+        type: "text",
 
-        timestamp:
-            Date.now()
+        timestamp: Date.now()
 
     });
 
 
-    input.value =
-        "";
+    input.value = "";
 
     input.focus();
 
@@ -2254,17 +1788,12 @@ function sendMessage() {
 
 
 document
-.getElementById(
-    "sendButton"
-)
-.onclick =
-sendMessage;
+.getElementById("sendButton")
+.onclick = sendMessage;
 
 
 document
-.getElementById(
-    "messageInput"
-)
+.getElementById("messageInput")
 .onkeydown =
 function(event) {
 
@@ -2279,9 +1808,7 @@ function(event) {
 };
 
 
-/* =========================
-   ÇEVRİMİÇİ KULLANICILAR
-========================= */
+/* ÇEVRİMİÇİ */
 
 function setOnline() {
 
@@ -2290,91 +1817,73 @@ function setOnline() {
         .ref("onlineUsers")
         .push();
 
-
-    userKey =
-        ref.key;
+    userKey = ref.key;
 
 
     ref.set({
 
-        username:
-            username,
+        username: username,
 
         timestamp:
-            firebase.database
-            .ServerValue
-            .TIMESTAMP
+            firebase.database.ServerValue.TIMESTAMP
 
     });
 
 
-    ref.onDisconnect()
-       .remove();
+    ref.onDisconnect().remove();
 
 
     database
     .ref("onlineUsers")
-    .on(
-        "value",
-        function(snapshot) {
+    .on("value", function(snapshot) {
 
-            const count =
-                snapshot.numChildren();
+        const count =
+            snapshot.numChildren();
 
-
-            document
-            .getElementById(
-                "onlineText"
-            )
-            .textContent =
-                "🟢 " +
-                count +
-                " kişi çevrimiçi";
+        document
+        .getElementById("onlineText")
+        .textContent =
+            "🟢 " +
+            count +
+            " kişi çevrimiçi";
 
 
-            const names = [];
+        const names = [];
 
+        snapshot.forEach(function(child) {
 
-            snapshot.forEach(
-            function(child) {
+            const user =
+                child.val();
 
-                const user =
-                    child.val();
+            if (
+                user &&
+                user.username
+            ) {
 
-
-                if (
-                    user &&
+                names.push(
                     user.username
-                ) {
+                );
 
-                    names.push(
-                        user.username
-                    );
+            }
 
-                }
-
-            });
+        });
 
 
-            document
-            .getElementById(
-                "onlineUsersText"
-            )
-            .textContent =
-                names.length
-                ? "👥 " +
-                  names.join(", ")
-                : "👥 Kimse yok";
+        document
+        .getElementById(
+            "onlineUsersText"
+        )
+        .textContent =
+            names.length
+            ? "👥 " + names.join(", ")
+            : "👥 Kimse yok";
 
-        }
-    );
+    });
 
 }
 
 
-/* =========================
-   SES DURUMU
-========================= */
+/* SES DURUMU */
 
 function showVoiceStatus(text) {
 
@@ -2383,10 +1892,7 @@ function showVoiceStatus(text) {
             "voiceStatus"
         );
 
-
-    status.textContent =
-        text;
-
+    status.textContent = text;
 
     status.style.display =
         "block";
@@ -2404,9 +1910,7 @@ function hideVoiceStatus() {
 }
 
 
-/* =========================
-   MİKROFON
-========================= */
+/* MİKROFON */
 
 async function startVoiceChat() {
 
@@ -2434,17 +1938,13 @@ async function startVoiceChat() {
             .mediaDevices
             .getUserMedia({
 
-                audio:
-                    true,
-
-                video:
-                    false
+                audio: true,
+                video: false
 
             });
 
 
-        voiceActive =
-            true;
+        voiceActive = true;
 
 
         const button =
@@ -2455,7 +1955,6 @@ async function startVoiceChat() {
 
         button.textContent =
             "🔴 Sesi Kapat";
-
 
         button.classList.add(
             "active"
@@ -2476,35 +1975,31 @@ async function startVoiceChat() {
             .once("value");
 
 
-        let foundCall =
-            false;
+        let foundCall = false;
 
 
         callsSnapshot.forEach(
-        function(child) {
+            function(child) {
 
-            const call =
-                child.val();
+                const call =
+                    child.val();
 
+                if (
+                    call &&
+                    call.receiver === username
+                ) {
 
-            if (
-                call &&
-                call.receiver ===
-                username
-            ) {
+                    foundCall = true;
 
-                foundCall =
-                    true;
+                    answerCall(
+                        child.key,
+                        call
+                    );
 
-
-                answerCall(
-                    child.key,
-                    call
-                );
+                }
 
             }
-
-        });
+        );
 
 
         if (!foundCall) {
@@ -2522,7 +2017,6 @@ async function startVoiceChat() {
             error
         );
 
-
         alert(
             "Mikrofon açılamadı.\n\n" +
             error.name +
@@ -2530,23 +2024,17 @@ async function startVoiceChat() {
             error.message
         );
 
-
-        voiceActive =
-            false;
+        voiceActive = false;
 
     }
 
 }
 
 
-/* =========================
-   SES BUTONU
-========================= */
+/* SES BUTONU */
 
 document
-.getElementById(
-    "voiceButton"
-)
+.getElementById("voiceButton")
 .onclick =
 async function() {
 
@@ -2555,7 +2043,6 @@ async function() {
         stopVoiceChat();
 
     }
-
     else {
 
         await startVoiceChat();
@@ -2565,18 +2052,13 @@ async function() {
 };
 
 
-/* =========================
-   ÇAĞRI DİNLE
-========================= */
+/* ÇAĞRI DİNLE */
 
 function startVoiceListener() {
 
-    if (voiceListenerStarted)
-        return;
+    if (voiceListenerStarted) return;
 
-
-    voiceListenerStarted =
-        true;
+    voiceListenerStarted = true;
 
 
     database
@@ -2588,37 +2070,24 @@ function startVoiceListener() {
             const call =
                 snapshot.val();
 
-
             const callId =
                 snapshot.key;
 
-
-            if (!call)
-                return;
-
+            if (!call) return;
 
             if (
-                call.caller ===
-                username
-            )
-                return;
-
+                call.caller === username
+            ) return;
 
             if (
-                call.receiver !==
-                username
-            )
-                return;
-
+                call.receiver !== username
+            ) return;
 
             if (
                 peerConnections[callId]
-            )
-                return;
+            ) return;
 
-
-            if (!voiceActive)
-                return;
+            if (!voiceActive) return;
 
 
             try {
@@ -2645,14 +2114,11 @@ function startVoiceListener() {
 }
 
 
-/* =========================
-   ÇAĞRI BAŞLAT
-========================= */
+/* ÇAĞRI BAŞLAT */
 
 async function createCall() {
 
-    if (!localStream)
-        return;
+    if (!localStream) return;
 
 
     const usersSnapshot =
@@ -2661,30 +2127,29 @@ async function createCall() {
         .once("value");
 
 
-    let otherUser =
-        null;
+    let otherUser = null;
 
 
     usersSnapshot.forEach(
-    function(child) {
+        function(child) {
 
-        const user =
-            child.val();
+            const user =
+                child.val();
 
+            if (
+                user &&
+                user.username &&
+                user.username !== username &&
+                !otherUser
+            ) {
 
-        if (
-            user &&
-            user.username &&
-            user.username !== username &&
-            !otherUser
-        ) {
+                otherUser =
+                    user.username;
 
-            otherUser =
-                user.username;
+            }
 
         }
-
-    });
+    );
 
 
     if (!otherUser) {
@@ -2703,7 +2168,6 @@ async function createCall() {
         .ref("calls")
         .push();
 
-
     const callId =
         callRef.key;
 
@@ -2720,8 +2184,7 @@ async function createCall() {
 
     localStream
     .getTracks()
-    .forEach(
-    function(track) {
+    .forEach(function(track) {
 
         pc.addTrack(
             track,
@@ -2739,14 +2202,11 @@ async function createCall() {
                 "remoteAudio"
             );
 
-
         audio.srcObject =
             event.streams[0];
 
-
         audio.play()
-        .catch(
-        function(error) {
+        .catch(function(error) {
 
             console.log(
                 "Ses oynatma hatası:",
@@ -2754,7 +2214,6 @@ async function createCall() {
             );
 
         });
-
 
         showVoiceStatus(
             "🔊 Ses bağlantısı aktif"
@@ -2786,7 +2245,6 @@ async function createCall() {
     const offer =
         await pc.createOffer();
 
-
     await pc.setLocalDescription(
         offer
     );
@@ -2794,24 +2252,19 @@ async function createCall() {
 
     await callRef.set({
 
-        caller:
-            username,
+        caller: username,
 
-        receiver:
-            otherUser,
+        receiver: otherUser,
 
         offer: {
 
-            type:
-                offer.type,
+            type: offer.type,
 
-            sdp:
-                offer.sdp
+            sdp: offer.sdp
 
         },
 
-        created:
-            Date.now()
+        created: Date.now()
 
     });
 
@@ -2829,14 +2282,12 @@ async function createCall() {
             const answer =
                 snapshot.val();
 
-
             if (
                 answer &&
                 !pc.currentRemoteDescription
             ) {
 
-                await pc
-                .setRemoteDescription(
+                await pc.setRemoteDescription(
                     new RTCSessionDescription(
                         answer
                     )
@@ -2861,13 +2312,11 @@ async function createCall() {
             const candidate =
                 snapshot.val();
 
-
             if (candidate) {
 
                 try {
 
-                    await pc
-                    .addIceCandidate(
+                    await pc.addIceCandidate(
                         new RTCIceCandidate(
                             candidate
                         )
@@ -2877,9 +2326,7 @@ async function createCall() {
 
                 catch(error) {
 
-                    console.log(
-                        error
-                    );
+                    console.log(error);
 
                 }
 
@@ -2891,9 +2338,7 @@ async function createCall() {
 }
 
 
-/* =========================
-   ÇAĞRI CEVAPLA
-========================= */
+/* ÇAĞRI CEVAPLA */
 
 async function answerCall(
     callId,
@@ -2903,8 +2348,7 @@ async function answerCall(
     if (
         !localStream ||
         !voiceActive
-    )
-        return;
+    ) return;
 
 
     const pc =
@@ -2919,8 +2363,7 @@ async function answerCall(
 
     localStream
     .getTracks()
-    .forEach(
-    function(track) {
+    .forEach(function(track) {
 
         pc.addTrack(
             track,
@@ -2938,21 +2381,15 @@ async function answerCall(
                 "remoteAudio"
             );
 
-
         audio.srcObject =
             event.streams[0];
 
-
         audio.play()
-        .catch(
-        function(error) {
+        .catch(function(error) {
 
-            console.log(
-                error
-            );
+            console.log(error);
 
         });
-
 
         showVoiceStatus(
             "🔊 Ses bağlantısı aktif"
@@ -3005,11 +2442,9 @@ async function answerCall(
     )
     .set({
 
-        type:
-            answer.type,
+        type: answer.type,
 
-        sdp:
-            answer.sdp
+        sdp: answer.sdp
 
     });
 
@@ -3027,13 +2462,11 @@ async function answerCall(
             const candidate =
                 snapshot.val();
 
-
             if (candidate) {
 
                 try {
 
-                    await pc
-                    .addIceCandidate(
+                    await pc.addIceCandidate(
                         new RTCIceCandidate(
                             candidate
                         )
@@ -3043,9 +2476,7 @@ async function answerCall(
 
                 catch(error) {
 
-                    console.log(
-                        error
-                    );
+                    console.log(error);
 
                 }
 
@@ -3057,58 +2488,48 @@ async function answerCall(
 }
 
 
-/* =========================
-   SESİ KAPAT
-========================= */
+/* SESİ KAPAT */
 
 function stopVoiceChat() {
 
-    voiceActive =
-        false;
+    voiceActive = false;
 
 
     if (localStream) {
 
         localStream
         .getTracks()
-        .forEach(
-        function(track) {
+        .forEach(function(track) {
 
             track.stop();
 
         });
 
-        localStream =
-            null;
+        localStream = null;
 
     }
 
 
     Object
     .keys(peerConnections)
-    .forEach(
-    function(id) {
+    .forEach(function(id) {
 
         try {
 
-            peerConnections[id]
-                .close();
+            peerConnections[id].close();
 
         }
 
         catch(error) {
 
-            console.log(
-                error
-            );
+            console.log(error);
 
         }
 
     });
 
 
-    peerConnections =
-        {};
+    peerConnections = {};
 
 
     const audio =
@@ -3116,9 +2537,7 @@ function stopVoiceChat() {
             "remoteAudio"
         );
 
-
-    audio.srcObject =
-        null;
+    audio.srcObject = null;
 
 
     const button =
@@ -3126,10 +2545,8 @@ function stopVoiceChat() {
             "voiceButton"
         );
 
-
     button.textContent =
         "🎤 Sesli Sohbet";
-
 
     button.classList.remove(
         "active"
@@ -3146,27 +2563,25 @@ function stopVoiceChat() {
         function(snapshot) {
 
             snapshot.forEach(
-            function(child) {
+                function(child) {
 
-                const call =
-                    child.val();
+                    const call =
+                        child.val();
 
+                    if (
+                        call &&
+                        (
+                            call.caller === username ||
+                            call.receiver === username
+                        )
+                    ) {
 
-                if (
-                    call &&
-                    (
-                        call.caller ===
-                        username ||
-                        call.receiver ===
-                        username
-                    )
-                ) {
+                        child.ref.remove();
 
-                    child.ref.remove();
+                    }
 
                 }
-
-            });
+            );
 
         }
     );
@@ -3174,14 +2589,10 @@ function stopVoiceChat() {
 }
 
 
-/* =========================
-   ÇIKIŞ
-========================= */
+/* ÇIKIŞ */
 
 document
-.getElementById(
-    "logoutButton"
-)
+.getElementById("logoutButton")
 .onclick =
 function() {
 
@@ -3205,9 +2616,7 @@ function() {
 };
 
 
-/* =========================
-   DIŞARI TIKLAMA
-========================= */
+/* DIŞARI TIKLAMA */
 
 document.addEventListener(
     "click",
@@ -3217,8 +2626,7 @@ document.addEventListener(
             !emojiPanel.contains(
                 event.target
             ) &&
-            event.target !==
-            emojiButton
+            event.target !== emojiButton
         ) {
 
             emojiPanel.style.display =
@@ -3231,8 +2639,7 @@ document.addEventListener(
             !gifPanel.contains(
                 event.target
             ) &&
-            event.target !==
-            gifButton
+            event.target !== gifButton
         ) {
 
             gifPanel.style.display =
