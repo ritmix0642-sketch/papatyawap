@@ -1049,13 +1049,13 @@ imageInput.onchange = function(event) {
         const imageData =
             e.target.result;
 
-        if (imageData.length > 3500000) {
+        if (imageData.length > 6000000) {
 
             alert(
-                "Bu dosya çok büyük.\n\n" +
-                "Lütfen 2 MB civarında veya daha küçük " +
-                "bir resim/GIF seçin."
-            );
+    "Bu dosya çok büyük.\n\n" +
+    "Lütfen 6 MB veya daha küçük " +
+    "bir resim/GIF seçin."
+);
 
             imageInput.value = "";
 
