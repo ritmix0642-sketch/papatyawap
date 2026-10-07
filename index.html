@@ -3102,9 +3102,14 @@ function renderMessage(
    NORMAL MESAJ
 ========================= */
 
+ ```javascript
+/* =========================
+   NORMAL MESAJ
+========================= */
+
 const bubble =
     document.createElement(
-        "span"
+        "div"
     );
 
 
@@ -3113,11 +3118,8 @@ bubble.className =
 
 
 bubble.textContent =
-    " : " +
-    (
-        message.text ||
-        ""
-    );
+    message.text ||
+    "";
 
 
 if(message.color){
@@ -3129,15 +3131,16 @@ if(message.color){
 
 
 /*
-   Kullanıcı adı + mesaj
-   aynı satırda.
-
-   Mesajların sırası kesinlikle
-   değiştirilmez.
+   Kullanıcı adı ve mesaj
+   aynı hizada gösterilir.
 */
 
 user.style.display =
-    "inline";
+    "inline-block";
+
+user.style.marginRight =
+    "4px";
+
 
 bubble.style.display =
     "inline";
@@ -3156,6 +3159,7 @@ box.appendChild(
 chat.appendChild(
     box
 );
+```
 ```
 
 }
