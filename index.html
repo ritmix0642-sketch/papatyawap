@@ -2651,17 +2651,19 @@ function renderCurrentPage(
         );
 
 
-    /*
-       Sayfanın kendi içindeki sıra:
-       eski -> yeni
+     /*
+   EN YENİ MESAJ HER ZAMAN ÜSTTE
 
-       Yani mesajlar ekranda
-       yukarıdan aşağıya akar.
-    */
+   Örnek:
 
-    const pageMessages =
-        newestPageMessages.reverse();
+   Yeni mesaj  ← ÜST
+   Eski mesaj
+   Daha eski mesaj
+   Daha eski mesaj ← ALT
+*/
 
+const pageMessages =
+    newestPageMessages;
 
     pageMessages.forEach(
     function(item){
