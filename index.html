@@ -3097,42 +3097,66 @@ function renderMessage(
        NORMAL MESAJ
     ========================= */
 
-    const bubble =
-        document.createElement(
-            "div"
-        );
+    ```javascript
+/* =========================
+   NORMAL MESAJ
+========================= */
+
+const bubble =
+    document.createElement(
+        "span"
+    );
 
 
-    bubble.className =
-        "bubble";
+bubble.className =
+    "bubble";
 
 
-    bubble.textContent =
+bubble.textContent =
+    " : " +
+    (
         message.text ||
-        "";
-
-
-    if(message.color){
-
-        bubble.style.color =
-            message.color;
-
-    }
-
-
-    box.appendChild(
-        user
+        ""
     );
 
 
-    box.appendChild(
-        bubble
-    );
+if(message.color){
+
+    bubble.style.color =
+        message.color;
+
+}
 
 
-    chat.appendChild(
-        box
-    );
+/*
+   Kullanıcı adı + mesaj
+   aynı satırda.
+
+   Mesajların sırası kesinlikle
+   değiştirilmez.
+*/
+
+user.style.display =
+    "inline";
+
+bubble.style.display =
+    "inline";
+
+
+box.appendChild(
+    user
+);
+
+
+box.appendChild(
+    bubble
+);
+
+
+chat.appendChild(
+    box
+);
+```
 
 }
 
