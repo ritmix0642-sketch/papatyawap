@@ -11,14 +11,12 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
 
 <style>
-
 *{
     box-sizing:border-box;
     -webkit-tap-highlight-color:transparent;
 }
 
-html,
-body{
+html,body{
     margin:0;
     width:100%;
     height:100%;
@@ -31,9 +29,7 @@ body{
     overflow:hidden;
 }
 
-/* =========================
-   GİRİŞ
-========================= */
+/* GİRİŞ */
 
 #login{
     width:100%;
@@ -89,9 +85,7 @@ body{
     cursor:pointer;
 }
 
-/* =========================
-   SOHBET
-========================= */
+/* SOHBET */
 
 #chatPage{
     display:none;
@@ -101,9 +95,7 @@ body{
     overflow:hidden;
 }
 
-/* =========================
-   ÜST BAR
-========================= */
+/* ÜST BAR */
 
 .header{
     position:relative;
@@ -176,9 +168,7 @@ body{
     border-color:#f1b7bf;
 }
 
-/* =========================
-   MESAJ ALANI
-========================= */
+/* MESAJ ALANI */
 
 .chat{
     position:absolute;
@@ -186,16 +176,12 @@ body{
     left:0;
     right:0;
     bottom:146px;
-
     max-width:850px;
     width:100%;
     margin:auto;
-
     padding:20px 16px 30px;
-
     overflow-y:auto;
     overflow-x:hidden;
-
     z-index:5;
 }
 
@@ -243,9 +229,7 @@ body{
     color:#333;
 }
 
-/* =========================
-   RESİM
-========================= */
+/* RESİM */
 
 .image-message{
     display:inline-block;
@@ -261,9 +245,7 @@ body{
     cursor:pointer;
 }
 
-/* =========================
-   GIF
-========================= */
+/* GIF */
 
 .gif-message{
     display:inline-block;
@@ -281,9 +263,7 @@ body{
     cursor:pointer;
 }
 
-/* =========================
-   SAYFALAMA
-========================= */
+/* SAYFALAMA */
 
 .pagination{
     position:fixed;
@@ -291,19 +271,14 @@ body{
     right:0;
     bottom:108px;
     height:38px;
-
     display:flex;
     align-items:center;
     justify-content:center;
     gap:4px;
-
     padding:3px 8px;
-
     background:rgba(255,253,247,.97);
     border-top:1px solid #ded9cf;
-
     z-index:18;
-
     overflow-x:auto;
     scrollbar-width:none;
 }
@@ -316,18 +291,13 @@ body{
     flex:0 0 auto;
     min-width:28px;
     height:28px;
-
     padding:0 7px;
-
     border:1px solid #d8d3c8;
     border-radius:8px;
-
     background:#eeeae1;
     color:#333;
-
     font-size:12px;
     font-weight:bold;
-
     cursor:pointer;
 }
 
@@ -342,24 +312,18 @@ body{
     cursor:default;
 }
 
-/* =========================
-   ALT PANEL
-========================= */
+/* ALT PANEL */
 
 .input-area{
     position:fixed;
     left:0;
     right:0;
     bottom:0;
-
     height:108px;
     min-height:108px;
-
     padding:8px;
-
     background:#fffdf7;
     border-top:1px solid #ded9cf;
-
     z-index:25;
 }
 
@@ -376,13 +340,10 @@ body{
     width:42px;
     height:38px;
     flex:0 0 auto;
-
     border:1px solid #d8d3c8;
     border-radius:10px;
-
     background:#eeeae1;
     color:#333;
-
     font-size:18px;
     cursor:pointer;
 }
@@ -405,10 +366,8 @@ body{
 .color-button{
     width:21px;
     height:21px;
-
     border-radius:50%;
     border:2px solid rgba(0,0,0,.2);
-
     cursor:pointer;
 }
 
@@ -433,12 +392,9 @@ body{
     flex:1;
     min-width:0;
     height:46px;
-
     border:1px solid #d8d3c8;
     border-radius:15px;
-
     padding:0 15px;
-
     outline:none;
     font-size:15px;
 }
@@ -447,41 +403,29 @@ body{
     width:50px;
     height:46px;
     flex:0 0 auto;
-
     border:0;
     border-radius:15px;
-
     background:#333;
     color:#fff;
-
     font-size:20px;
     cursor:pointer;
 }
 
-/* =========================
-   EMOJI
-========================= */
+/* EMOJI */
 
 .emoji-panel{
     display:none;
-
     position:fixed;
     left:10px;
     bottom:114px;
-
     width:300px;
     max-height:240px;
-
     overflow-y:auto;
-
     padding:12px;
-
     background:#fffdf7;
     border:1px solid #d8d3c8;
     border-radius:18px;
-
     box-shadow:0 15px 45px rgba(0,0,0,.2);
-
     z-index:40;
 }
 
@@ -498,28 +442,20 @@ body{
     cursor:pointer;
 }
 
-/* =========================
-   GIF PANEL
-========================= */
+/* GIF PANEL */
 
 .gif-panel{
     display:none;
-
     position:fixed;
     left:60px;
     bottom:114px;
-
     width:350px;
     max-width:calc(100vw - 20px);
     height:430px;
-
     background:#fffdf7;
-
     border:1px solid #d8d3c8;
     border-radius:18px;
-
     box-shadow:0 15px 45px rgba(0,0,0,.2);
-
     z-index:40;
     overflow:hidden;
 }
@@ -534,32 +470,25 @@ body{
 .gif-search input{
     flex:1;
     height:40px;
-
     border:1px solid #d8d3c8;
     border-radius:10px;
-
     padding:0 12px;
     outline:none;
 }
 
 .gif-search button{
     width:45px;
-
     border:0;
     border-radius:10px;
-
     background:#333;
     color:#fff;
-
     cursor:pointer;
 }
 
 .gif-results{
     height:350px;
     overflow-y:auto;
-
     padding:10px;
-
     display:grid;
     grid-template-columns:repeat(2,1fr);
     gap:8px;
@@ -568,11 +497,8 @@ body{
 .gif-result{
     width:100%;
     height:120px;
-
     object-fit:cover;
-
     border-radius:10px;
-
     cursor:pointer;
 }
 
@@ -583,38 +509,25 @@ body{
     color:#77736b;
 }
 
-/* =========================
-   SES DURUMU
-========================= */
+/* SES */
 
 #voiceStatus{
     display:none;
-
     position:fixed;
     left:50%;
     bottom:120px;
-
     transform:translateX(-50%);
-
     background:#fffdf7;
     border:1px solid #d8d3c8;
-
     padding:11px 18px;
-
     border-radius:25px;
-
     font-size:13px;
-
     z-index:50;
-
     box-shadow:0 10px 30px rgba(0,0,0,.2);
-
     white-space:nowrap;
 }
 
-/* =========================
-   MOBİL
-========================= */
+/* MOBİL */
 
 @media(max-width:600px){
 
@@ -718,9 +631,7 @@ body{
         overflow:hidden;
         text-overflow:ellipsis;
     }
-
 }
-
 </style>
 </head>
 
@@ -762,36 +673,23 @@ body{
                 💬 Ritmix Sohbet
             </div>
 
-            <div
-                class="online"
-                id="onlineText"
-            >
+            <div class="online" id="onlineText">
                 🟢 0 kişi çevrimiçi
             </div>
 
-            <div
-                class="online-users"
-                id="onlineUsersText"
-            >
+            <div class="online-users" id="onlineUsersText">
                 👥 Kimse yok
             </div>
 
         </div>
 
-
         <div class="header-buttons">
 
-            <button
-                class="voice-button"
-                id="voiceButton"
-            >
+            <button class="voice-button" id="voiceButton">
                 🎤 Sesli Sohbet
             </button>
 
-            <button
-                class="logout"
-                id="logoutButton"
-            >
+            <button class="logout" id="logoutButton">
                 Çıkış
             </button>
 
@@ -800,22 +698,12 @@ body{
     </div>
 
 
-    <div
-        class="chat"
-        id="chat"
-    ></div>
+    <div class="chat" id="chat"></div>
+
+    <div class="pagination" id="pagination"></div>
 
 
-    <div
-        class="pagination"
-        id="pagination"
-    ></div>
-
-
-    <div
-        class="emoji-panel"
-        id="emojiPanel"
-    >
+    <div class="emoji-panel" id="emojiPanel">
 
         <div class="emoji-grid">
 
@@ -869,10 +757,7 @@ body{
     </div>
 
 
-    <div
-        class="gif-panel"
-        id="gifPanel"
-    >
+    <div class="gif-panel" id="gifPanel">
 
         <div class="gif-search">
 
@@ -888,10 +773,7 @@ body{
 
         </div>
 
-        <div
-            class="gif-results"
-            id="gifResults"
-        >
+        <div class="gif-results" id="gifResults">
 
             <div class="gif-empty">
                 🔎 Bir GIF arayın
@@ -906,27 +788,15 @@ body{
 
         <div class="tools-row">
 
-            <button
-                class="tool-button"
-                id="emojiButton"
-                title="Emoji"
-            >
+            <button class="tool-button" id="emojiButton">
                 😀
             </button>
 
-            <button
-                class="tool-button gif-button"
-                id="gifButton"
-                title="GIF"
-            >
+            <button class="tool-button gif-button" id="gifButton">
                 GIF
             </button>
 
-            <button
-                class="tool-button"
-                id="imageButton"
-                title="Resim / GIF yükle"
-            >
+            <button class="tool-button" id="imageButton">
                 🖼️
             </button>
 
@@ -943,35 +813,12 @@ body{
 
             <div class="color-buttons">
 
-                <button
-                    class="color-button color-white selected"
-                    data-color="#333333"
-                ></button>
-
-                <button
-                    class="color-button color-pink"
-                    data-color="#ff69b4"
-                ></button>
-
-                <button
-                    class="color-button color-blue"
-                    data-color="#2878d4"
-                ></button>
-
-                <button
-                    class="color-button color-green"
-                    data-color="#159957"
-                ></button>
-
-                <button
-                    class="color-button color-yellow"
-                    data-color="#c99400"
-                ></button>
-
-                <button
-                    class="color-button color-red"
-                    data-color="#e34b5f"
-                ></button>
+                <button class="color-button color-white selected" data-color="#333333"></button>
+                <button class="color-button color-pink" data-color="#ff69b4"></button>
+                <button class="color-button color-blue" data-color="#2878d4"></button>
+                <button class="color-button color-green" data-color="#159957"></button>
+                <button class="color-button color-yellow" data-color="#c99400"></button>
+                <button class="color-button color-red" data-color="#e34b5f"></button>
 
             </div>
 
@@ -987,10 +834,7 @@ body{
                 autocomplete="off"
             >
 
-            <button
-                class="send"
-                id="sendButton"
-            >
+            <button class="send" id="sendButton">
                 ➤
             </button>
 
@@ -1005,11 +849,7 @@ body{
     🎤 Sesli sistem hazırlanıyor...
 </div>
 
-<audio
-    id="remoteAudio"
-    autoplay
-    playsinline
-></audio>
+<audio id="remoteAudio" autoplay playsinline></audio>
 
 
 <script>
@@ -1027,7 +867,7 @@ const firebaseConfig = {
         "papatyawap.firebaseapp.com",
 
     databaseURL:
-        "https://papatyawap-default-rtdb.firebaseio.com",
+        "https://papatyawap-cdf7b-default-rtdb.firebaseio.com",
 
     projectId:
         "papatyawap",
@@ -1043,13 +883,13 @@ const firebaseConfig = {
 
 };
 
+
+/* FIREBASE BAŞLAT */
+
 firebase.initializeApp(firebaseConfig);
 
-const database =
-    firebase.database();
-
-const storage =
-    firebase.storage();
+const database = firebase.database();
+const storage = firebase.storage();
 
 
 /* =====================================================
@@ -1067,8 +907,7 @@ const GIPHY_API_KEY =
 let username = "";
 let userKey = "";
 
-let selectedMessageColor =
-    "#333333";
+let selectedMessageColor = "#333333";
 
 let allMessages = [];
 
@@ -1081,22 +920,19 @@ let localStream = null;
 let voiceActive = false;
 
 let peerConnections = {};
+
 let voiceListenerStarted = false;
+
 
 const rtcConfig = {
 
-    iceServers: [
-
+    iceServers:[
         {
-            urls:
-                "stun:stun.l.google.com:19302"
+            urls:"stun:stun.l.google.com:19302"
         },
-
         {
-            urls:
-                "stun:stun1.l.google.com:19302"
+            urls:"stun:stun1.l.google.com:19302"
         }
-
     ]
 
 };
@@ -1138,18 +974,15 @@ const imageInput =
    RENK
 ===================================================== */
 
-document
-.querySelectorAll(".color-button")
+document.querySelectorAll(".color-button")
 .forEach(function(button){
 
-    button.onclick =
-    function(){
+    button.onclick = function(){
 
         selectedMessageColor =
             this.dataset.color;
 
-        document
-        .querySelectorAll(".color-button")
+        document.querySelectorAll(".color-button")
         .forEach(function(item){
 
             item.classList.remove("selected");
@@ -1167,26 +1000,22 @@ document
    EMOJI
 ===================================================== */
 
-emojiButton.onclick =
-function(){
+emojiButton.onclick = function(){
 
     emojiPanel.style.display =
         emojiPanel.style.display === "block"
         ? "none"
         : "block";
 
-    gifPanel.style.display =
-        "none";
+    gifPanel.style.display = "none";
 
 };
 
 
-document
-.querySelectorAll(".emoji-item")
+document.querySelectorAll(".emoji-item")
 .forEach(function(button){
 
-    button.onclick =
-    function(){
+    button.onclick = function(){
 
         messageInput.value +=
             this.textContent;
@@ -1202,30 +1031,24 @@ document
    GIF
 ===================================================== */
 
-gifButton.onclick =
-function(){
+gifButton.onclick = function(){
 
     gifPanel.style.display =
         gifPanel.style.display === "block"
         ? "none"
         : "block";
 
-    emojiPanel.style.display =
-        "none";
+    emojiPanel.style.display = "none";
 
 };
 
 
-document
-.getElementById("gifSearchButton")
-.onclick =
-searchGIFs;
+document.getElementById("gifSearchButton")
+.onclick = searchGIFs;
 
 
-document
-.getElementById("gifSearchInput")
-.onkeydown =
-function(event){
+document.getElementById("gifSearchInput")
+.onkeydown = function(event){
 
     if(event.key === "Enter"){
 
@@ -1279,7 +1102,8 @@ async function searchGIFs(){
         if(!response.ok){
 
             throw new Error(
-                "HTTP " + response.status
+                "GIF bağlantı hatası: HTTP " +
+                response.status
             );
 
         }
@@ -1322,49 +1146,36 @@ async function searchGIFs(){
             const img =
                 document.createElement("img");
 
-            img.className =
-                "gif-result";
+            img.className = "gif-result";
 
-            img.src =
-                preview;
+            img.src = preview;
 
             img.alt =
                 gif.title || "GIF";
 
-            img.loading =
-                "lazy";
+            img.loading = "lazy";
 
-            img.onclick =
-            function(){
+            img.onclick = function(){
 
-                database
-                .ref("messages")
-                .push({
+                database.ref("messages").push({
 
-                    username:
-                        username,
+                    username:username,
 
-                    type:
-                        "gif",
+                    type:"gif",
 
-                    gif:
-                        original,
+                    gif:original,
 
-                    preview:
-                        preview,
+                    preview:preview,
 
-                    color:
-                        selectedMessageColor,
+                    color:selectedMessageColor,
 
-                    timestamp:
-                        Date.now()
+                    timestamp:Date.now()
 
                 });
 
                 currentPage = 1;
 
-                gifPanel.style.display =
-                    "none";
+                gifPanel.style.display = "none";
 
             };
 
@@ -1375,7 +1186,7 @@ async function searchGIFs(){
     }
     catch(error){
 
-        console.error(error);
+        console.error("GIF HATASI:",error);
 
         results.innerHTML =
             '<div class="gif-empty">❌ GIF yüklenemedi</div>';
@@ -1391,11 +1202,11 @@ async function searchGIFs(){
 
 function enterChat(){
 
+    const input =
+        document.getElementById("usernameInput");
+
     const name =
-        document
-        .getElementById("usernameInput")
-        .value
-        .trim();
+        input.value.trim();
 
     if(!name){
 
@@ -1407,18 +1218,13 @@ function enterChat(){
 
     }
 
-    username =
-        name;
+    username = name;
 
-    document
-    .getElementById("login")
-    .style.display =
-        "none";
+    document.getElementById("login")
+    .style.display = "none";
 
-    document
-    .getElementById("chatPage")
-    .style.display =
-        "block";
+    document.getElementById("chatPage")
+    .style.display = "block";
 
     currentPage = 1;
 
@@ -1429,18 +1235,16 @@ function enterChat(){
 }
 
 
-document
-.getElementById("loginButton")
-.onclick =
-enterChat;
+document.getElementById("loginButton")
+.onclick = enterChat;
 
 
-document
-.getElementById("usernameInput")
-.onkeydown =
-function(event){
+document.getElementById("usernameInput")
+.onkeydown = function(event){
 
     if(event.key === "Enter"){
+
+        event.preventDefault();
 
         enterChat();
 
@@ -1455,106 +1259,69 @@ function(event){
 
 function loadMessages(){
 
-    database
-    .ref("messages")
-    .on(
-        "value",
-        function(snapshot){
+    database.ref("messages")
+    .off();
 
-            allMessages = [];
+    database.ref("messages")
+    .on("value",function(snapshot){
 
-            snapshot.forEach(
-            function(child){
+        allMessages = [];
 
-                const message =
-                    child.val();
+        snapshot.forEach(function(child){
 
-                if(!message)
-                    return;
+            const message =
+                child.val();
 
-                allMessages.push({
+            if(!message)
+                return;
 
-                    key:
-                        child.key,
+            allMessages.push({
 
-                    child:
-                        child,
+                key:child.key,
 
-                    message:
-                        message
+                child:child,
 
-                });
+                message:message
 
             });
 
-
-            /*
-             * Firebase veriyi:
-             *
-             * ESKİ → YENİ
-             *
-             * getirir.
-             *
-             * Burada:
-             *
-             * YENİ → ESKİ
-             *
-             * yapıyoruz.
-             *
-             * Böylece:
-             *
-             * 1. sayfa = EN YENİ 8
-             * 2. sayfa = ÖNCEKİ 8
-             * 3. sayfa = ÖNCEKİ 8
-             *
-             */
-
-            allMessages.sort(function(a,b){
-
-                const timeA =
-                    Number(a.message.timestamp || 0);
-
-                const timeB =
-                    Number(b.message.timestamp || 0);
-
-                return timeB - timeA;
-
-            });
+        });
 
 
-            const totalPages =
-                Math.max(
-                    1,
-                    Math.min(
-                        MAX_PAGES,
-                        Math.ceil(
-                            allMessages.length /
-                            MESSAGES_PER_PAGE
-                        )
-                    )
-                );
+        /*
+         * FIREBASE ESKİDEN YENİYE VERİR.
+         *
+         * Burada ters çeviriyoruz.
+         *
+         * SON MESAJ = İLK ELEMAN
+         *
+         * Böylece:
+         *
+         * 1. SAYFA:
+         * en yeni 8 mesaj
+         *
+         * 2. SAYFA:
+         * ondan önceki 8 mesaj
+         */
+
+        allMessages.reverse();
 
 
-            /*
-             * Yeni mesaj geldiğinde
-             * 1. sayfada değilsek bile
-             * otomatik 1. sayfaya dön.
-             */
+        /*
+         * YENİ MESAJ GELDİĞİNDE
+         * 1. SAYFADA KAL
+         */
 
-            if(
-                currentPage < 1 ||
-                currentPage > totalPages
-            ){
+        if(allMessages.length > 0){
 
-                currentPage = 1;
-
-            }
-
-
-            renderCurrentPage();
+            currentPage = 1;
 
         }
-    );
+
+
+        renderCurrentPage();
+
+    });
 
 }
 
@@ -1565,8 +1332,8 @@ function loadMessages(){
 
 function renderCurrentPage(){
 
-    chat.innerHTML =
-        "";
+    chat.innerHTML = "";
+
 
     const totalPages =
         Math.max(
@@ -1581,19 +1348,21 @@ function renderCurrentPage(){
         );
 
 
+    if(currentPage < 1)
+        currentPage = 1;
+
+    if(currentPage > totalPages)
+        currentPage = totalPages;
+
+
     /*
-     * ÖNEMLİ:
+     * EN YENİLER:
      *
-     * allMessages:
+     * currentPage 1:
+     * index 0-7
      *
-     * [EN YENİ, ... ESKİ]
-     *
-     * olduğu için:
-     *
-     * Sayfa 1 → 0-7
-     * Sayfa 2 → 8-15
-     * Sayfa 3 → 16-23
-     *
+     * currentPage 2:
+     * index 8-15
      */
 
     const start =
@@ -1608,8 +1377,7 @@ function renderCurrentPage(){
         );
 
 
-    messages.forEach(
-    function(item){
+    messages.forEach(function(item){
 
         const message =
             item.message;
@@ -1621,18 +1389,12 @@ function renderCurrentPage(){
         const box =
             document.createElement("div");
 
-        box.className =
-            "message";
+        box.className = "message";
 
 
-        if(
-            message.username ===
-            username
-        ){
+        if(message.username === username){
 
-            box.classList.add(
-                "my-message"
-            );
+            box.classList.add("my-message");
 
         }
 
@@ -1642,8 +1404,7 @@ function renderCurrentPage(){
         const user =
             document.createElement("div");
 
-        user.className =
-            "username";
+        user.className = "username";
 
         user.textContent =
             message.username || "";
@@ -1656,8 +1417,7 @@ function renderCurrentPage(){
             const time =
                 document.createElement("span");
 
-            time.className =
-                "time";
+            time.className = "time";
 
             time.textContent =
                 new Date(
@@ -1677,24 +1437,22 @@ function renderCurrentPage(){
 
         /* SİL */
 
-        if(
-            message.username ===
-            username
-        ){
+        if(message.username === username){
 
             const del =
                 document.createElement("button");
 
-            del.className =
-                "delete";
+            del.className = "delete";
 
-            del.textContent =
-                "Sil";
+            del.textContent = "Sil";
 
-            del.onclick =
-            function(){
+            del.onclick = function(){
 
-                child.ref.remove();
+                if(confirm("Bu mesaj silinsin mi?")){
+
+                    child.ref.remove();
+
+                }
 
             };
 
@@ -1724,11 +1482,10 @@ function renderCurrentPage(){
                 message.image;
 
             img.alt =
-                message.fileName ||
-                "Resim";
+                message.fileName || "Resim";
 
-            img.onclick =
-            function(){
+
+            img.onclick = function(){
 
                 window.open(
                     message.image,
@@ -1772,12 +1529,10 @@ function renderCurrentPage(){
                 message.preview ||
                 message.gif;
 
-            img.alt =
-                "GIF";
+            img.alt = "GIF";
 
 
-            img.onclick =
-            function(){
+            img.onclick = function(){
 
                 window.open(
                     message.gif,
@@ -1805,8 +1560,7 @@ function renderCurrentPage(){
         const bubble =
             document.createElement("div");
 
-        bubble.className =
-            "bubble";
+        bubble.className = "bubble";
 
         bubble.textContent =
             message.text || "";
@@ -1833,7 +1587,8 @@ function renderCurrentPage(){
 
 
     /*
-     * YENİ MESAJ EN ÜSTTE.
+     * EN YENİ MESAJI
+     * EN ÜSTTE GÖSTER
      */
 
     chat.scrollTop = 0;
@@ -1847,8 +1602,7 @@ function renderCurrentPage(){
 
 function renderPagination(totalPages){
 
-    pagination.innerHTML =
-        "";
+    pagination.innerHTML = "";
 
 
     for(
@@ -1867,43 +1621,30 @@ function renderPagination(totalPages){
             page;
 
 
-        if(
-            page === currentPage
-        ){
+        if(page === currentPage){
 
-            button.classList.add(
-                "active"
-            );
+            button.classList.add("active");
 
         }
 
 
-        if(
-            page > totalPages
-        ){
+        if(page > totalPages){
 
-            button.disabled =
-                true;
+            button.disabled = true;
 
         }
 
 
-        button.onclick =
-        function(){
+        button.onclick = function(){
 
-            if(
-                page >
-                totalPages
-            )
+            if(page > totalPages)
                 return;
 
-            currentPage =
-                page;
+            currentPage = page;
 
             renderCurrentPage();
 
-            chat.scrollTop =
-                0;
+            chat.scrollTop = 0;
 
         };
 
@@ -1916,65 +1657,64 @@ function renderPagination(totalPages){
 
 
 /* =====================================================
-   YAZI MESAJI GÖNDER
+   YAZI MESAJI
 ===================================================== */
 
 function sendMessage(){
 
     const text =
-        messageInput
-        .value
-        .trim();
+        messageInput.value.trim();
 
-    if(
-        !text ||
-        !username
-    )
+    if(!text || !username)
         return;
 
 
-    database
-    .ref("messages")
-    .push({
+    database.ref("messages").push({
 
-        username:
-            username,
+        username:username,
 
-        text:
-            text,
+        text:text,
 
-        type:
-            "text",
+        type:"text",
 
-        color:
-            selectedMessageColor,
+        color:selectedMessageColor,
 
-        timestamp:
-            Date.now()
+        timestamp:Date.now()
+
+    })
+    .then(function(){
+
+        /*
+         * Yeni mesaj:
+         * her zaman 1. sayfaya
+         */
+
+        currentPage = 1;
+
+        messageInput.value = "";
+
+        messageInput.focus();
+
+    })
+    .catch(function(error){
+
+        console.error(
+            "MESAJ GÖNDERME HATASI:",
+            error
+        );
+
+        alert(
+            "Mesaj gönderilemedi.\n\n" +
+            error.message
+        );
 
     });
-
-
-    /*
-     * YENİ MESAJ = 1. SAYFA
-     */
-
-    currentPage =
-        1;
-
-
-    messageInput.value =
-        "";
-
-    messageInput.focus();
 
 }
 
 
-document
-.getElementById("sendButton")
-.onclick =
-sendMessage;
+document.getElementById("sendButton")
+.onclick = sendMessage;
 
 
 messageInput.onkeydown =
@@ -1992,11 +1732,10 @@ function(event){
 
 
 /* =====================================================
-   RESİM / GIF DOSYASI YÜKLEME
+   RESİM / GIF DOSYA YÜKLEME
 ===================================================== */
 
-imageButton.onclick =
-function(){
+imageButton.onclick = function(){
 
     imageInput.click();
 
@@ -2024,9 +1763,7 @@ async function(){
     }
 
 
-    if(
-        !file.type.startsWith("image/")
-    ){
+    if(!file.type.startsWith("image/")){
 
         alert(
             "Lütfen resim veya GIF seçin."
@@ -2039,23 +1776,20 @@ async function(){
 
     try{
 
-        imageButton.textContent =
-            "⏳";
+        imageButton.textContent = "⏳";
 
 
         const safeName =
             Date.now() +
             "_" +
-            file.name
-            .replace(
+            file.name.replace(
                 /[^a-zA-Z0-9._-]/g,
                 "_"
             );
 
 
         const storageRef =
-            storage
-            .ref(
+            storage.ref(
                 "chatImages/" +
                 safeName
             );
@@ -2072,35 +1806,28 @@ async function(){
         .ref("messages")
         .push({
 
-            username:
-                username,
+            username:username,
 
-            type:
-                "image",
+            type:"image",
 
-            image:
-                url,
+            image:url,
 
-            fileName:
-                file.name,
+            fileName:file.name,
 
-            color:
-                selectedMessageColor,
+            color:selectedMessageColor,
 
-            timestamp:
-                Date.now()
+            timestamp:Date.now()
 
         });
 
 
-        currentPage =
-            1;
+        currentPage = 1;
 
     }
     catch(error){
 
         console.error(
-            "Resim yükleme hatası:",
+            "RESİM YÜKLEME HATASI:",
             error
         );
 
@@ -2112,11 +1839,9 @@ async function(){
     }
     finally{
 
-        imageButton.textContent =
-            "🖼️";
+        imageButton.textContent = "🖼️";
 
-        imageInput.value =
-            "";
+        imageInput.value = "";
 
     }
 
@@ -2130,9 +1855,7 @@ async function(){
 function setOnline(){
 
     const ref =
-        database
-        .ref("onlineUsers")
-        .push();
+        database.ref("onlineUsers").push();
 
 
     userKey =
@@ -2141,8 +1864,7 @@ function setOnline(){
 
     ref.set({
 
-        username:
-            username,
+        username:username,
 
         timestamp:
             firebase.database.ServerValue.TIMESTAMP
@@ -2150,60 +1872,56 @@ function setOnline(){
     });
 
 
-    ref.onDisconnect()
-       .remove();
+    ref.onDisconnect().remove();
 
 
-    database
-    .ref("onlineUsers")
-    .on(
-        "value",
-        function(snapshot){
-
-            const count =
-                snapshot.numChildren();
+    database.ref("onlineUsers")
+    .off();
 
 
-            document
-            .getElementById("onlineText")
-            .textContent =
-                "🟢 " +
-                count +
-                " kişi çevrimiçi";
+    database.ref("onlineUsers")
+    .on("value",function(snapshot){
+
+        const count =
+            snapshot.numChildren();
 
 
-            const names = [];
+        document.getElementById("onlineText")
+        .textContent =
+            "🟢 " +
+            count +
+            " kişi çevrimiçi";
 
 
-            snapshot.forEach(
-            function(child){
+        const names = [];
 
-                const user =
-                    child.val();
 
-                if(
-                    user &&
+        snapshot.forEach(function(child){
+
+            const user =
+                child.val();
+
+            if(
+                user &&
+                user.username
+            ){
+
+                names.push(
                     user.username
-                ){
+                );
 
-                    names.push(
-                        user.username
-                    );
+            }
 
-                }
-
-            });
+        });
 
 
-            document
-            .getElementById("onlineUsersText")
-            .textContent =
-                names.length
-                ? "👥 " + names.join(", ")
-                : "👥 Kimse yok";
+        document.getElementById("onlineUsersText")
+        .textContent =
+            names.length
+            ? "👥 " + names.join(", ")
+            : "👥 Kimse yok";
 
-        }
-    );
+    });
 
 }
 
@@ -2215,31 +1933,25 @@ function setOnline(){
 function showVoiceStatus(text){
 
     const status =
-        document.getElementById(
-            "voiceStatus"
-        );
+        document.getElementById("voiceStatus");
 
-    status.textContent =
-        text;
+    status.textContent = text;
 
-    status.style.display =
-        "block";
+    status.style.display = "block";
 
 }
 
 
 function hideVoiceStatus(){
 
-    document
-    .getElementById("voiceStatus")
-    .style.display =
-        "none";
+    document.getElementById("voiceStatus")
+    .style.display = "none";
 
 }
 
 
 /* =====================================================
-   SESLİ SOHBET
+   SESLİ SOHBET BAŞLAT
 ===================================================== */
 
 async function startVoiceChat(){
@@ -2251,32 +1963,40 @@ async function startVoiceChat(){
         );
 
 
+        if(
+            !navigator.mediaDevices ||
+            !navigator.mediaDevices.getUserMedia
+        ){
+
+            throw new Error(
+                "Tarayıcı mikrofon erişimini desteklemiyor."
+            );
+
+        }
+
+
         localStream =
-            await navigator
-            .mediaDevices
-            .getUserMedia({
+            await navigator.mediaDevices.getUserMedia({
 
                 audio:true,
+
                 video:false
 
             });
 
 
-        voiceActive =
-            true;
+        voiceActive = true;
 
 
         const button =
-            document.getElementById(
-                "voiceButton"
-            );
+            document.getElementById("voiceButton");
+
 
         button.textContent =
             "🔴 Sesi Kapat";
 
-        button.classList.add(
-            "active"
-        );
+
+        button.classList.add("active");
 
 
         startVoiceListener();
@@ -2293,12 +2013,10 @@ async function startVoiceChat(){
             .once("value");
 
 
-        let found =
-            false;
+        let found = false;
 
 
-        calls.forEach(
-        function(child){
+        calls.forEach(function(child){
 
             const call =
                 child.val();
@@ -2306,12 +2024,10 @@ async function startVoiceChat(){
 
             if(
                 call &&
-                call.receiver ===
-                username
+                call.receiver === username
             ){
 
-                found =
-                    true;
+                found = true;
 
                 answerCall(
                     child.key,
@@ -2332,15 +2048,33 @@ async function startVoiceChat(){
     }
     catch(error){
 
-        console.error(error);
+        console.error(
+            "SES HATASI:",
+            error
+        );
+
+
+        voiceActive = false;
+
+        if(localStream){
+
+            localStream
+            .getTracks()
+            .forEach(function(track){
+
+                track.stop();
+
+            });
+
+            localStream = null;
+
+        }
+
 
         alert(
             "Mikrofon açılamadı.\n\n" +
             error.message
         );
-
-        voiceActive =
-            false;
 
     }
 
@@ -2351,10 +2085,8 @@ async function startVoiceChat(){
    SES BUTONU
 ===================================================== */
 
-document
-.getElementById("voiceButton")
-.onclick =
-async function(){
+document.getElementById("voiceButton")
+.onclick = async function(){
 
     if(voiceActive){
 
@@ -2380,75 +2112,63 @@ function startVoiceListener(){
         return;
 
 
-    voiceListenerStarted =
-        true;
+    voiceListenerStarted = true;
 
 
-    database
-    .ref("calls")
-    .on(
-        "child_added",
-        async function(snapshot){
+    database.ref("calls")
+    .on("child_added",async function(snapshot){
 
-            const call =
-                snapshot.val();
+        const call =
+            snapshot.val();
 
-            const callId =
-                snapshot.key;
+        const callId =
+            snapshot.key;
 
 
-            if(!call)
-                return;
+        if(!call)
+            return;
 
 
-            if(
-                call.caller ===
-                username
-            )
-                return;
+        if(call.caller === username)
+            return;
 
 
-            if(
-                call.receiver !==
-                username
-            )
-                return;
+        if(call.receiver !== username)
+            return;
 
 
-            if(
-                peerConnections[callId]
-            )
-                return;
+        if(peerConnections[callId])
+            return;
 
 
-            if(!voiceActive)
-                return;
+        if(!voiceActive)
+            return;
 
 
-            try{
+        try{
 
-                await answerCall(
-                    callId,
-                    call
-                );
-
-            }
-            catch(error){
-
-                console.error(
-                    error
-                );
-
-            }
+            await answerCall(
+                callId,
+                call
+            );
 
         }
-    );
+        catch(error){
+
+            console.error(
+                "ÇAĞRI CEVAP HATASI:",
+                error
+            );
+
+        }
+
+    });
 
 }
 
 
 /* =====================================================
-   ÇAĞRI BAŞLAT
+   ÇAĞRI OLUŞTUR
 ===================================================== */
 
 async function createCall(){
@@ -2463,12 +2183,10 @@ async function createCall(){
         .once("value");
 
 
-    let otherUser =
-        null;
+    let otherUser = null;
 
 
-    users.forEach(
-    function(child){
+    users.forEach(function(child){
 
         const user =
             child.val();
@@ -2501,9 +2219,7 @@ async function createCall(){
 
 
     const callRef =
-        database
-        .ref("calls")
-        .push();
+        database.ref("calls").push();
 
 
     const callId =
@@ -2511,9 +2227,7 @@ async function createCall(){
 
 
     const pc =
-        new RTCPeerConnection(
-            rtcConfig
-        );
+        new RTCPeerConnection(rtcConfig);
 
 
     peerConnections[callId] =
@@ -2522,8 +2236,7 @@ async function createCall(){
 
     localStream
     .getTracks()
-    .forEach(
-    function(track){
+    .forEach(function(track){
 
         pc.addTrack(
             track,
@@ -2533,19 +2246,19 @@ async function createCall(){
     });
 
 
-    pc.ontrack =
-    function(event){
+    pc.ontrack = function(event){
 
         const audio =
-            document.getElementById(
-                "remoteAudio"
-            );
+            document.getElementById("remoteAudio");
+
 
         audio.srcObject =
             event.streams[0];
 
+
         audio.play()
         .catch(function(){});
+
 
         showVoiceStatus(
             "🔊 Ses bağlantısı aktif"
@@ -2585,22 +2298,16 @@ async function createCall(){
 
     await callRef.set({
 
-        caller:
-            username,
+        caller:username,
 
-        receiver:
-            otherUser,
+        receiver:otherUser,
 
         offer:{
-            type:
-                offer.type,
-
-            sdp:
-                offer.sdp
+            type:offer.type,
+            sdp:offer.sdp
         },
 
-        created:
-            Date.now()
+        created:Date.now()
 
     });
 
@@ -2611,18 +2318,18 @@ async function createCall(){
         callId +
         "/answer"
     )
-    .on(
-        "value",
-        async function(snapshot){
+    .on("value",async function(snapshot){
 
-            const answer =
-                snapshot.val();
+        const answer =
+            snapshot.val();
 
 
-            if(
-                answer &&
-                !pc.currentRemoteDescription
-            ){
+        if(
+            answer &&
+            !pc.currentRemoteDescription
+        ){
+
+            try{
 
                 await pc.setRemoteDescription(
                     new RTCSessionDescription(
@@ -2631,9 +2338,18 @@ async function createCall(){
                 );
 
             }
+            catch(error){
+
+                console.error(
+                    "REMOTE ANSWER HATASI:",
+                    error
+                );
+
+            }
 
         }
-    );
+
+    });
 
 
     database
@@ -2663,9 +2379,7 @@ async function createCall(){
                 }
                 catch(error){
 
-                    console.log(
-                        error
-                    );
+                    console.log(error);
 
                 }
 
@@ -2693,9 +2407,7 @@ async function answerCall(
         return;
 
 
-    if(
-        peerConnections[callId]
-    )
+    if(peerConnections[callId])
         return;
 
 
@@ -2711,8 +2423,7 @@ async function answerCall(
 
     localStream
     .getTracks()
-    .forEach(
-    function(track){
+    .forEach(function(track){
 
         pc.addTrack(
             track,
@@ -2730,11 +2441,14 @@ async function answerCall(
                 "remoteAudio"
             );
 
+
         audio.srcObject =
             event.streams[0];
 
+
         audio.play()
         .catch(function(){});
+
 
         showVoiceStatus(
             "🔊 Ses bağlantısı aktif"
@@ -2787,11 +2501,9 @@ async function answerCall(
     )
     .set({
 
-        type:
-            answer.type,
+        type:answer.type,
 
-        sdp:
-            answer.sdp
+        sdp:answer.sdp
 
     });
 
@@ -2823,9 +2535,7 @@ async function answerCall(
                 }
                 catch(error){
 
-                    console.log(
-                        error
-                    );
+                    console.log(error);
 
                 }
 
@@ -2843,31 +2553,26 @@ async function answerCall(
 
 function stopVoiceChat(){
 
-    voiceActive =
-        false;
+    voiceActive = false;
 
 
     if(localStream){
 
         localStream
         .getTracks()
-        .forEach(
-        function(track){
+        .forEach(function(track){
 
             track.stop();
 
         });
 
-        localStream =
-            null;
+        localStream = null;
 
     }
 
 
-    Object
-    .keys(peerConnections)
-    .forEach(
-    function(id){
+    Object.keys(peerConnections)
+    .forEach(function(id){
 
         try{
 
@@ -2879,14 +2584,11 @@ function stopVoiceChat(){
     });
 
 
-    peerConnections =
-        {};
+    peerConnections = {};
 
 
-    document
-    .getElementById("remoteAudio")
-    .srcObject =
-        null;
+    document.getElementById("remoteAudio")
+    .srcObject = null;
 
 
     const button =
@@ -2898,43 +2600,37 @@ function stopVoiceChat(){
     button.textContent =
         "🎤 Sesli Sohbet";
 
-    button.classList.remove(
-        "active"
-    );
+
+    button.classList.remove("active");
 
 
     hideVoiceStatus();
 
 
-    database
-    .ref("calls")
-    .once(
-        "value",
-        function(snapshot){
+    database.ref("calls")
+    .once("value",function(snapshot){
 
-            snapshot.forEach(
-            function(child){
+        snapshot.forEach(function(child){
 
-                const call =
-                    child.val();
+            const call =
+                child.val();
 
 
-                if(
-                    call &&
-                    (
-                        call.caller === username ||
-                        call.receiver === username
-                    )
-                ){
+            if(
+                call &&
+                (
+                    call.caller === username ||
+                    call.receiver === username
+                )
+            ){
 
-                    child.ref.remove();
+                child.ref.remove();
 
-                }
+            }
 
-            });
+        });
 
-        }
-    );
+    });
 
 }
 
@@ -2943,10 +2639,8 @@ function stopVoiceChat(){
    ÇIKIŞ
 ===================================================== */
 
-document
-.getElementById("logoutButton")
-.onclick =
-function(){
+document.getElementById("logoutButton")
+.onclick = function(){
 
     stopVoiceChat();
 
