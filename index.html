@@ -726,10 +726,6 @@ body{
 
 <body>
 
-<!-- =========================
-     GİRİŞ
-========================= -->
-
 <div id="login">
 
     <div class="login-box">
@@ -755,10 +751,6 @@ body{
 
 </div>
 
-
-<!-- =========================
-     SOHBET
-========================= -->
 
 <div id="chatPage">
 
@@ -808,23 +800,17 @@ body{
     </div>
 
 
-    <!-- MESAJLAR -->
-
     <div
         class="chat"
         id="chat"
     ></div>
 
 
-    <!-- SAYFALAR -->
-
     <div
         class="pagination"
         id="pagination"
     ></div>
 
-
-    <!-- EMOJI -->
 
     <div
         class="emoji-panel"
@@ -883,8 +869,6 @@ body{
     </div>
 
 
-    <!-- GIF PANEL -->
-
     <div
         class="gif-panel"
         id="gifPanel"
@@ -917,8 +901,6 @@ body{
 
     </div>
 
-
-    <!-- ALT PANEL -->
 
     <div class="input-area">
 
@@ -1101,7 +1083,6 @@ let voiceActive = false;
 let peerConnections = {};
 let voiceListenerStarted = false;
 
-
 const rtcConfig = {
 
     iceServers: [
@@ -1129,44 +1110,28 @@ const chat =
     document.getElementById("chat");
 
 const pagination =
-    document.getElementById(
-        "pagination"
-    );
+    document.getElementById("pagination");
 
 const messageInput =
-    document.getElementById(
-        "messageInput"
-    );
+    document.getElementById("messageInput");
 
 const emojiButton =
-    document.getElementById(
-        "emojiButton"
-    );
+    document.getElementById("emojiButton");
 
 const emojiPanel =
-    document.getElementById(
-        "emojiPanel"
-    );
+    document.getElementById("emojiPanel");
 
 const gifButton =
-    document.getElementById(
-        "gifButton"
-    );
+    document.getElementById("gifButton");
 
 const gifPanel =
-    document.getElementById(
-        "gifPanel"
-    );
+    document.getElementById("gifPanel");
 
 const imageButton =
-    document.getElementById(
-        "imageButton"
-    );
+    document.getElementById("imageButton");
 
 const imageInput =
-    document.getElementById(
-        "imageInput"
-    );
+    document.getElementById("imageInput");
 
 
 /* =====================================================
@@ -1184,20 +1149,14 @@ document
             this.dataset.color;
 
         document
-        .querySelectorAll(
-            ".color-button"
-        )
+        .querySelectorAll(".color-button")
         .forEach(function(item){
 
-            item.classList.remove(
-                "selected"
-            );
+            item.classList.remove("selected");
 
         });
 
-        this.classList.add(
-            "selected"
-        );
+        this.classList.add("selected");
 
     };
 
@@ -1212,8 +1171,7 @@ emojiButton.onclick =
 function(){
 
     emojiPanel.style.display =
-        emojiPanel.style.display ===
-        "block"
+        emojiPanel.style.display === "block"
         ? "none"
         : "block";
 
@@ -1221,6 +1179,7 @@ function(){
         "none";
 
 };
+
 
 document
 .querySelectorAll(".emoji-item")
@@ -1247,8 +1206,7 @@ gifButton.onclick =
 function(){
 
     gifPanel.style.display =
-        gifPanel.style.display ===
-        "block"
+        gifPanel.style.display === "block"
         ? "none"
         : "block";
 
@@ -1283,14 +1241,10 @@ function(event){
 async function searchGIFs(){
 
     const input =
-        document.getElementById(
-            "gifSearchInput"
-        );
+        document.getElementById("gifSearchInput");
 
     const results =
-        document.getElementById(
-            "gifResults"
-        );
+        document.getElementById("gifResults");
 
     const query =
         input.value.trim();
@@ -1312,13 +1266,9 @@ async function searchGIFs(){
         const url =
             "https://api.giphy.com/v1/gifs/search" +
             "?api_key=" +
-            encodeURIComponent(
-                GIPHY_API_KEY
-            ) +
+            encodeURIComponent(GIPHY_API_KEY) +
             "&q=" +
-            encodeURIComponent(
-                query
-            ) +
+            encodeURIComponent(query) +
             "&limit=24" +
             "&rating=pg-13" +
             "&lang=tr";
@@ -1329,8 +1279,7 @@ async function searchGIFs(){
         if(!response.ok){
 
             throw new Error(
-                "HTTP " +
-                response.status
+                "HTTP " + response.status
             );
 
         }
@@ -1352,8 +1301,7 @@ async function searchGIFs(){
 
         results.innerHTML = "";
 
-        data.data.forEach(
-        function(gif){
+        data.data.forEach(function(gif){
 
             const images =
                 gif.images || {};
@@ -1368,12 +1316,11 @@ async function searchGIFs(){
                 images.original?.url ||
                 preview;
 
-            if(!preview) return;
+            if(!preview)
+                return;
 
             const img =
-                document.createElement(
-                    "img"
-                );
+                document.createElement("img");
 
             img.className =
                 "gif-result";
@@ -1414,14 +1361,14 @@ async function searchGIFs(){
 
                 });
 
+                currentPage = 1;
+
                 gifPanel.style.display =
                     "none";
 
             };
 
-            results.appendChild(
-                img
-            );
+            results.appendChild(img);
 
         });
 
@@ -1446,9 +1393,7 @@ function enterChat(){
 
     const name =
         document
-        .getElementById(
-            "usernameInput"
-        )
+        .getElementById("usernameInput")
         .value
         .trim();
 
@@ -1544,19 +1489,37 @@ function loadMessages(){
 
 
             /*
-             * FIREBASE:
+             * Firebase veriyi:
              *
-             * eski → yeni
+             * ESKİ → YENİ
              *
-             * Biz:
+             * getirir.
              *
-             * yeni → eski
+             * Burada:
              *
-             * Böylece 1. sayfada
-             * en yeni mesajlar olur.
+             * YENİ → ESKİ
+             *
+             * yapıyoruz.
+             *
+             * Böylece:
+             *
+             * 1. sayfa = EN YENİ 8
+             * 2. sayfa = ÖNCEKİ 8
+             * 3. sayfa = ÖNCEKİ 8
+             *
              */
 
-            allMessages.reverse();
+            allMessages.sort(function(a,b){
+
+                const timeA =
+                    Number(a.message.timestamp || 0);
+
+                const timeB =
+                    Number(b.message.timestamp || 0);
+
+                return timeB - timeA;
+
+            });
 
 
             const totalPages =
@@ -1572,13 +1535,18 @@ function loadMessages(){
                 );
 
 
+            /*
+             * Yeni mesaj geldiğinde
+             * 1. sayfada değilsek bile
+             * otomatik 1. sayfaya dön.
+             */
+
             if(
-                currentPage >
-                totalPages
+                currentPage < 1 ||
+                currentPage > totalPages
             ){
 
-                currentPage =
-                    totalPages;
+                currentPage = 1;
 
             }
 
@@ -1613,6 +1581,21 @@ function renderCurrentPage(){
         );
 
 
+    /*
+     * ÖNEMLİ:
+     *
+     * allMessages:
+     *
+     * [EN YENİ, ... ESKİ]
+     *
+     * olduğu için:
+     *
+     * Sayfa 1 → 0-7
+     * Sayfa 2 → 8-15
+     * Sayfa 3 → 16-23
+     *
+     */
+
     const start =
         (currentPage - 1) *
         MESSAGES_PER_PAGE;
@@ -1621,8 +1604,7 @@ function renderCurrentPage(){
     const messages =
         allMessages.slice(
             start,
-            start +
-            MESSAGES_PER_PAGE
+            start + MESSAGES_PER_PAGE
         );
 
 
@@ -1637,9 +1619,7 @@ function renderCurrentPage(){
 
 
         const box =
-            document.createElement(
-                "div"
-            );
+            document.createElement("div");
 
         box.className =
             "message";
@@ -1660,16 +1640,13 @@ function renderCurrentPage(){
         /* KULLANICI */
 
         const user =
-            document.createElement(
-                "div"
-            );
+            document.createElement("div");
 
         user.className =
             "username";
 
         user.textContent =
-            message.username ||
-            "";
+            message.username || "";
 
 
         /* SAAT */
@@ -1677,9 +1654,7 @@ function renderCurrentPage(){
         if(message.timestamp){
 
             const time =
-                document.createElement(
-                    "span"
-                );
+                document.createElement("span");
 
             time.className =
                 "time";
@@ -1695,9 +1670,7 @@ function renderCurrentPage(){
                     }
                 );
 
-            user.appendChild(
-                time
-            );
+            user.appendChild(time);
 
         }
 
@@ -1710,9 +1683,7 @@ function renderCurrentPage(){
         ){
 
             const del =
-                document.createElement(
-                    "button"
-                );
+                document.createElement("button");
 
             del.className =
                 "delete";
@@ -1727,9 +1698,7 @@ function renderCurrentPage(){
 
             };
 
-            user.appendChild(
-                del
-            );
+            user.appendChild(del);
 
         }
 
@@ -1737,24 +1706,19 @@ function renderCurrentPage(){
         /* RESİM */
 
         if(
-            message.type ===
-                "image" &&
+            message.type === "image" &&
             message.image
         ){
 
             const imageBox =
-                document.createElement(
-                    "div"
-                );
+                document.createElement("div");
 
             imageBox.className =
                 "image-message";
 
 
             const img =
-                document.createElement(
-                    "img"
-                );
+                document.createElement("img");
 
             img.src =
                 message.image;
@@ -1774,21 +1738,13 @@ function renderCurrentPage(){
             };
 
 
-            imageBox.appendChild(
-                img
-            );
+            imageBox.appendChild(img);
 
-            box.appendChild(
-                user
-            );
+            box.appendChild(user);
 
-            box.appendChild(
-                imageBox
-            );
+            box.appendChild(imageBox);
 
-            chat.appendChild(
-                box
-            );
+            chat.appendChild(box);
 
             return;
 
@@ -1798,24 +1754,19 @@ function renderCurrentPage(){
         /* GIF */
 
         if(
-            message.type ===
-                "gif" &&
+            message.type === "gif" &&
             message.gif
         ){
 
             const gifBox =
-                document.createElement(
-                    "div"
-                );
+                document.createElement("div");
 
             gifBox.className =
                 "gif-message";
 
 
             const img =
-                document.createElement(
-                    "img"
-                );
+                document.createElement("img");
 
             img.src =
                 message.preview ||
@@ -1836,21 +1787,13 @@ function renderCurrentPage(){
             };
 
 
-            gifBox.appendChild(
-                img
-            );
+            gifBox.appendChild(img);
 
-            box.appendChild(
-                user
-            );
+            box.appendChild(user);
 
-            box.appendChild(
-                gifBox
-            );
+            box.appendChild(gifBox);
 
-            chat.appendChild(
-                box
-            );
+            chat.appendChild(box);
 
             return;
 
@@ -1860,16 +1803,13 @@ function renderCurrentPage(){
         /* YAZI */
 
         const bubble =
-            document.createElement(
-                "div"
-            );
+            document.createElement("div");
 
         bubble.className =
             "bubble";
 
         bubble.textContent =
-            message.text ||
-            "";
+            message.text || "";
 
 
         if(message.color){
@@ -1880,33 +1820,23 @@ function renderCurrentPage(){
         }
 
 
-        box.appendChild(
-            user
-        );
+        box.appendChild(user);
 
-        box.appendChild(
-            bubble
-        );
+        box.appendChild(bubble);
 
-        chat.appendChild(
-            box
-        );
+        chat.appendChild(box);
 
     });
 
 
-    renderPagination(
-        totalPages
-    );
+    renderPagination(totalPages);
 
 
     /*
-     * EN YENİ MESAJ
-     * HER ZAMAN ÜSTTE
+     * YENİ MESAJ EN ÜSTTE.
      */
 
-    chat.scrollTop =
-        0;
+    chat.scrollTop = 0;
 
 }
 
@@ -1915,9 +1845,7 @@ function renderCurrentPage(){
    SAYFA NUMARALARI
 ===================================================== */
 
-function renderPagination(
-    totalPages
-){
+function renderPagination(totalPages){
 
     pagination.innerHTML =
         "";
@@ -1930,9 +1858,7 @@ function renderPagination(
     ){
 
         const button =
-            document.createElement(
-                "button"
-            );
+            document.createElement("button");
 
         button.className =
             "page-button";
@@ -1982,9 +1908,7 @@ function renderPagination(
         };
 
 
-        pagination.appendChild(
-            button
-        );
+        pagination.appendChild(button);
 
     }
 
@@ -2032,8 +1956,7 @@ function sendMessage(){
 
 
     /*
-     * YENİ MESAJ GELDİĞİNDE
-     * DAİMA 1. SAYFAYA GEL
+     * YENİ MESAJ = 1. SAYFA
      */
 
     currentPage =
@@ -2102,9 +2025,7 @@ async function(){
 
 
     if(
-        !file.type.startsWith(
-            "image/"
-        )
+        !file.type.startsWith("image/")
     ){
 
         alert(
@@ -2140,9 +2061,7 @@ async function(){
             );
 
 
-        await storageRef.put(
-            file
-        );
+        await storageRef.put(file);
 
 
         const url =
@@ -2176,7 +2095,6 @@ async function(){
 
         currentPage =
             1;
-
 
     }
     catch(error){
@@ -2227,9 +2145,7 @@ function setOnline(){
             username,
 
         timestamp:
-            firebase.database
-            .ServerValue
-            .TIMESTAMP
+            firebase.database.ServerValue.TIMESTAMP
 
     });
 
@@ -2249,9 +2165,7 @@ function setOnline(){
 
 
             document
-            .getElementById(
-                "onlineText"
-            )
+            .getElementById("onlineText")
             .textContent =
                 "🟢 " +
                 count +
@@ -2282,13 +2196,10 @@ function setOnline(){
 
 
             document
-            .getElementById(
-                "onlineUsersText"
-            )
+            .getElementById("onlineUsersText")
             .textContent =
                 names.length
-                ? "👥 " +
-                  names.join(", ")
+                ? "👥 " + names.join(", ")
                 : "👥 Kimse yok";
 
         }
@@ -2301,9 +2212,7 @@ function setOnline(){
    SES DURUMU
 ===================================================== */
 
-function showVoiceStatus(
-    text
-){
+function showVoiceStatus(text){
 
     const status =
         document.getElementById(
@@ -2322,9 +2231,7 @@ function showVoiceStatus(
 function hideVoiceStatus(){
 
     document
-    .getElementById(
-        "voiceStatus"
-    )
+    .getElementById("voiceStatus")
     .style.display =
         "none";
 
@@ -2400,7 +2307,7 @@ async function startVoiceChat(){
             if(
                 call &&
                 call.receiver ===
-                    username
+                username
             ){
 
                 found =
@@ -2425,9 +2332,7 @@ async function startVoiceChat(){
     }
     catch(error){
 
-        console.error(
-            error
-        );
+        console.error(error);
 
         alert(
             "Mikrofon açılamadı.\n\n" +
@@ -2471,9 +2376,7 @@ async function(){
 
 function startVoiceListener(){
 
-    if(
-        voiceListenerStarted
-    )
+    if(voiceListenerStarted)
         return;
 
 
@@ -2513,9 +2416,7 @@ function startVoiceListener(){
 
 
             if(
-                peerConnections[
-                    callId
-                ]
+                peerConnections[callId]
             )
                 return;
 
@@ -2576,8 +2477,7 @@ async function createCall(){
         if(
             user &&
             user.username &&
-            user.username !==
-                username &&
+            user.username !== username &&
             !otherUser
         ){
 
@@ -2616,9 +2516,7 @@ async function createCall(){
         );
 
 
-    peerConnections[
-        callId
-    ] =
+    peerConnections[callId] =
         pc;
 
 
@@ -2659,9 +2557,7 @@ async function createCall(){
     pc.onicecandidate =
     function(event){
 
-        if(
-            event.candidate
-        ){
+        if(event.candidate){
 
             database
             .ref(
@@ -2670,8 +2566,7 @@ async function createCall(){
                 "/callerCandidates"
             )
             .push(
-                event.candidate
-                .toJSON()
+                event.candidate.toJSON()
             );
 
         }
@@ -2697,13 +2592,11 @@ async function createCall(){
             otherUser,
 
         offer:{
-
             type:
                 offer.type,
 
             sdp:
                 offer.sdp
-
         },
 
         created:
@@ -2801,9 +2694,7 @@ async function answerCall(
 
 
     if(
-        peerConnections[
-            callId
-        ]
+        peerConnections[callId]
     )
         return;
 
@@ -2814,9 +2705,7 @@ async function answerCall(
         );
 
 
-    peerConnections[
-        callId
-    ] =
+    peerConnections[callId] =
         pc;
 
 
@@ -2857,9 +2746,7 @@ async function answerCall(
     pc.onicecandidate =
     function(event){
 
-        if(
-            event.candidate
-        ){
+        if(event.candidate){
 
             database
             .ref(
@@ -2868,8 +2755,7 @@ async function answerCall(
                 "/receiverCandidates"
             )
             .push(
-                event.candidate
-                .toJSON()
+                event.candidate.toJSON()
             );
 
         }
@@ -2979,17 +2865,13 @@ function stopVoiceChat(){
 
 
     Object
-    .keys(
-        peerConnections
-    )
+    .keys(peerConnections)
     .forEach(
     function(id){
 
         try{
 
-            peerConnections[
-                id
-            ].close();
+            peerConnections[id].close();
 
         }
         catch(error){}
@@ -3002,9 +2884,7 @@ function stopVoiceChat(){
 
 
     document
-    .getElementById(
-        "remoteAudio"
-    )
+    .getElementById("remoteAudio")
     .srcObject =
         null;
 
@@ -3042,10 +2922,8 @@ function stopVoiceChat(){
                 if(
                     call &&
                     (
-                        call.caller ===
-                            username ||
-                        call.receiver ===
-                            username
+                        call.caller === username ||
+                        call.receiver === username
                     )
                 ){
 
@@ -3066,9 +2944,7 @@ function stopVoiceChat(){
 ===================================================== */
 
 document
-.getElementById(
-    "logoutButton"
-)
+.getElementById("logoutButton")
 .onclick =
 function(){
 
@@ -3101,11 +2977,8 @@ document.addEventListener(
     function(event){
 
         if(
-            !emojiPanel.contains(
-                event.target
-            ) &&
-            event.target !==
-                emojiButton
+            !emojiPanel.contains(event.target) &&
+            event.target !== emojiButton
         ){
 
             emojiPanel.style.display =
@@ -3115,11 +2988,8 @@ document.addEventListener(
 
 
         if(
-            !gifPanel.contains(
-                event.target
-            ) &&
-            event.target !==
-                gifButton
+            !gifPanel.contains(event.target) &&
+            event.target !== gifButton
         ){
 
             gifPanel.style.display =
