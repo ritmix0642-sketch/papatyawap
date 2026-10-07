@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="tr">
 <head>
@@ -71,7 +72,6 @@ body{
 
 .subtitle{
     margin:10px 0 28px;
-
     color:#77736b;
     font-size:14px;
 }
@@ -133,8 +133,12 @@ body{
 ========================= */
 
 .header{
-    position:relative;
-    z-index:20;
+    position:fixed;
+    z-index:50;
+
+    top:0;
+    left:0;
+    right:0;
 
     height:76px;
 
@@ -238,12 +242,17 @@ body{
 
 /* =========================
    MESAJ ALANI
+   YENİ DÜZEN:
+   ÜST BAR
+   MESAJ YAZMA
+   SAYFALAR
+   MESAJLAR
 ========================= */
 
 .chat{
     position:absolute;
 
-    top:76px;
+    top:231px;
     left:0;
     right:0;
     bottom:0;
@@ -251,7 +260,7 @@ body{
     overflow-y:auto;
     overflow-x:hidden;
 
-    padding:20px 16px 175px;
+    padding:18px 16px 25px;
 
     max-width:850px;
 
@@ -270,6 +279,8 @@ body{
     width:100%;
 
     margin-bottom:18px;
+
+    text-align:left;
 }
 
 .username{
@@ -338,15 +349,20 @@ body{
 ========================= */
 
 .image-message{
-    display:inline-block;
+    display:block;
 
-    max-width:100%;
+    width:100%;
 
-    margin-top:5px;
+    margin-top:7px;
+
+    text-align:center;
 }
 
 .image-message img{
     display:block;
+
+    margin-left:auto;
+    margin-right:auto;
 
     max-width:min(100%,650px);
 
@@ -367,26 +383,30 @@ body{
 ========================= */
 
 .gif-message{
-    max-width:min(100%,400px);
+    display:block;
 
-    display:inline-block;
+    width:100%;
 
-    margin-top:5px;
+    margin-top:7px;
 
-    overflow:hidden;
+    text-align:center;
 }
 
 .gif-message img{
-    width:100%;
+    display:block;
 
-    max-width:400px;
+    margin-left:auto;
+    margin-right:auto;
+
+    width:auto;
+
+    max-width:min(100%,400px);
+
     max-height:600px;
 
     object-fit:contain;
 
     border-radius:15px;
-
-    display:block;
 
     cursor:pointer;
 }
@@ -398,14 +418,13 @@ body{
 .pagination-wrapper{
     position:fixed;
 
+    top:184px;
     left:0;
     right:0;
 
-    bottom:108px;
-
     height:47px;
 
-    z-index:28;
+    z-index:45;
 
     display:flex;
 
@@ -418,6 +437,7 @@ body{
     background:#fffdf7;
 
     border-top:1px solid #ded9cf;
+    border-bottom:1px solid #ded9cf;
 }
 
 .pagination{
@@ -432,7 +452,6 @@ body{
     gap:6px;
 
     overflow-x:auto;
-
     overflow-y:hidden;
 
     padding:2px 3px;
@@ -479,20 +498,15 @@ body{
     border-color:#333;
 }
 
-.page-button:disabled{
-    opacity:.45;
-
-    cursor:not-allowed;
-}
-
 /* =========================
-   ALT PANEL
+   MESAJ YAZMA ALANI
+   ARTIK ÜSTTE
 ========================= */
 
 .input-area{
     position:fixed;
 
-    bottom:0;
+    top:76px;
     left:0;
 
     width:100%;
@@ -504,14 +518,14 @@ body{
     padding:
         8px
         max(10px,env(safe-area-inset-right))
-        calc(8px + env(safe-area-inset-bottom))
+        8px
         max(10px,env(safe-area-inset-left));
 
     background:#fffdf7;
 
-    border-top:1px solid #ded9cf;
+    border-bottom:1px solid #ded9cf;
 
-    z-index:30;
+    z-index:40;
 }
 
 /* =========================
@@ -553,7 +567,6 @@ body{
 
 .gif-button{
     font-size:13px;
-
     font-weight:bold;
 }
 
@@ -578,7 +591,7 @@ body{
 
     position:fixed;
 
-    bottom:158px;
+    top:190px;
     left:10px;
 
     padding:10px;
@@ -591,7 +604,7 @@ body{
 
     box-shadow:0 15px 45px rgba(0,0,0,.20);
 
-    z-index:45;
+    z-index:80;
 }
 
 .color-panel.show{
@@ -648,7 +661,7 @@ body{
 }
 
 /* =========================
-   MESAJ GİRİŞ
+   MESAJ GİRİŞİ
 ========================= */
 
 .message-row{
@@ -712,7 +725,7 @@ body{
 
     position:fixed;
 
-    bottom:160px;
+    top:190px;
 
     left:10px;
 
@@ -732,7 +745,7 @@ body{
 
     box-shadow:0 15px 45px rgba(0,0,0,.20);
 
-    z-index:40;
+    z-index:80;
 }
 
 .emoji-grid{
@@ -766,7 +779,7 @@ body{
 
     position:fixed;
 
-    bottom:160px;
+    top:190px;
 
     left:60px;
 
@@ -784,7 +797,7 @@ body{
 
     box-shadow:0 15px 45px rgba(0,0,0,.20);
 
-    z-index:40;
+    z-index:80;
 
     overflow:hidden;
 }
@@ -880,7 +893,7 @@ body{
 
     position:fixed;
 
-    bottom:165px;
+    top:195px;
 
     left:50%;
 
@@ -898,7 +911,7 @@ body{
 
     font-size:13px;
 
-    z-index:50;
+    z-index:100;
 
     box-shadow:0 10px 30px rgba(0,0,0,.20);
 
@@ -918,21 +931,24 @@ body{
 
         transform:translateX(-50%);
 
-        border-radius:18px 18px 0 0;
+        border-radius:0 0 18px 18px;
     }
 
     .pagination-wrapper{
         max-width:850px;
 
         left:50%;
-
         right:auto;
 
         width:850px;
 
         transform:translateX(-50%);
 
-        border-radius:15px 15px 0 0;
+        border-radius:0 0 15px 15px;
+    }
+
+    .chat{
+        max-width:850px;
     }
 
 }
@@ -1001,74 +1017,11 @@ body{
         text-overflow:ellipsis;
     }
 
-    .chat{
-        top:62px;
-
-        padding:
-            15px
-            10px
-            160px;
-    }
-
-    .image-message{
-        max-width:100%;
-    }
-
-    .image-message img{
-        max-width:100%;
-
-        max-height:500px;
-    }
-
-    .gif-message{
-        max-width:100%;
-    }
-
-    .gif-message img{
-        max-width:100%;
-
-        max-height:500px;
-    }
-
-    /* =========================
-       MOBİL SAYFA NUMARALARI
-    ========================= */
-
-    .pagination-wrapper{
-        bottom:94px;
-
-        height:45px;
-
-        padding:4px 6px;
-
-        display:block;
-    }
-
-    .pagination{
-        height:37px;
-
-        justify-content:flex-start;
-
-        gap:5px;
-
-        overflow-x:auto;
-
-        overflow-y:hidden;
-
-        padding:1px 2px;
-    }
-
-    .page-button{
-        min-width:34px;
-
-        height:32px;
-
-        padding:0 8px;
-
-        font-size:12px;
-    }
+    /* MESAJ YAZMA ALANI ÜSTTE */
 
     .input-area{
+        top:62px;
+
         height:94px;
 
         min-height:94px;
@@ -1076,7 +1029,10 @@ body{
         padding:
             7px
             8px
-            calc(7px + env(safe-area-inset-bottom));
+            7px
+            8px;
+
+        border-radius:0;
     }
 
     .tools-row{
@@ -1133,24 +1089,95 @@ body{
         font-size:18px;
     }
 
+    /* SAYFALAR */
+
+    .pagination-wrapper{
+        top:156px;
+
+        height:45px;
+
+        padding:4px 6px;
+
+        display:block;
+    }
+
+    .pagination{
+        height:37px;
+
+        justify-content:flex-start;
+
+        gap:5px;
+
+        overflow-x:auto;
+
+        overflow-y:hidden;
+
+        padding:1px 2px;
+    }
+
+    .page-button{
+        min-width:34px;
+
+        height:32px;
+
+        padding:0 8px;
+
+        font-size:12px;
+    }
+
+    /* MESAJLAR */
+
+    .chat{
+        top:201px;
+
+        padding:
+            15px
+            10px
+            25px;
+    }
+
+    .image-message{
+        width:100%;
+    }
+
+    .image-message img{
+        max-width:100%;
+
+        max-height:500px;
+    }
+
+    .gif-message{
+        width:100%;
+    }
+
+    .gif-message img{
+        max-width:100%;
+
+        max-height:500px;
+    }
+
+    /* PANELLER */
+
     .emoji-panel{
+        top:111px;
+
         width:calc(100vw - 20px);
 
         left:10px;
-
-        bottom:150px;
     }
 
     .gif-panel{
+        top:111px;
+
         left:10px;
 
-        bottom:150px;
-
         width:calc(100vw - 20px);
+
+        height:430px;
     }
 
     .color-panel{
-        bottom:150px;
+        top:111px;
 
         left:8px;
 
@@ -1160,7 +1187,7 @@ body{
     }
 
     #voiceStatus{
-        bottom:150px;
+        top:111px;
 
         max-width:calc(100vw - 30px);
 
@@ -1303,13 +1330,78 @@ body{
 
 
     <!-- =========================
-         MESAJLAR
+         MESAJ YAZMA
+         ÜSTTE
     ========================= -->
 
-    <div
-        class="chat"
-        id="chat"
-    ></div>
+    <div class="input-area">
+
+        <div class="tools-row">
+
+            <button
+                class="tool-button"
+                id="emojiButton"
+                title="Emoji"
+            >
+                😀
+            </button>
+
+
+            <button
+                class="tool-button gif-button"
+                id="gifButton"
+                title="GIF"
+            >
+                GIF
+            </button>
+
+
+            <button
+                class="tool-button image-button"
+                id="imageButton"
+                title="Cihazdan resim veya GIF yükle"
+            >
+                📷
+            </button>
+
+
+            <input
+                type="file"
+                id="imageInput"
+                accept="image/*,.gif"
+            >
+
+
+            <button
+                class="tool-button color-button-main"
+                id="colorButton"
+                title="Yazı rengi"
+            >
+                🎨
+            </button>
+
+        </div>
+
+
+        <div class="message-row">
+
+            <input
+                class="message-input"
+                id="messageInput"
+                placeholder="Mesajınızı yazın..."
+                autocomplete="off"
+            >
+
+            <button
+                class="send"
+                id="sendButton"
+            >
+                ➤
+            </button>
+
+        </div>
+
+    </div>
 
 
     <!-- =========================
@@ -1324,6 +1416,16 @@ body{
         ></div>
 
     </div>
+
+
+    <!-- =========================
+         MESAJLAR
+    ========================= -->
+
+    <div
+        class="chat"
+        id="chat"
+    ></div>
 
 
     <!-- =========================
@@ -1471,80 +1573,6 @@ body{
 
     </div>
 
-
-    <!-- =========================
-         MESAJ PANELİ
-    ========================= -->
-
-    <div class="input-area">
-
-        <div class="tools-row">
-
-            <button
-                class="tool-button"
-                id="emojiButton"
-                title="Emoji"
-            >
-                😀
-            </button>
-
-
-            <button
-                class="tool-button gif-button"
-                id="gifButton"
-                title="GIF"
-            >
-                GIF
-            </button>
-
-
-            <button
-                class="tool-button image-button"
-                id="imageButton"
-                title="Cihazdan resim veya GIF yükle"
-            >
-                📷
-            </button>
-
-
-            <input
-                type="file"
-                id="imageInput"
-                accept="image/*,.gif"
-            >
-
-
-            <button
-                class="tool-button color-button-main"
-                id="colorButton"
-                title="Yazı rengi"
-            >
-                🎨
-            </button>
-
-        </div>
-
-
-        <div class="message-row">
-
-            <input
-                class="message-input"
-                id="messageInput"
-                placeholder="Mesajınızı yazın..."
-                autocomplete="off"
-            >
-
-            <button
-                class="send"
-                id="sendButton"
-            >
-                ➤
-            </button>
-
-        </div>
-
-    </div>
-
 </div>
 
 
@@ -1594,10 +1622,7 @@ const firebaseConfig = {
 
 };
 
-
-firebase.initializeApp(
-    firebaseConfig
-);
+firebase.initializeApp(firebaseConfig);
 
 const database =
     firebase.database();
@@ -1627,10 +1652,24 @@ const MAX_MESSAGES =
 
 
 /*
-   Kullanıcı hangi sayfadaysa burada tutulur.
+   1. SAYFA HER ZAMAN EN YENİ 8 MESAJI GÖSTERİR.
 
-   Yeni mesaj geldiğinde otomatik olarak
-   başka sayfaya geçilmez.
+   Fakat bu 8 mesaj kendi içinde
+   yukarıdan aşağıya doğru gösterilir.
+
+   Örnek:
+
+   1. sayfa:
+   mesaj 153
+   mesaj 154
+   mesaj 155
+   ...
+   mesaj 160
+
+   2. sayfa:
+   mesaj 145
+   ...
+   mesaj 152
 */
 
 let currentPage = 1;
@@ -1680,7 +1719,7 @@ const rtcConfig = {
 
 
 /* =========================================================
-   RENK PANELİ
+   PANEL DEĞİŞKENLERİ
 ========================================================= */
 
 const colorButton =
@@ -1693,6 +1732,30 @@ const colorPanel =
         "colorPanel"
     );
 
+const emojiButton =
+    document.getElementById(
+        "emojiButton"
+    );
+
+const emojiPanel =
+    document.getElementById(
+        "emojiPanel"
+    );
+
+const gifButton =
+    document.getElementById(
+        "gifButton"
+    );
+
+const gifPanel =
+    document.getElementById(
+        "gifPanel"
+    );
+
+
+/* =========================================================
+   RENK
+========================================================= */
 
 colorButton.onclick =
 function(event){
@@ -1703,14 +1766,10 @@ function(event){
         "show"
     );
 
-    document
-    .getElementById("emojiPanel")
-    .style.display =
+    emojiPanel.style.display =
         "none";
 
-    document
-    .getElementById("gifPanel")
-    .style.display =
+    gifPanel.style.display =
         "none";
 
 };
@@ -1757,22 +1816,6 @@ function(button){
    EMOJI
 ========================================================= */
 
-const emojiButton =
-    document.getElementById(
-        "emojiButton"
-    );
-
-const emojiPanel =
-    document.getElementById(
-        "emojiPanel"
-    );
-
-const gifPanel =
-    document.getElementById(
-        "gifPanel"
-    );
-
-
 emojiButton.onclick =
 function(event){
 
@@ -1818,7 +1861,7 @@ function(button){
 
 
 /* =========================================================
-   CİHAZDAN RESİM / GIF
+   RESİM / GIF YÜKLEME
 ========================================================= */
 
 const imageButton =
@@ -1883,11 +1926,6 @@ function(event){
 
     }
 
-
-    /*
-       160 mesaj sınırına ulaşıldıysa
-       yeni mesaj kabul etmiyoruz.
-    */
 
     checkMessageLimit(
     function(canSend){
@@ -1979,13 +2017,8 @@ function(event){
 
 
 /* =========================================================
-   GIF
+   GIPHY
 ========================================================= */
-
-const gifButton =
-    document.getElementById(
-        "gifButton"
-    );
 
 const gifSearchInput =
     document.getElementById(
@@ -2121,15 +2154,24 @@ async function searchGIFs(){
                 gif.images || {};
 
 
+            /*
+               Önizleme için WEBP,
+               gönderim için mümkün olduğunca
+               gerçek GIF kullanıyoruz.
+            */
+
             const previewUrl =
                 images.fixed_width?.webp ||
                 images.fixed_width?.url ||
+                images.fixed_height?.webp ||
                 images.preview_gif?.url ||
                 images.original?.url;
 
 
             const originalUrl =
                 images.original?.url ||
+                images.fixed_height?.url ||
+                images.fixed_width?.url ||
                 previewUrl;
 
 
@@ -2163,12 +2205,36 @@ async function searchGIFs(){
                 "lazy";
 
 
+            image.onerror =
+            function(){
+
+                /*
+                   Önizleme adresi hata verirse
+                   başka bir GIPHY adresini deniyoruz.
+                */
+
+                if(
+                    this.dataset.fallback !== "1" &&
+                    images.original?.url
+                ){
+
+                    this.dataset.fallback =
+                        "1";
+
+                    this.src =
+                        images.original.url;
+
+                }
+
+            };
+
+
             image.onclick =
             function(){
 
                 sendGIF(
-                    previewUrl,
-                    originalUrl
+                    originalUrl,
+                    previewUrl
                 );
 
                 gifPanel.style.display =
@@ -2193,16 +2259,20 @@ async function searchGIFs(){
         );
 
         gifResults.innerHTML =
-            '<div class="gif-empty">❌ GIF yüklenemedi.</div>';
+            '<div class="gif-empty">❌ GIF yüklenemedi.<br><br>İnternet bağlantısını veya GIPHY erişimini kontrol edin.</div>';
 
     }
 
 }
 
 
+/* =========================================================
+   GIF GÖNDER
+========================================================= */
+
 function sendGIF(
-    previewUrl,
-    originalUrl
+    gifUrl,
+    previewUrl
 ){
 
     if(!username){
@@ -2233,7 +2303,7 @@ function sendGIF(
                 "gif",
 
             gif:
-                originalUrl,
+                gifUrl,
 
             preview:
                 previewUrl,
@@ -2252,7 +2322,7 @@ function sendGIF(
 
 
 /* =========================================================
-   MESAJ SAYISINI KONTROL
+   MESAJ SINIRI
 ========================================================= */
 
 function checkMessageLimit(
@@ -2275,8 +2345,9 @@ function checkMessageLimit(
             ){
 
                 alert(
-                    "⚠️ Sohbet odasında maksimum 20 sayfa ve 160 mesaj bulunabilir.\n\n" +
-                    "Yeni mesaj göndermek için önce eski mesajları silin veya '🗑️ Oda' butonunu kullanın."
+                    "⚠️ 20 sayfa doldu.\n\n" +
+                    "Toplam 160 mesaj sınırına ulaşıldı.\n\n" +
+                    "Eski mesajları silin veya 🗑️ Oda butonunu kullanarak odayı temizleyin."
                 );
 
                 callback(false);
@@ -2398,7 +2469,7 @@ function(event){
 
 
 /* =========================================================
-   SAYFA NUMARALARINI OLUŞTUR
+   SAYFA NUMARALARI
 ========================================================= */
 
 function updatePagination(
@@ -2492,8 +2563,7 @@ function updatePagination(
 
 
     /*
-       Aktif sayfa ekranda görünür
-       halde tutulur.
+       Mobilde de aktif sayfa görünür.
     */
 
     setTimeout(
@@ -2515,13 +2585,13 @@ function updatePagination(
 
         }
 
-    },50);
+    },30);
 
 }
 
 
 /* =========================================================
-   SAYFAYI GÖSTER
+   SAYFA GÖSTER
 ========================================================= */
 
 function renderCurrentPage(
@@ -2537,13 +2607,44 @@ function renderCurrentPage(
     chat.innerHTML = "";
 
 
+    if(!messages.length){
+
+        updatePagination(0);
+
+        return;
+
+    }
+
+
+    /*
+       ÖNEMLİ SİSTEM:
+
+       Firebase:
+       ESKİ -> YENİ
+
+       Biz:
+       YENİ -> ESKİ
+
+       Böylece 1. sayfa her zaman
+       en yeni 8 mesajı alır.
+
+       Daha sonra o 8 mesajı tekrar
+       ters çevirerek sayfanın içinde
+       yukarıdan aşağıya gösteririz.
+    */
+
+
+    const newestFirst =
+        [...messages].reverse();
+
+
     const start =
         (currentPage - 1) *
         MESSAGES_PER_PAGE;
 
 
-    const pageMessages =
-        messages.slice(
+    const newestPageMessages =
+        newestFirst.slice(
             start,
             start +
             MESSAGES_PER_PAGE
@@ -2551,23 +2652,26 @@ function renderCurrentPage(
 
 
     /*
-       Mesajlar Firebase'den
-       eskiden yeniye gelir.
+       Sayfanın kendi içindeki sıra:
+       eski -> yeni
 
-       Bu yüzden sayfanın içinde
-       yukarıdan aşağıya gösterilir.
+       Yani mesajlar ekranda
+       yukarıdan aşağıya akar.
     */
 
+    const pageMessages =
+        newestPageMessages.reverse();
+
+
     pageMessages.forEach(
-        function(item){
+    function(item){
 
-            renderMessage(
-                item.message,
-                item.key
-            );
+        renderMessage(
+            item.message,
+            item.key
+        );
 
-        }
-    );
+    });
 
 
     updatePagination(
@@ -2576,8 +2680,7 @@ function renderCurrentPage(
 
 
     /*
-       Sayfa değiştiğinde
-       sayfanın en üstüne git.
+       Sayfanın başlangıcında kal.
     */
 
     chat.scrollTop = 0;
@@ -2625,11 +2728,6 @@ function loadMessages(){
             });
 
 
-            /*
-               Eski -> yeni
-               sıralama.
-            */
-
             messages.sort(
             function(a,b){
 
@@ -2645,22 +2743,17 @@ function loadMessages(){
             });
 
 
-            /*
-               Global olarak saklıyoruz.
-            */
-
             window.allMessages =
                 messages;
 
 
             /*
-               ÖNEMLİ:
+               Kullanıcı 1. sayfadaysa
+               HER YENİ MESAJDA 1. SAYFADA
+               KALIR.
 
-               Yeni mesaj geldiğinde
-               currentPage değiştirilmez.
-
-               Böylece kullanıcı 1. sayfadaysa
-               1. sayfada kalır.
+               Sayfa 1 otomatik olarak
+               en yeni 8 mesajı gösterir.
             */
 
             renderCurrentPage(
@@ -2674,7 +2767,7 @@ function loadMessages(){
 
 
 /* =========================================================
-   TEK MESAJI OLUŞTUR
+   MESAJ OLUŞTUR
 ========================================================= */
 
 function renderMessage(
@@ -2751,11 +2844,8 @@ function renderMessage(
             ).toLocaleTimeString(
                 "tr-TR",
                 {
-                    hour:
-                        "2-digit",
-
-                    minute:
-                        "2-digit"
+                    hour:"2-digit",
+                    minute:"2-digit"
                 }
             );
 
@@ -2851,11 +2941,34 @@ function renderMessage(
             "GIF";
 
 
+        gifImage.onerror =
+        function(){
+
+            /*
+               Asıl GIF açılmazsa
+               kayıtlı önizleme adresini
+               kullan.
+            */
+
+            if(
+                message.preview &&
+                this.src !==
+                message.preview
+            ){
+
+                this.src =
+                    message.preview;
+
+            }
+
+        };
+
+
         gifImage.onclick =
         function(){
 
             window.open(
-                message.gif,
+                this.src,
                 "_blank"
             );
 
@@ -4202,9 +4315,11 @@ if(window.visualViewport){
                     if(chat){
 
                         /*
-                           Kullanıcı hangi sayfadaysa
-                           o sayfada kalır.
+                           Mesaj alanının
+                           sayfa düzeni bozulmaz.
                         */
+
+                        chat.scrollTop = 0;
 
                     }
 
@@ -4221,3 +4336,4 @@ if(window.visualViewport){
 
 </body>
 </html>
+```
