@@ -2228,8 +2228,7 @@ function renderCurrentPage(messages){
 /* =========================================================
    MESAJLARI YÜKLE
 ========================================================= */
-
-function loadMessages(){
+ function loadMessages(){
 
     database
     .ref("messages")
@@ -2259,6 +2258,68 @@ function loadMessages(){
                     });
 
                 }
+
+            });
+
+
+            /*
+               MESAJ SIRASI
+
+               Önce eski -> yeni sıralıyoruz.
+
+               Aynı milisaniyede gelen mesajlarda
+               Firebase kayıt anahtarını ikinci
+               sıralama ölçütü olarak kullanıyoruz.
+
+               Böylece mesajlar kullanıcı adına göre
+               kesinlikle gruplanmaz.
+            */
+
+            messages.sort(
+            function(a,b){
+
+                const timeA =
+                    Number(
+                        a.message.timestamp || 0
+                    );
+
+                const timeB =
+                    Number(
+                        b.message.timestamp || 0
+                    );
+
+
+                if(timeA !== timeB){
+
+                    return timeA - timeB;
+
+                }
+
+
+                /*
+                   Aynı timestamp durumunda
+                   Firebase kayıt sırasını kullan.
+                */
+
+                return a.key.localeCompare(
+                    b.key
+                );
+
+            });
+
+
+            window.allMessages =
+                messages;
+
+
+            renderCurrentPage(
+                messages
+            );
+
+        }
+    );
+
+}                }
 
             });
 
