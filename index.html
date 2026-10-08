@@ -2168,43 +2168,80 @@ function updatePagination(totalMessages){
 /* =========================================================
    SAYFA GÖSTER
 ========================================================= */
-
-function renderCurrentPage(messages){
+ function renderCurrentPage(messages){
 
     const chat =
         document.getElementById("chat");
 
     chat.innerHTML = "";
 
-    if(!messages.length){
+
+    if(
+        !messages ||
+        !messages.length
+    ){
 
         updatePagination(0);
 
         return;
+
     }
 
+
     /*
-       messages:
-       ESKİ -> YENİ
+       messages şu sırada:
 
-       reverse:
-       YENİ -> ESKİ
-
-       Böylece 1. sayfa en yeni mesajlardan oluşur.
+       ESKİ
+       ↓
+       ALi  00:11 selam
+       Ben  00:11 selam
+       ALi  00:12 hg
+       Ben  00:12 hb
+       ALi  00:13 naber
+       Ben  00:13 iyidir
+       ↑
+       YENİ
     */
+
 
     const newestFirst =
         [...messages].reverse();
 
+
+    /*
+       1. sayfa = en yeni 8 mesaj
+       2. sayfa = ondan önceki 8 mesaj
+       3. sayfa = daha eski 8 mesaj
+    */
+
     const start =
         (currentPage - 1) *
         MESSAGES_PER_PAGE;
+
 
     const pageMessages =
         newestFirst.slice(
             start,
             start + MESSAGES_PER_PAGE
         );
+
+
+    /*
+       EKRANDA:
+
+       EN YENİ
+       ↓
+
+       Ben  00:13 iyidir
+       ALi  00:13 naber
+       Ben  00:12 hb
+       ALi  00:12 hg
+       Ben  00:11 selam
+       ALi  00:11 selam
+
+       ↑
+       EN ESKİ
+    */
 
     pageMessages.forEach(
     function(item){
@@ -2216,9 +2253,17 @@ function renderCurrentPage(messages){
 
     });
 
+
     updatePagination(
         messages.length
     );
+
+
+    /*
+       Yeni sayfa açıldığında
+       her zaman mesaj listesinin
+       en üstünü göster.
+    */
 
     chat.scrollTop = 0;
 
