@@ -2273,39 +2273,52 @@ function updatePagination(totalMessages){
 /* =========================================================
    MESAJLARI YÜKLE
 ========================================================= */
- function loadMessages(){
+ 
+function loadMessages(){
 
     database
     .ref("messages")
     .orderByChild("timestamp")
-    .on(
-        "value",
-        function(snapshot){
+    .on("value", function(snapshot){
 
-            const messages = [];
+        const messages = [];
 
-            snapshot.forEach(
-            function(child){
+        snapshot.forEach(function(child){
 
-                const message =
-                    child.val();
+            const message = child.val();
 
-                if(message){
+            if(message){
+                messages.push({
+                    key: child.key,
+                    message: message
+                });
+            }
 
-                    messages.push({
+        });
 
-                        key:
-                            child.key,
+        // Mesajları eskiden yeniye sırala.
+        // Aynı zamandaki mesajlarda Firebase anahtarını kullan.
+        messages.sort(function(a, b){
 
-                        message:
-                            message
+            const timeA = Number(a.message.timestamp || 0);
+            const timeB = Number(b.message.timestamp || 0);
 
-                    });
+            if(timeA !== timeB){
+                return timeA - timeB;
+            }
 
-                }
+            return a.key.localeCompare(b.key);
 
-            });
+        });
 
+        window.allMessages = messages;
+
+        // En yeni mesajlar 1. sayfanın en üstünde görünür.
+        renderCurrentPage(messages);
+
+    });
+
+}
 
             /*
                MESAJ SIRASI
