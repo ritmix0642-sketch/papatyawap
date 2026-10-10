@@ -221,101 +221,78 @@ body{
 /* =========================
    MESAJ
 ========================= */
+ 
+/* =========================
+   MESAJLAR - BALONSUZ
+========================= */
 
-.message{
-    width:100%;
-    margin-bottom:12px;
-    text-align:left;
-    line-height:1.45;
+.message {
+    display: block;
+    width: 100%;
+    margin: 0 0 14px 0;
+    padding: 0;
+    text-align: left;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
 }
 
- .message-line{
-    display:block;
-    width:100%;
-    line-height:1.6;
-    overflow-wrap:anywhere;
+.message-line {
+    display: block;
+    width: 100%;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
 }
 
-.username{
-    display:inline;
-    margin:0 5px 0 0;
-    color:#2878d4;
-    font-size:13px;
-    font-weight:bold;
+.username {
+    display: inline;
+    margin: 0 5px 0 0;
+    color: #2878d4;
+    font-size: 13px;
+    font-weight: bold;
 }
 
-.my-message .username{
-    color:#159957;
+.my-message .username {
+    color: #159957;
 }
 
-.time{
-    display:inline;
-    margin-left:3px;
-    margin-right:5px;
-    color:#8c877d;
-    font-size:10px;
-    font-weight:normal;
+.time {
+    display: inline;
+    margin-left: 4px;
+    margin-right: 5px;
+    color: #8c877d;
+    font-size: 10px;
+    font-weight: normal;
 }
 
-.bubble{
-    display:block;
-    width:100%;
-    max-width:100%;
-    padding:2px 0 0;
-    margin:0;
-    background:transparent;
-    border:0;
-    line-height:1.6;
-    word-break:break-word;
-    overflow-wrap:anywhere;
-    white-space:pre-wrap;
-    color:#333;
+.delete {
+    display: inline;
+    border: 0;
+    background: transparent;
+    color: #e34b5f;
+    font-size: 10px;
+    cursor: pointer;
+    margin: 0 5px;
+    padding: 0;
 }
 
-.username{
-    display:inline;
-    margin:0 4px 0 0;
-    color:#2878d4;
-    font-size:12px;
-    font-weight:bold;
+.bubble {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    padding: 3px 0 0;
+    margin: 0;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    line-height: 1.6;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+    color: #333;
+    text-align: left;
 }
 
-.my-message .username{
-    color:#159957;
-}
-
-.time{
-    display:inline;
-    margin-left:3px;
-    margin-right:5px;
-    color:#8c877d;
-    font-size:10px;
-    font-weight:normal;
-}
-
-.delete{
-    display:inline;
-    border:0;
-    background:transparent;
-    color:#e34b5f;
-    font-size:10px;
-    cursor:pointer;
-    margin:0 5px 0 0;
-    padding:0;
-}
-
-.bubble{
-    display:inline;
-    max-width:100%;
-    padding:0;
-    margin:0;
-    background:transparent;
-    border:0;
-    line-height:1.55;
-    word-break:break-word;
-    overflow-wrap:anywhere;
-    color:#333;
-}
 
 /* =========================
    RESİM
