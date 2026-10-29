@@ -11,7 +11,21 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 
 <style>
-
+.admin-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 5px;
+    margin-left: 4px;
+    border-radius: 50px;
+    background: #e34b5f;
+    color: #fff;
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 20px;
+}
 *{
     box-sizing:border-box;
     -webkit-tap-highlight-color:transparent;
@@ -1198,8 +1212,10 @@ body{
     style="display:none;position:fixed;z-index:120;top:80px;right:10px;width:min(420px,calc(100vw - 20px));max-height:75vh;overflow:auto;padding:16px;background:#fffdf7;border:1px solid #d8d3c8;border-radius:16px;box-shadow:0 12px 35px rgba(0,0,0,.22);"
 >
     <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
-        <strong>👑 Üye Yönetimi</strong>
-        <button id="closeAdminButton" type="button">✖</button>
+         <button id="adminButton" type="button">
+    👑 Üye Yönetimi
+    <span id="pendingMemberBadge" class="admin-badge" style="display:none">0</span>
+</button>
     </div>
 
     <p style="font-size:13px;color:#77736b;">
@@ -1226,20 +1242,18 @@ body{
                 🗑️ Oda
             </button>
 
-        <button
-    class="room-delete"
+<button
+    class="room-delete admin-header-button"
     id="adminButton"
     type="button"
     style="display:none;"
 >
     👑 Üye Yönetimi
-</button>
-<button
-    class="logout"
-    id="logoutButton"
-    type="button"
->
-    Çıkış
+    <span
+        id="pendingMemberBadge"
+        class="admin-badge"
+        style="display:none;"
+    >0</span>
 </button>
         </div>
 
@@ -2077,6 +2091,8 @@ function checkMessageLimit(callback){
                     "⚠️ 20 sayfa doldu.\n\n" +
                     "Toplam 160 mesaj sınırına ulaşıldı.\n\n" +
                     "Eski mesajları silin veya 🗑️ Oda butonunu kullanarak odayı temizleyin."
+
+
                 );
 
                 callback(false);
@@ -2098,6 +2114,55 @@ function checkMessageLimit(callback){
 ========================================================= */
 
 const ADMIN_UID = "zOQTI3PVjuYy20NADsZbNhbzW6T2";
+    
+let pendingMembersRef = null;
+
+function updatePendingMemberBadge(isAdmin) {
+    const badge = document.getElementById("pendingMemberBadge");
+
+    if (pendingMembersRef) {
+        pendingMembersRef.off("value");
+        pendingMembersRef = null;
+    }
+
+    if (!badge) return;
+
+    badge.style.display = "none";
+    badge.textContent = "0";
+
+    if (
+        !isAdmin ||
+        !auth.currentUser ||
+        auth.currentUser.uid !== ADMIN_UID
+    ) {
+        return;
+    }
+
+    pendingMembersRef = database.ref("members");
+
+    pendingMembersRef.on("value", function(snapshot) {
+        let count = 0;
+
+        snapshot.forEach(function(child) {
+            const member = child.val() || {};
+
+            if (
+                child.key !== ADMIN_UID &&
+                member.approved !== true &&
+                member.rejected !== true
+            ) {
+                count++;
+            }
+        });
+
+        badge.textContent = count > 99 ? "99+" : String(count);
+        badge.style.display = count > 0 ? "inline-flex" : "none";
+
+    }, function(error) {
+        console.error("Bekleyen üye sayısı alınamadı:", error);
+    });
+}
+
 
 function authMessage(text, color = "#77736b") {
     const status = document.getElementById("authStatus");
@@ -2252,6 +2317,7 @@ async function enterChat() {
             authMessage(
                 "Üyeliğin henüz onaylanmadı. Lütfen yönetici onayını bekle.",
                 "#9a6a00"
+        
             );
             return;
         }
