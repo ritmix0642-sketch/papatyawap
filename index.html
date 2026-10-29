@@ -1,4295 +1,836 @@
+
 <!DOCTYPE html>
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-
 <title>Ritmix Sohbet</title>
-
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
-
 <style>
-.admin-badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 20px;
-    height: 20px;
-    padding: 0 5px;
-    margin-left: 4px;
-    border-radius: 50px;
-    background: #e34b5f;
-    color: #fff;
-    font-size: 12px;
-    font-weight: bold;
-    line-height: 20px;
-}
-*{
-    box-sizing:border-box;
-    -webkit-tap-highlight-color:transparent;
-}
-
-html,
-body{
-    margin:0;
-    width:100%;
-    height:100%;
-}
-
-body{
-    font-family:Arial,Helvetica,sans-serif;
-    color:#222;
-    background:#f5f2eb;
-    overflow:hidden;
-}
-
-/* =========================
-   GİRİŞ
-========================= */
-
-#login{
-    width:100%;
-    min-height:100vh;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:20px;
-    background:#f5f2eb;
-}
-
-.login-box{
-    width:100%;
-    max-width:420px;
-    padding:38px 28px;
-    text-align:center;
-    background:#fffdf7;
-    border:1px solid #e5dfd2;
-    border-radius:24px;
-    box-shadow:0 15px 45px rgba(0,0,0,.10);
-}
-
-.login-box h1{
-    margin:0;
-    font-size:28px;
-}
-
-.subtitle{
-    margin:10px 0 28px;
-    color:#77736b;
-    font-size:14px;
-}
-
-#usernameInput{
-    width:100%;
-    height:52px;
-    padding:0 17px;
-    border:1px solid #d8d3c8;
-    border-radius:15px;
-    outline:none;
-    background:#fff;
-    color:#222;
-    font-size:16px;
-}
-
-#loginButton{
-    width:100%;
-    height:52px;
-    margin-top:13px;
-    border:0;
-    border-radius:15px;
-    background:#333;
-    color:white;
-    font-size:15px;
-    font-weight:bold;
-    cursor:pointer;
-}
-
-/* =========================
-   SOHBET
-========================= */
-
-#chatPage{
-    display:none;
-    width:100%;
-    height:100vh;
-    overflow:hidden;
-    position:relative;
-    background:#f5f2eb;
-}
-
-/* =========================
-   ÜST BAR
-========================= */
-
-.header{
-    position:fixed;
-    z-index:50;
-    top:0;
-    left:0;
-    right:0;
-    height:76px;
-
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-
-    gap:10px;
-    padding:10px 18px;
-
-    background:#fffdf7;
-    border-bottom:1px solid #ded9cf;
-}
-
-.header-info{
-    min-width:0;
-    flex:1;
-}
-
-.header-title{
-    font-size:18px;
-    font-weight:bold;
-}
-
-.online{
-    margin-top:5px;
-    color:#159957;
-    font-size:12px;
-}
-
-.online-users{
-    margin-top:4px;
-    color:#77736b;
-    font-size:11px;
-    max-width:600px;
-    white-space:nowrap;
-    overflow:hidden;
-    text-overflow:ellipsis;
-}
-
-.header-buttons{
-    display:flex;
-    align-items:center;
-    gap:6px;
-    flex-shrink:0;
-}
-
-.logout,
-.voice-button,
-.room-delete{
-    min-height:40px;
-    border:1px solid #d8d3c8;
-    padding:8px 10px;
-    border-radius:11px;
-    cursor:pointer;
-    font-weight:bold;
-    white-space:nowrap;
-}
-
-.logout{
-    background:#eeeae1;
-}
-
-.voice-button{
-    background:#d9f4e5;
-    color:#08783f;
-    border-color:#b7dfc8;
-}
-
-.voice-button.active{
-    background:#ffe0e3;
-    color:#c72f42;
-    border-color:#f1b7bf;
-}
-
-.room-delete{
-    background:#ffe1e4;
-    color:#c72f42;
-    border-color:#f1b7bf;
-}
-
-/* =========================
-   MESAJ ALANI
-========================= */
-
-.chat{
-    position:absolute;
-    top:231px;
-    left:0;
-    right:0;
-    bottom:0;
-
-    overflow-y:auto;
-    overflow-x:hidden;
-
-    padding:18px 16px 25px;
-
-    max-width:850px;
-    width:100%;
-    margin:auto;
-
-    -webkit-overflow-scrolling:touch;
-}
-
- /* =========================
-   MESAJLAR - WHATSAPP TARZI
-========================= */
-
-.message {
-    display: block;
-    width: 100%;
-    margin: 0 0 13px 0;
-    padding: 0;
-    text-align: left;
-    line-height: 1.55;
-    overflow-wrap: anywhere;
-    clear: both;
-}
-
-.message-line {
-    display: block;
-    width: 100%;
-    line-height: 1.55;
-    overflow-wrap: anywhere;
-}
-
-.username {
-    display: inline;
-    margin-right: 5px;
-    color: #2878d4;
-    font-size: 13px;
-    font-weight: bold;
-}
-
-.my-message .username {
-    color: #159957;
-}
-
-.time {
-    display: inline;
-    margin-left: 4px;
-    margin-right: 5px;
-    color: #8c877d;
-    font-size: 10px;
-    font-weight: normal;
-}
-
-.delete {
-    display: inline;
-    border: 0;
-    background: transparent;
-    color: #e34b5f;
-    font-size: 10px;
-    cursor: pointer;
-    margin: 0 5px;
-    padding: 0;
-}
-
-/* Mesaj baloncuğu */
-.bubble {
-    display: block;
-    width: fit-content;
-    max-width: 85%;
-    box-sizing: border-box;
-    padding: 9px 12px;
-    margin-top: 4px;
-    background: #ffffff;
-    border: 1px solid #e5e5e5;
-    border-radius: 14px 14px 14px 4px;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.07);
-    line-height: 1.5;
-    font-size: 15px;
-    color: #222222;
-    word-break: break-word;
-    overflow-wrap: anywhere;
-    white-space: pre-wrap;
-    text-align: left;
-}
-
-/* Diğer kullanıcıların mesajları solda */
-.message:not(.my-message) .bubble {
-    margin-left: 0;
-    margin-right: auto;
-    background: #ffffff;
-    border-color: #e5e5e5;
-    border-radius: 14px 14px 14px 4px;
-}
-
-/* Kendi mesajların sağda, yeşil */
-.message.my-message .bubble {
-    margin-left: auto;
-    margin-right: 0;
-    background: #dcf8c6;
-    border-color: #cfe9bf;
-    border-radius: 14px 14px 4px 14px;
-}
-
-.message.my-message .message-line {
-    text-align: right;
-}
-
-.message:not(.my-message) .message-line {
-    text-align: left;
-}
-/* =========================
-   RESİM
-========================= */
-
-.image-message{
-    display:block;
-    width:100%;
-    margin-top:7px;
-    text-align:center;
-}
-
-.image-message img{
-    display:block;
-    margin-left:auto;
-    margin-right:auto;
-    max-width:min(100%,650px);
-    max-height:600px;
-    width:auto;
-    height:auto;
-    object-fit:contain;
-    border-radius:12px;
-    cursor:pointer;
-}
-
-/* =========================
-   GIF
-========================= */
-
-.gif-message{
-    display:block;
-    width:100%;
-    margin-top:7px;
-    text-align:center;
-}
-
-.gif-message img{
-    display:block;
-    margin-left:auto;
-    margin-right:auto;
-    width:auto;
-    max-width:min(100%,220px);
-    max-height:300px;
-    object-fit:contain;
-    border-radius:15px;
-    cursor:pointer;
-}
-
-/* =========================
-   SAYFA NUMARALARI
-========================= */
-
-.pagination-wrapper{
-    position:fixed;
-    top:184px;
-    left:0;
-    right:0;
-    height:47px;
-    z-index:45;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    padding:5px 8px;
-
-    background:#fffdf7;
-    border-top:1px solid #ded9cf;
-    border-bottom:1px solid #ded9cf;
-}
-
-.pagination{
-    width:100%;
-    max-width:850px;
-
-    display:flex;
-    align-items:center;
-    gap:6px;
-
-    overflow-x:auto;
-    overflow-y:hidden;
-
-    padding:2px 3px;
-
-    scrollbar-width:thin;
-    -webkit-overflow-scrolling:touch;
-
-    justify-content:flex-start;
-}
-
-.pagination::-webkit-scrollbar{
-    height:4px;
-}
-
-.page-button{
-    flex:0 0 auto;
-
-    min-width:36px;
-    height:34px;
-
-    padding:0 9px;
-
-    border:1px solid #d8d3c8;
-    border-radius:9px;
-
-    background:#eeeae1;
-    color:#333;
-
-    font-size:13px;
-    font-weight:bold;
-
-    cursor:pointer;
-}
-
-.page-button.active{
-    background:#333;
-    color:white;
-    border-color:#333;
-}
-
-/* =========================
-   MESAJ YAZMA ALANI
-========================= */
-
-.input-area{
-    position:fixed;
-    top:76px;
-    left:0;
-
-    width:100%;
-    height:108px;
-    min-height:108px;
-
-    padding:
-        8px
-        max(10px,env(safe-area-inset-right))
-        8px
-        max(10px,env(safe-area-inset-left));
-
-    background:#fffdf7;
-    border-bottom:1px solid #ded9cf;
-
-    z-index:40;
-}
-
-/* =========================
-   ARAÇLAR
-========================= */
-
-.tools-row{
-    width:100%;
-
-    display:flex;
-    align-items:center;
-
-    gap:7px;
-    margin-bottom:7px;
-
-    min-height:38px;
-}
-
-.tool-button{
-    width:42px;
-    height:38px;
-
-    flex-shrink:0;
-
-    border:1px solid #d8d3c8;
-    border-radius:10px;
-
-    background:#eeeae1;
-    color:#333;
-
-    font-size:19px;
-    cursor:pointer;
-}
-
-.gif-button{
-    font-size:13px;
-    font-weight:bold;
-}
-
-.image-button{
-    font-size:20px;
-}
-
-.color-button-main{
-    font-size:20px;
-}
-
-#imageInput{
-    display:none;
-}
-
-/* =========================
-   RENK PANELİ
-========================= */
-
-.color-panel{
-    display:none;
-
-    position:fixed;
-
-    top:190px;
-    left:10px;
-
-    padding:10px;
-
-    background:#fffdf7;
-
-    border:1px solid #d8d3c8;
-    border-radius:15px;
-
-    box-shadow:0 15px 45px rgba(0,0,0,.20);
-
-    z-index:80;
-}
-
-.color-panel.show{
-    display:flex;
-    align-items:center;
-    gap:7px;
-}
-
-.color-button{
-    width:25px;
-    height:25px;
-
-    border-radius:50%;
-
-    border:2px solid rgba(0,0,0,.20);
-
-    cursor:pointer;
-    flex-shrink:0;
-
-    padding:0;
-}
-
-.color-button.selected{
-    border:3px solid #222;
-    box-shadow:0 0 7px rgba(0,0,0,.25);
-}
-
-.color-white{
-    background:#333;
-}
-
-.color-pink{
-    background:#ff69b4;
-}
-
-.color-blue{
-    background:#2878d4;
-}
-
-.color-green{
-    background:#159957;
-}
-
-.color-yellow{
-    background:#c99400;
-}
-
-.color-red{
-    background:#e34b5f;
-}
-
-/* =========================
-   MESAJ GİRİŞİ
-========================= */
-
-.message-row{
-    width:100%;
-
-    display:flex;
-    align-items:center;
-
-    gap:7px;
-}
-
-.message-input{
-    flex:1;
-
-    width:100%;
-    min-width:0;
-
-    height:46px;
-
-    border:1px solid #d8d3c8;
-    outline:none;
-
-    border-radius:15px;
-
-    background:#fff;
-    color:#222;
-
-    padding:0 15px;
-
-    font-size:15px;
-}
-
-.send{
-    width:50px;
-    height:46px;
-
-    flex-shrink:0;
-
-    border:0;
-    border-radius:15px;
-
-    background:#333;
-    color:white;
-
-    font-size:20px;
-    cursor:pointer;
-}
-
-/* =========================
-   EMOJI
-========================= */
-
-.emoji-panel{
-    display:none;
-
-    position:fixed;
-    top:190px;
-    left:10px;
-
-    width:300px;
-    max-height:240px;
-
-    overflow-y:auto;
-
-    padding:12px;
-
-    background:#fffdf7;
-
-    border:1px solid #d8d3c8;
-    border-radius:18px;
-
-    box-shadow:0 15px 45px rgba(0,0,0,.20);
-
-    z-index:80;
-}
-
-.emoji-grid{
-    display:grid;
-    grid-template-columns:repeat(8,1fr);
-    gap:7px;
-}
-
-.emoji-item{
-    border:0;
-    background:transparent;
-    font-size:25px;
-    cursor:pointer;
-    border-radius:8px;
-    padding:4px;
-}
-
-/* =========================
-   GIF PANEL
-========================= */
-
-.gif-panel{
-    display:none;
-
-    position:fixed;
-
-    top:190px;
-    left:60px;
-
-    width:350px;
-    max-width:calc(100vw - 20px);
-    height:430px;
-
-    background:#fffdf7;
-
-    border:1px solid #d8d3c8;
-    border-radius:18px;
-
-    box-shadow:0 15px 45px rgba(0,0,0,.20);
-
-    z-index:80;
-
-    overflow:hidden;
-}
-
-.gif-search{
-    display:flex;
-    gap:7px;
-    padding:10px;
-
-    border-bottom:1px solid #ded9cf;
-}
-
-.gif-search input{
-    flex:1;
-
-    height:40px;
-
-    border:1px solid #d8d3c8;
-    outline:none;
-
-    border-radius:10px;
-
-    background:#fff;
-
-    padding:0 12px;
-}
-
-.gif-search button{
-    width:45px;
-
-    border:0;
-    border-radius:10px;
-
-    background:#333;
-    color:white;
-
-    font-size:18px;
-    cursor:pointer;
-}
-
-.gif-results{
-    height:350px;
-
-    overflow-y:auto;
-
-    padding:10px;
-
-    display:grid;
-
-    grid-template-columns:repeat(2,1fr);
-
-    gap:8px;
-}
-
-.gif-result{
-    width:100%;
-    height:120px;
-
-    object-fit:cover;
-
-    border-radius:10px;
-
-    cursor:pointer;
-
-    background:#eeeae1;
-}
-
-.gif-empty{
-    grid-column:1/-1;
-
-    text-align:center;
-
-    padding:30px 10px;
-
-    color:#77736b;
-
-    font-size:13px;
-}
-
-/* =========================
-   SES DURUMU
-========================= */
-
-#voiceStatus{
-    display:none;
-
-    position:fixed;
-
-    top:195px;
-    left:50%;
-
-    transform:translateX(-50%);
-
-    background:#fffdf7;
-
-    border:1px solid #d8d3c8;
-
-    color:#333;
-
-    padding:11px 18px;
-
-    border-radius:25px;
-
-    font-size:13px;
-
-    z-index:100;
-
-    box-shadow:0 10px 30px rgba(0,0,0,.20);
-
-    white-space:nowrap;
-}
-
-/* =========================
-   MASAÜSTÜ
-========================= */
-
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;width:100%;height:100%}
+body{font-family:Arial,Helvetica,sans-serif;color:#222;background:#f5f2eb;overflow:hidden}
+#login{width:100%;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:#f5f2eb}
+.login-box{width:100%;max-width:420px;padding:38px 28px;text-align:center;background:#fffdf7;border:1px solid #e5dfd2;border-radius:24px;box-shadow:0 15px 45px rgba(0,0,0,.10)}
+.login-box h1{margin:0;font-size:28px}
+.subtitle{margin:10px 0 28px;color:#77736b;font-size:14px}
+#usernameInput{width:100%;height:52px;padding:0 17px;border:1px solid #d8d3c8;border-radius:15px;outline:none;background:#fff;color:#222;font-size:16px}
+#loginButton{width:100%;height:52px;margin-top:13px;border:0;border-radius:15px;background:#333;color:white;font-size:15px;font-weight:bold;cursor:pointer}
+#chatPage{display:none;width:100%;height:100vh;overflow:hidden;position:relative;background:#f5f2eb}
+.header{position:fixed;z-index:50;top:0;left:0;right:0;height:76px;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 18px;background:#fffdf7;border-bottom:1px solid #ded9cf}
+.header-info{min-width:0;flex:1}
+.header-title{font-size:18px;font-weight:bold}
+.online{margin-top:5px;color:#159957;font-size:12px}
+.online-users{margin-top:4px;color:#77736b;font-size:11px;max-width:600px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.header-buttons{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.logout,.voice-button,.room-delete{min-height:40px;border:1px solid #d8d3c8;padding:8px 10px;border-radius:11px;cursor:pointer;font-weight:bold;white-space:nowrap}
+.logout{background:#eeeae1}
+.voice-button{background:#d9f4e5;color:#08783f;border-color:#b7dfc8}
+.voice-button.active{background:#ffe0e3;color:#c72f42;border-color:#f1b7bf}
+.room-delete{background:#ffe1e4;color:#c72f42;border-color:#f1b7bf}
+.chat{position:absolute;top:231px;left:0;right:0;bottom:0;overflow-y:auto;overflow-x:hidden;padding:18px 16px 25px;max-width:850px;width:100%;margin:auto;-webkit-overflow-scrolling:touch}
+.message{display:block;width:100%;margin:0 0 13px 0;padding:0;text-align:left;line-height:1.55;overflow-wrap:anywhere;clear:both}
+.message-line{display:block;width:100%;line-height:1.55;overflow-wrap:anywhere}
+.username{display:inline;margin-right:5px;color:#2878d4;font-size:13px;font-weight:bold}
+.my-message .username{color:#159957}
+.time{display:inline;margin-left:4px;margin-right:5px;color:#8c877d;font-size:10px;font-weight:normal}
+.delete{display:inline;border:0;background:transparent;color:#e34b5f;font-size:10px;cursor:pointer;margin:0 5px;padding:0}
+.bubble{display:block;width:fit-content;max-width:85%;box-sizing:border-box;padding:9px 12px;margin-top:4px;background:#fff;border:1px solid #e5e5e5;border-radius:14px 14px 14px 4px;box-shadow:0 1px 2px rgba(0,0,0,.07);line-height:1.5;font-size:15px;color:#222;word-break:break-word;overflow-wrap:anywhere;white-space:pre-wrap;text-align:left}
+.message:not(.my-message) .bubble{margin-left:0;margin-right:auto;background:#fff;border-color:#e5e5e5;border-radius:14px 14px 14px 4px}
+.message.my-message .bubble{margin-left:auto;margin-right:0;background:#dcf8c6;border-color:#cfe9bf;border-radius:14px 14px 4px 14px}
+.message.my-message .message-line{text-align:right}
+.message:not(.my-message) .message-line{text-align:left}
+.image-message{display:block;width:100%;margin-top:7px;text-align:center}
+.image-message img{display:block;margin-left:auto;margin-right:auto;max-width:min(100%,650px);max-height:600px;width:auto;height:auto;object-fit:contain;border-radius:12px;cursor:pointer}
+.gif-message{display:block;width:100%;margin-top:7px;text-align:center}
+.gif-message img{display:block;margin-left:auto;margin-right:auto;width:auto;max-width:min(100%,220px);max-height:300px;object-fit:contain;border-radius:15px;cursor:pointer}
+.pagination-wrapper{position:fixed;top:184px;left:0;right:0;height:47px;z-index:45;display:flex;align-items:center;justify-content:center;padding:5px 8px;background:#fffdf7;border-top:1px solid #ded9cf;border-bottom:1px solid #ded9cf}
+.pagination{width:100%;max-width:850px;display:flex;align-items:center;gap:6px;overflow-x:auto;overflow-y:hidden;padding:2px 3px;scrollbar-width:thin;-webkit-overflow-scrolling:touch;justify-content:flex-start}
+.pagination::-webkit-scrollbar{height:4px}
+.page-button{flex:0 0 auto;min-width:36px;height:34px;padding:0 9px;border:1px solid #d8d3c8;border-radius:9px;background:#eeeae1;color:#333;font-size:13px;font-weight:bold;cursor:pointer}
+.page-button.active{background:#333;color:white;border-color:#333}
+.input-area{position:fixed;top:76px;left:0;width:100%;height:108px;min-height:108px;padding:8px max(10px,env(safe-area-inset-right)) 8px max(10px,env(safe-area-inset-left));background:#fffdf7;border-bottom:1px solid #ded9cf;z-index:40}
+.tools-row{width:100%;display:flex;align-items:center;gap:7px;margin-bottom:7px;min-height:38px}
+.tool-button{width:42px;height:38px;flex-shrink:0;border:1px solid #d8d3c8;border-radius:10px;background:#eeeae1;color:#333;font-size:19px;cursor:pointer}
+.gif-button{font-size:13px;font-weight:bold}
+.image-button{font-size:20px}
+.color-button-main{font-size:20px}
+#imageInput{display:none}
+.color-panel{display:none;position:fixed;top:190px;left:10px;padding:10px;background:#fffdf7;border:1px solid #d8d3c8;border-radius:15px;box-shadow:0 15px 45px rgba(0,0,0,.20);z-index:80}
+.color-panel.show{display:flex;align-items:center;gap:7px}
+.color-button{width:25px;height:25px;border-radius:50%;border:2px solid rgba(0,0,0,.20);cursor:pointer;flex-shrink:0;padding:0}
+.color-button.selected{border:3px solid #222;box-shadow:0 0 7px rgba(0,0,0,.25)}
+.color-white{background:#333}
+.color-pink{background:#ff69b4}
+.color-blue{background:#2878d4}
+.color-green{background:#159957}
+.color-yellow{background:#c99400}
+.color-red{background:#e34b5f}
+.message-row{width:100%;display:flex;align-items:center;gap:7px}
+.message-input{flex:1;width:100%;min-width:0;height:46px;border:1px solid #d8d3c8;outline:none;border-radius:15px;background:#fff;color:#222;padding:0 15px;font-size:15px}
+.send{width:50px;height:46px;flex-shrink:0;border:0;border-radius:15px;background:#333;color:white;font-size:20px;cursor:pointer}
+.emoji-panel{display:none;position:fixed;top:190px;left:10px;width:300px;max-height:240px;overflow-y:auto;padding:12px;background:#fffdf7;border:1px solid #d8d3c8;border-radius:18px;box-shadow:0 15px 45px rgba(0,0,0,.20);z-index:80}
+.emoji-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:7px}
+.emoji-item{border:0;background:transparent;font-size:25px;cursor:pointer;border-radius:8px;padding:4px}
+.gif-panel{display:none;position:fixed;top:190px;left:60px;width:350px;max-width:calc(100vw - 20px);height:430px;background:#fffdf7;border:1px solid #d8d3c8;border-radius:18px;box-shadow:0 15px 45px rgba(0,0,0,.20);z-index:80;overflow:hidden}
+.gif-search{display:flex;gap:7px;padding:10px;border-bottom:1px solid #ded9cf}
+.gif-search input{flex:1;height:40px;border:1px solid #d8d3c8;outline:none;border-radius:10px;background:#fff;padding:0 12px}
+.gif-search button{width:45px;border:0;border-radius:10px;background:#333;color:white;font-size:18px;cursor:pointer}
+.gif-results{height:350px;overflow-y:auto;padding:10px;display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.gif-result{width:100%;height:120px;object-fit:cover;border-radius:10px;cursor:pointer;background:#eeeae1}
+.gif-empty{grid-column:1/-1;text-align:center;padding:30px 10px;color:#77736b;font-size:13px}
+#voiceStatus{display:none;position:fixed;top:195px;left:50%;transform:translateX(-50%);background:#fffdf7;border:1px solid #d8d3c8;color:#333;padding:11px 18px;border-radius:25px;font-size:13px;z-index:100;box-shadow:0 10px 30px rgba(0,0,0,.20);white-space:nowrap}
 @media (min-width:700px){
-
-    .input-area{
-        max-width:850px;
-
-        left:50%;
-
-        transform:translateX(-50%);
-
-        border-radius:0 0 18px 18px;
-    }
-
-    .pagination-wrapper{
-        max-width:850px;
-
-        left:50%;
-        right:auto;
-
-        width:850px;
-
-        transform:translateX(-50%);
-
-        border-radius:0 0 15px 15px;
-    }
-
-    .chat{
-        max-width:850px;
-    }
-
+.input-area{max-width:850px;left:50%;transform:translateX(-50%);border-radius:0 0 18px 18px}
+.pagination-wrapper{max-width:850px;left:50%;right:auto;width:850px;transform:translateX(-50%);border-radius:0 0 15px 15px}
+.chat{max-width:850px}
 }
-
-/* =========================
-   MOBİL
-========================= */
-
 @media (max-width:600px){
-
-    .header{
-        height:62px;
-        min-height:62px;
-
-        padding:7px 6px;
-        gap:5px;
-    }
-
-    .header-title{
-        font-size:13px;
-    }
-
-    .online{
-        margin-top:3px;
-        font-size:10px;
-    }
-
-    .online-users{
-        max-width:130px;
-        font-size:9px;
-    }
-
-    .header-buttons{
-        gap:3px;
-    }
-
-    .voice-button,
-    .logout,
-    .room-delete{
-        min-height:34px;
-
-        padding:6px 6px;
-
-        font-size:9px;
-
-        border-radius:9px;
-    }
-
-    .voice-button{
-        max-width:82px;
-
-        overflow:hidden;
-
-        text-overflow:ellipsis;
-    }
-
-    .room-delete{
-        max-width:54px;
-
-        overflow:hidden;
-
-        text-overflow:ellipsis;
-    }
-
-    .input-area{
-        top:62px;
-
-        height:94px;
-        min-height:94px;
-
-        padding:7px 8px;
-
-        border-radius:0;
-    }
-
-    .tools-row{
-        gap:5px;
-        margin-bottom:6px;
-        min-height:32px;
-    }
-
-    .tool-button{
-        width:37px;
-        height:32px;
-
-        border-radius:9px;
-
-        font-size:17px;
-    }
-
-    .gif-button{
-        font-size:11px;
-    }
-
-    .image-button{
-        font-size:18px;
-    }
-
-    .color-button-main{
-        font-size:18px;
-    }
-
-    .message-row{
-        gap:5px;
-    }
-
-    .message-input{
-        height:42px;
-
-        font-size:14px;
-
-        border-radius:13px;
-
-        padding:0 12px;
-    }
-
-    .send{
-        width:44px;
-        height:42px;
-
-        border-radius:13px;
-
-        font-size:18px;
-    }
-
-    .pagination-wrapper{
-        top:156px;
-
-        height:45px;
-
-        padding:4px 6px;
-
-        display:block;
-    }
-
-    .pagination{
-        height:37px;
-
-        justify-content:flex-start;
-
-        gap:5px;
-
-        overflow-x:auto;
-        overflow-y:hidden;
-
-        padding:1px 2px;
-    }
-
-    .page-button{
-        min-width:34px;
-        height:32px;
-
-        padding:0 8px;
-
-        font-size:12px;
-    }
-
-    .chat{
-        top:201px;
-
-        padding:15px 10px 25px;
-    }
-
-    .image-message{
-        width:100%;
-    }
-
-    .image-message img{
-        max-width:100%;
-        max-height:500px;
-    }
-
-    .gif-message{
-    width:100%;
-    text-align:center;
+.header{height:62px;min-height:62px;padding:7px 6px;gap:5px}
+.header-title{font-size:13px}
+.online{margin-top:3px;font-size:10px}
+.online-users{max-width:130px;font-size:9px}
+.header-buttons{gap:3px}
+.voice-button,.logout,.room-delete{min-height:34px;padding:6px 6px;font-size:9px;border-radius:9px}
+.voice-button{max-width:82px;overflow:hidden;text-overflow:ellipsis}
+.room-delete{max-width:54px;overflow:hidden;text-overflow:ellipsis}
+.input-area{top:62px;height:94px;min-height:94px;padding:7px 8px;border-radius:0}
+.tools-row{gap:5px;margin-bottom:6px;min-height:32px}
+.tool-button{width:37px;height:32px;border-radius:9px;font-size:17px}
+.gif-button{font-size:11px}
+.image-button{font-size:18px}
+.color-button-main{font-size:18px}
+.message-row{gap:5px}
+.message-input{height:42px;font-size:14px;border-radius:13px;padding:0 12px}
+.send{width:44px;height:42px;border-radius:13px;font-size:18px}
+.pagination-wrapper{top:156px;height:45px;padding:4px 6px;display:block}
+.pagination{height:37px;justify-content:flex-start;gap:5px;overflow-x:auto;overflow-y:hidden;padding:1px 2px}
+.page-button{min-width:34px;height:32px;padding:0 8px;font-size:12px}
+.chat{top:201px;padding:15px 10px 25px}
+.image-message{width:100%}
+.image-message img{max-width:100%;max-height:500px}
+.gif-message{width:100%;text-align:center}
+.gif-message img{display:block;margin-left:auto;margin-right:auto;width:auto;max-width:260px;max-height:260px;object-fit:contain;border-radius:15px;cursor:pointer}
+.emoji-panel{top:111px;width:calc(100vw - 20px);left:10px}
+.gif-panel{top:111px;left:10px;width:calc(100vw - 20px);height:430px}
+.color-panel{top:111px;left:8px;max-width:calc(100vw - 16px);overflow-x:auto}
+#voiceStatus{top:111px;max-width:calc(100vw - 30px);overflow:hidden;text-overflow:ellipsis}
 }
-
-.gif-message img{
-    display:block;
-    margin-left:auto;
-    margin-right:auto;
-
-    width:auto;
-    max-width:260px;
-    max-height:260px;
-
-    object-fit:contain;
-    border-radius:15px;
-    cursor:pointer;
-}
-    .emoji-panel{
-        top:111px;
-
-        width:calc(100vw - 20px);
-
-        left:10px;
-    }
-
-    .gif-panel{
-        top:111px;
-
-        left:10px;
-
-        width:calc(100vw - 20px);
-
-        height:430px;
-    }
-
-    .color-panel{
-        top:111px;
-
-        left:8px;
-
-        max-width:calc(100vw - 16px);
-
-        overflow-x:auto;
-    }
-
-    #voiceStatus{
-        top:111px;
-
-        max-width:calc(100vw - 30px);
-
-        overflow:hidden;
-
-        text-overflow:ellipsis;
-    }
-
-}
-
-/* =========================
-   ÇOK KÜÇÜK TELEFON
-========================= */
-
 @media (max-width:380px){
-
-    .header-title{
-        font-size:12px;
-    }
-
-    .online-users{
-        max-width:100px;
-    }
-
-    .voice-button{
-        max-width:70px;
-        padding:6px 4px;
-    }
-
-    .logout{
-        padding:6px 5px;
-    }
-
-    .room-delete{
-        max-width:45px;
-        padding:6px 4px;
-    }
-
-    .tool-button{
-        width:34px;
-    }
-
-    .page-button{
-        min-width:32px;
-        padding:0 7px;
-    }
-
+.header-title{font-size:12px}
+.online-users{max-width:100px}
+.voice-button{max-width:70px;padding:6px 4px}
+.logout{padding:6px 5px}
+.room-delete{max-width:45px;padding:6px 4px}
+.tool-button{width:34px}
+.page-button{min-width:32px;padding:0 7px}
 }
-
+.admin-badge{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 5px;margin-left:4px;border-radius:50px;background:#e34b5f;color:#fff;font-size:12px;font-weight:bold;line-height:20px}
 </style>
 </head>
-
 <body>
- 
 <div id="login">
-    <div class="login-box">
-        <h1>Ritmix Sohbet</h1>
-
-        <div class="subtitle">
-            Üye ol veya hesabınla giriş yap
-        </div>
-
-        <input
-            id="usernameInput"
-            maxlength="20"
-            placeholder="Kullanıcı adın..."
-            autocomplete="username"
-        >
-
-        <input
-            id="emailInput"
-            type="email"
-            placeholder="E-posta adresin"
-            autocomplete="email"
-            style="width:100%;height:52px;margin-top:12px;padding:0 17px;border:1px solid #d8d3c8;border-radius:15px;font-size:16px;"
-        >
-
-        <input
-            id="passwordInput"
-            type="password"
-            placeholder="Şifren (en az 6 karakter)"
-            autocomplete="current-password"
-            style="width:100%;height:52px;margin-top:12px;padding:0 17px;border:1px solid #d8d3c8;border-radius:15px;font-size:16px;"
-        >
-
-        <button id="loginButton" type="button">
-            GİRİŞ YAP
-        </button>
-
-        <button
-            id="registerButton"
-            type="button"
-            style="width:100%;height:52px;margin-top:10px;border:1px solid #d8d3c8;border-radius:15px;background:#d9f4e5;color:#08783f;font-size:15px;font-weight:bold;cursor:pointer;"
-        >
-            YENİ ÜYELİK OLUŞTUR
-        </button>
-
-        <div
-            id="authStatus"
-            role="status"
-            style="margin-top:15px;font-size:13px;line-height:1.5;color:#77736b;"
-        ></div>
-    </div>
+<div class="login-box">
+<h1>Ritmix Sohbet</h1>
+<div class="subtitle">Üye ol veya hesabınla giriş yap</div>
+<input id="usernameInput" maxlength="20" placeholder="Kullanıcı adın..." autocomplete="username">
+<input id="emailInput" type="email" placeholder="E-posta adresin" autocomplete="email" style="width:100%;height:52px;margin-top:12px;padding:0 17px;border:1px solid #d8d3c8;border-radius:15px;font-size:16px;">
+<input id="passwordInput" type="password" placeholder="Şifren (en az 6 karakter)" autocomplete="current-password" style="width:100%;height:52px;margin-top:12px;padding:0 17px;border:1px solid #d8d3c8;border-radius:15px;font-size:16px;">
+<button id="loginButton" type="button">GİRİŞ YAP</button>
+<button id="registerButton" type="button" style="width:100%;height:52px;margin-top:10px;border:1px solid #d8d3c8;border-radius:15px;background:#d9f4e5;color:#08783f;font-size:15px;font-weight:bold;cursor:pointer;">YENİ ÜYELİK OLUŞTUR</button>
+<div id="authStatus" role="status" style="margin-top:15px;font-size:13px;line-height:1.5;color:#77736b;"></div>
 </div>
-
-
-
+</div>
 <div id="chatPage">
-
-    <div class="header">
-
-        <div class="header-info">
-
-            <div class="header-title">
-                💬 Ritmix Sohbet
-            </div>
-
-            <div class="online" id="onlineText">
-                🟢 0 kişi çevrimiçi
-            </div>
-
-            <div class="online-users" id="onlineUsersText">
-                👥 Kimse yok
-            </div>
-
-        </div>
-
-        <div class="header-buttons">
-
-<div
-    id="adminPanel"
-    style="display:none;position:fixed;z-index:120;top:80px;right:10px;width:min(420px,calc(100vw - 20px));max-height:75vh;overflow:auto;padding:16px;background:#fffdf7;border:1px solid #d8d3c8;border-radius:16px;box-shadow:0 12px 35px rgba(0,0,0,.22);"
->
-    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
-         <button id="adminButton" type="button">
-    👑 Üye Yönetimi
-    <span id="pendingMemberBadge" class="admin-badge" style="display:none">0</span>
-</button>
-    </div>
-
-    <p style="font-size:13px;color:#77736b;">
-        Onay bekleyen üyeler burada görünecek.
-    </p>
-
-    <div id="adminMembersList">
-        Üyeler yükleniyor...
-    </div>
+<div class="header">
+<div class="header-info">
+<div class="header-title">💬 Ritmix Sohbet</div>
+<div class="online" id="onlineText">🟢 0 kişi çevrimiçi</div>
+<div class="online-users" id="onlineUsersText">👥 Kimse yok</div>
 </div>
-
-            <button
-                class="voice-button"
-                id="voiceButton"
-            >
-                🎤 Sesli Sohbet
-            </button>
-
-            <button
-                class="room-delete"
-                id="roomDeleteButton"
-                title="Odayı Sil"
-            >
-                🗑️ Oda
-            </button>
-
-<button
-    class="room-delete admin-header-button"
-    id="adminButton"
-    type="button"
-    style="display:none;"
->
-    👑 Üye Yönetimi
-    <span
-        id="pendingMemberBadge"
-        class="admin-badge"
-        style="display:none;"
-    >0</span>
-</button>
-        </div>
-
-    </div>
-
-
-    <div class="input-area">
-
-        <div class="tools-row">
-
-            <button
-                class="tool-button"
-                id="emojiButton"
-                title="Emoji"
-            >
-                😀
-            </button>
-
-            <button
-                class="tool-button gif-button"
-                id="gifButton"
-                title="GIF"
-            >
-                GIF
-            </button>
-
-            <button
-                class="tool-button image-button"
-                id="imageButton"
-                title="Cihazdan resim veya GIF yükle"
-            >
-                📷
-            </button>
-
-            <input
-                type="file"
-                id="imageInput"
-                accept="image/*,.gif"
-            >
-
-            <button
-                class="tool-button color-button-main"
-                id="colorButton"
-                title="Yazı rengi"
-            >
-                🎨
-            </button>
-
-        </div>
-
-
-        <div class="message-row">
-
-            <input
-                class="message-input"
-                id="messageInput"
-                placeholder="Mesajınızı yazın..."
-                autocomplete="off"
-            >
-
-            <button
-                class="send"
-                id="sendButton"
-            >
-                ➤
-            </button>
-
-        </div>
-
-    </div>
-
-
-    <div class="pagination-wrapper">
-
-        <div
-            class="pagination"
-            id="pagination"
-        ></div>
-
-    </div>
-
-
-    <div
-        class="chat"
-        id="chat"
-    ></div>
-
-
-    <div
-        class="emoji-panel"
-        id="emojiPanel"
-    >
-
-        <div class="emoji-grid">
-
-            <button class="emoji-item">😀</button>
-            <button class="emoji-item">😂</button>
-            <button class="emoji-item">🤣</button>
-            <button class="emoji-item">😊</button>
-            <button class="emoji-item">😍</button>
-            <button class="emoji-item">😘</button>
-            <button class="emoji-item">🥰</button>
-            <button class="emoji-item">😎</button>
-
-            <button class="emoji-item">😢</button>
-            <button class="emoji-item">😭</button>
-            <button class="emoji-item">😡</button>
-            <button class="emoji-item">😱</button>
-            <button class="emoji-item">🤔</button>
-            <button class="emoji-item">🙄</button>
-            <button class="emoji-item">😴</button>
-            <button class="emoji-item">🤗</button>
-
-            <button class="emoji-item">❤️</button>
-            <button class="emoji-item">🧡</button>
-            <button class="emoji-item">💛</button>
-            <button class="emoji-item">💚</button>
-            <button class="emoji-item">💙</button>
-            <button class="emoji-item">💜</button>
-            <button class="emoji-item">🖤</button>
-            <button class="emoji-item">💔</button>
-
-            <button class="emoji-item">🔥</button>
-            <button class="emoji-item">🎉</button>
-            <button class="emoji-item">🎊</button>
-            <button class="emoji-item">👏</button>
-            <button class="emoji-item">👍</button>
-            <button class="emoji-item">👎</button>
-            <button class="emoji-item">💯</button>
-            <button class="emoji-item">✨</button>
-
-            <button class="emoji-item">😉</button>
-            <button class="emoji-item">😜</button>
-            <button class="emoji-item">😇</button>
-            <button class="emoji-item">🥳</button>
-            <button class="emoji-item">🤩</button>
-            <button class="emoji-item">😏</button>
-            <button class="emoji-item">😌</button>
-            <button class="emoji-item">🤪</button>
-
-        </div>
-
-    </div>
-
-
-    <div
-        class="gif-panel"
-        id="gifPanel"
-    >
-
-        <div class="gif-search">
-
-            <input
-                id="gifSearchInput"
-                placeholder="GIF ara..."
-                autocomplete="off"
-            >
-
-            <button id="gifSearchButton">
-                🔎
-            </button>
-
-        </div>
-
-        <div
-            class="gif-results"
-            id="gifResults"
-        >
-
-            <div class="gif-empty">
-                🔎 Bir GIF arayın
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <div
-        class="color-panel"
-        id="colorPanel"
-    >
-
-        <button
-            class="color-button color-white selected"
-            data-color="#333333"
-            title="Siyah"
-        ></button>
-
-        <button
-            class="color-button color-pink"
-            data-color="#ff69b4"
-            title="Pembe"
-        ></button>
-
-        <button
-            class="color-button color-blue"
-            data-color="#2878d4"
-            title="Mavi"
-        ></button>
-
-        <button
-            class="color-button color-green"
-            data-color="#159957"
-            title="Yeşil"
-        ></button>
-
-        <button
-            class="color-button color-yellow"
-            data-color="#c99400"
-            title="Sarı"
-        ></button>
-
-        <button
-            class="color-button color-red"
-            data-color="#e34b5f"
-            title="Kırmızı"
-        ></button>
-
-    </div>
-
+<div class="header-buttons">
+<div id="adminPanel" style="display:none;position:fixed;z-index:120;top:80px;right:10px;width:min(420px,calc(100vw - 20px));max-height:75vh;overflow:auto;padding:16px;background:#fffdf7;border:1px solid #d8d3c8;border-radius:16px;box-shadow:0 12px 35px rgba(0,0,0,.22);">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px;">
+<strong style="font-size:16px;">👑 Üye Yönetimi</strong>
+<button id="closeAdminButton" type="button" style="border:0;border-radius:8px;padding:7px 10px;background:#eeeae1;cursor:pointer;">✖ Kapat</button>
 </div>
-
-
-<div id="voiceStatus">
-    🎤 Sesli sistem hazırlanıyor...
+<p style="font-size:13px;color:#77736b;">Onay bekleyen üyeler burada görünecek.</p>
+<div id="adminMembersList">Üyeler yükleniyor...</div>
 </div>
-
-<audio
-    id="remoteAudio"
-    autoplay
-    playsinline
-></audio>
-
-
+<button class="voice-button" id="voiceButton">🎤 Sesli Sohbet</button>
+<button class="room-delete" id="roomDeleteButton" title="Odayı Sil">🗑️ Oda</button>
+<button class="room-delete admin-header-button" id="adminButton" type="button" style="display:none;">👑 Üye Yönetimi <span id="pendingMemberBadge" class="admin-badge" style="display:none;">0</span></button>
+<button class="logout" id="logoutButton" type="button">Çıkış</button>
+</div>
+</div>
+<div class="input-area">
+<div class="tools-row">
+<button class="tool-button" id="emojiButton" title="Emoji">😀</button>
+<button class="tool-button gif-button" id="gifButton" title="GIF">GIF</button>
+<button class="tool-button image-button" id="imageButton" title="Cihazdan resim veya GIF yükle">📷</button>
+<input type="file" id="imageInput" accept="image/*,.gif">
+<button class="tool-button color-button-main" id="colorButton" title="Yazı rengi">🎨</button>
+</div>
+<div class="message-row">
+<input class="message-input" id="messageInput" placeholder="Mesajınızı yazın..." autocomplete="off">
+<button class="send" id="sendButton">➤</button>
+</div>
+</div>
+<div class="pagination-wrapper"><div class="pagination" id="pagination"></div></div>
+<div class="chat" id="chat"></div>
+<div class="emoji-panel" id="emojiPanel">
+<div class="emoji-grid">
+<button class="emoji-item">😀</button><button class="emoji-item">😂</button><button class="emoji-item">🤣</button><button class="emoji-item">😊</button><button class="emoji-item">😍</button><button class="emoji-item">😘</button><button class="emoji-item">🥰</button><button class="emoji-item">😎</button>
+<button class="emoji-item">😢</button><button class="emoji-item">😭</button><button class="emoji-item">😡</button><button class="emoji-item">😱</button><button class="emoji-item">🤔</button><button class="emoji-item">🙄</button><button class="emoji-item">😴</button><button class="emoji-item">🤗</button>
+<button class="emoji-item">❤️</button><button class="emoji-item">🧡</button><button class="emoji-item">💛</button><button class="emoji-item">💚</button><button class="emoji-item">💙</button><button class="emoji-item">💜</button><button class="emoji-item">🖤</button><button class="emoji-item">💔</button>
+<button class="emoji-item">🔥</button><button class="emoji-item">🎉</button><button class="emoji-item">🎊</button><button class="emoji-item">👏</button><button class="emoji-item">👍</button><button class="emoji-item">👎</button><button class="emoji-item">💯</button><button class="emoji-item">✨</button>
+<button class="emoji-item">😉</button><button class="emoji-item">😜</button><button class="emoji-item">😇</button><button class="emoji-item">🥳</button><button class="emoji-item">🤩</button><button class="emoji-item">😏</button><button class="emoji-item">😌</button><button class="emoji-item">🤪</button>
+</div>
+</div>
+<div class="gif-panel" id="gifPanel">
+<div class="gif-search">
+<input id="gifSearchInput" placeholder="GIF ara..." autocomplete="off">
+<button id="gifSearchButton">🔎</button>
+</div>
+<div class="gif-results" id="gifResults"><div class="gif-empty">🔎 Bir GIF arayın</div></div>
+</div>
+<div class="color-panel" id="colorPanel">
+<button class="color-button color-white selected" data-color="#333333" title="Siyah"></button>
+<button class="color-button color-pink" data-color="#ff69b4" title="Pembe"></button>
+<button class="color-button color-blue" data-color="#2878d4" title="Mavi"></button>
+<button class="color-button color-green" data-color="#159957" title="Yeşil"></button>
+<button class="color-button color-yellow" data-color="#c99400" title="Sarı"></button>
+<button class="color-button color-red" data-color="#e34b5f" title="Kırmızı"></button>
+</div>
+</div>
+<div id="voiceStatus">🎤 Sesli sistem hazırlanıyor...</div>
+<audio id="remoteAudio" autoplay playsinline></audio>
 <script>
-
-/* =========================================================
-   FIREBASE
-========================================================= */
-
 const firebaseConfig = {
-
-    apiKey:
-        "AIzaSyDJ9zkgu_2ZLcD_ObEYwnFfSu6QffN9VQI",
-
-    authDomain:
-        "papatyawap.firebaseapp.com",
-
-    databaseURL:
-        "https://papatyawap-default-rtdb.firebaseio.com",
-
-    projectId:
-        "papatyawap",
-
-    storageBucket:
-        "papatyawap.firebasestorage.app",
-
-    messagingSenderId:
-        "29357315689",
-
-    appId:
-        "1:29357315689:web:78864218c204d291f734f8"
-
+apiKey:"AIzaSyDJ9zkgu_2ZLcD_ObEYwnFfSu6QffN9VQI",
+authDomain:"papatyawap.firebaseapp.com",
+databaseURL:"https://papatyawap-default-rtdb.firebaseio.com",
+projectId:"papatyawap",
+storageBucket:"papatyawap.firebasestorage.app",
+messagingSenderId:"29357315689",
+appId:"1:29357315689:web:78864218c204d291f734f8"
 };
-
 firebase.initializeApp(firebaseConfig);
-
 const database = firebase.database();
-
 const auth = firebase.auth();
-
-
-/* =========================================================
-   GIPHY
-========================================================= */
-
-const GIPHY_API_KEY =
-    "wZUjXSQmZ5TEx1UzVzqTY5BVwGcpShCy";
-
-
-/* =========================================================
-   SAYFA SİSTEMİ
-========================================================= */
-
+const GIPHY_API_KEY = "wZUjXSQmZ5TEx1UzVzqTY5BVwGcpShCy";
 const MESSAGES_PER_PAGE = 8;
 const MAX_PAGES = 20;
 const MAX_MESSAGES = MESSAGES_PER_PAGE * MAX_PAGES;
-
 let currentPage = 1;
-
-
-/* =========================================================
-   DEĞİŞKENLER
-========================================================= */
-
 let username = "";
 let userKey = "";
-
 let localStream = null;
 let peerConnections = {};
-
 let voiceActive = false;
 let voiceListenerStarted = false;
-
 let selectedMessageColor = "#333333";
-
-
-/* =========================================================
-   WEBRTC
-========================================================= */
-
-const rtcConfig = {
-
-    iceServers: [
-
-        {
-            urls:
-                "stun:stun.l.google.com:19302"
-        },
-
-        {
-            urls:
-                "stun:stun1.l.google.com:19302"
-        }
-
-    ]
-
+const rtcConfig = {iceServers:[{urls:"stun:stun.l.google.com:19302"},{urls:"stun:stun1.l.google.com:19302"}]};
+const colorButton = document.getElementById("colorButton");
+const colorPanel = document.getElementById("colorPanel");
+const emojiButton = document.getElementById("emojiButton");
+const emojiPanel = document.getElementById("emojiPanel");
+const gifButton = document.getElementById("gifButton");
+const gifPanel = document.getElementById("gifPanel");
+colorButton.onclick = function(event){
+event.stopPropagation();
+colorPanel.classList.toggle("show");
+emojiPanel.style.display = "none";
+gifPanel.style.display = "none";
 };
-
-
-/* =========================================================
-   PANELLER
-========================================================= */
-
-const colorButton =
-    document.getElementById("colorButton");
-
-const colorPanel =
-    document.getElementById("colorPanel");
-
-const emojiButton =
-    document.getElementById("emojiButton");
-
-const emojiPanel =
-    document.getElementById("emojiPanel");
-
-const gifButton =
-    document.getElementById("gifButton");
-
-const gifPanel =
-    document.getElementById("gifPanel");
-
-
-/* =========================================================
-   RENK
-========================================================= */
-
-colorButton.onclick =
-function(event){
-
-    event.stopPropagation();
-
-    colorPanel.classList.toggle("show");
-
-    emojiPanel.style.display = "none";
-    gifPanel.style.display = "none";
-
+document.querySelectorAll(".color-button").forEach(function(button){
+button.onclick = function(event){
+event.stopPropagation();
+selectedMessageColor = this.dataset.color;
+document.querySelectorAll(".color-button").forEach(function(item){item.classList.remove("selected");});
+this.classList.add("selected");
+colorPanel.classList.remove("show");
 };
-
-
-document
-.querySelectorAll(".color-button")
-.forEach(
-function(button){
-
-    button.onclick =
-    function(event){
-
-        event.stopPropagation();
-
-        selectedMessageColor =
-            this.dataset.color;
-
-        document
-        .querySelectorAll(".color-button")
-        .forEach(
-        function(item){
-
-            item.classList.remove("selected");
-
-        });
-
-        this.classList.add("selected");
-
-        colorPanel.classList.remove("show");
-
-    };
-
 });
-
-
-/* =========================================================
-   EMOJI
-========================================================= */
-
-emojiButton.onclick =
-function(event){
-
-    event.stopPropagation();
-
-    emojiPanel.style.display =
-        emojiPanel.style.display === "block"
-        ? "none"
-        : "block";
-
-    gifPanel.style.display = "none";
-
-    colorPanel.classList.remove("show");
-
+emojiButton.onclick = function(event){
+event.stopPropagation();
+emojiPanel.style.display = emojiPanel.style.display === "block" ? "none" : "block";
+gifPanel.style.display = "none";
+colorPanel.classList.remove("show");
 };
-
-
-document
-.querySelectorAll(".emoji-item")
-.forEach(
-function(button){
-
-    button.onclick =
-    function(){
-
-        const input =
-            document.getElementById("messageInput");
-
-        input.value += this.textContent;
-
-        input.focus();
-
-    };
-
+document.querySelectorAll(".emoji-item").forEach(function(button){
+button.onclick = function(){
+const input = document.getElementById("messageInput");
+input.value += this.textContent;
+input.focus();
+};
 });
-
-
-/* =========================================================
-   RESİM / GIF YÜKLEME
-========================================================= */
-
-const imageButton =
-    document.getElementById("imageButton");
-
-const imageInput =
-    document.getElementById("imageInput");
-
-
-imageButton.onclick =
-function(){
-
-    imageInput.click();
-
+const imageButton = document.getElementById("imageButton");
+const imageInput = document.getElementById("imageInput");
+imageButton.onclick = function(){imageInput.click();};
+imageInput.onchange = function(event){
+const file = event.target.files[0];
+if(!file){return;}
+if(!file.type.startsWith("image/")){
+alert("Lütfen bir resim veya GIF seçin.");
+imageInput.value = "";
+return;
+}
+if(file.size > 6 * 1024 * 1024){
+alert("Bu dosya 6 MB'dan büyük.\n\nLütfen 6 MB veya daha küçük bir resim/GIF seçin.");
+imageInput.value = "";
+return;
+}
+checkMessageLimit(function(canSend){
+if(!canSend){return;}
+const reader = new FileReader();
+reader.onload = function(e){
+const imageData = e.target.result;
+database.ref("messages").push({username:username,type:"image",image:imageData,filename:file.name,mimeType:file.type,color:selectedMessageColor,timestamp:Date.now()}).then(function(){imageInput.value = "";}).catch(function(error){console.error(error);alert("Resim gönderilemedi.\n\n" + error.message);});
 };
-
-
-imageInput.onchange =
-function(event){
-
-    const file =
-        event.target.files[0];
-
-    if(!file){
-        return;
-    }
-
-    if(!file.type.startsWith("image/")){
-
-        alert(
-            "Lütfen bir resim veya GIF seçin."
-        );
-
-        imageInput.value = "";
-
-        return;
-    }
-
-    if(file.size > 6 * 1024 * 1024){
-
-        alert(
-            "Bu dosya 6 MB'dan büyük.\n\n" +
-            "Lütfen 6 MB veya daha küçük bir resim/GIF seçin."
-        );
-
-        imageInput.value = "";
-
-        return;
-    }
-
-    checkMessageLimit(
-    function(canSend){
-
-        if(!canSend){
-            return;
-        }
-
-        const reader =
-            new FileReader();
-
-        reader.onload =
-        function(e){
-
-            const imageData =
-                e.target.result;
-
-            database
-            .ref("messages")
-            .push({
-
-                username:
-                    username,
-
-                type:
-                    "image",
-
-                image:
-                    imageData,
-
-                filename:
-                    file.name,
-
-                mimeType:
-                    file.type,
-
-                color:
-                    selectedMessageColor,
-
-                timestamp:
-                    Date.now()
-
-            })
-            .then(
-            function(){
-
-                imageInput.value = "";
-
-            })
-            .catch(
-            function(error){
-
-                console.error(error);
-
-                alert(
-                    "Resim gönderilemedi.\n\n" +
-                    error.message
-                );
-
-            });
-
-        };
-
-        reader.onerror =
-        function(){
-
-            alert("Dosya okunamadı.");
-
-            imageInput.value = "";
-
-        };
-
-        reader.readAsDataURL(file);
-
-    });
-
+reader.onerror = function(){alert("Dosya okunamadı.");imageInput.value = "";};
+reader.readAsDataURL(file);
+});
 };
-
-
-/* =========================================================
-   GIPHY
-========================================================= */
-
-const gifSearchInput =
-    document.getElementById("gifSearchInput");
-
-const gifSearchButton =
-    document.getElementById("gifSearchButton");
-
-const gifResults =
-    document.getElementById("gifResults");
-
-
-gifButton.onclick =
-function(event){
-
-    event.stopPropagation();
-
-    gifPanel.style.display =
-        gifPanel.style.display === "block"
-        ? "none"
-        : "block";
-
-    emojiPanel.style.display = "none";
-
-    colorPanel.classList.remove("show");
-
+const gifSearchInput = document.getElementById("gifSearchInput");
+const gifSearchButton = document.getElementById("gifSearchButton");
+const gifResults = document.getElementById("gifResults");
+gifButton.onclick = function(event){
+event.stopPropagation();
+gifPanel.style.display = gifPanel.style.display === "block" ? "none" : "block";
+emojiPanel.style.display = "none";
+colorPanel.classList.remove("show");
 };
-
-
-gifSearchButton.onclick =
-    searchGIFs;
-
-
-gifSearchInput.onkeydown =
-function(event){
-
-    if(event.key === "Enter"){
-
-        event.preventDefault();
-
-        searchGIFs();
-
-    }
-
-};
-
-
+gifSearchButton.onclick = searchGIFs;
+gifSearchInput.onkeydown = function(event){if(event.key === "Enter"){event.preventDefault();searchGIFs();}};
 async function searchGIFs(){
-
-    const query =
-        gifSearchInput.value.trim();
-
-    if(!query){
-
-        gifResults.innerHTML =
-            '<div class="gif-empty">🔎 Önce GIF adı yazın</div>';
-
-        return;
-    }
-
-    gifResults.innerHTML =
-        '<div class="gif-empty">⏳ GIF aranıyor...</div>';
-
-    try{
-
-        const url =
-            "https://api.giphy.com/v1/gifs/search" +
-            "?api_key=" +
-            encodeURIComponent(GIPHY_API_KEY) +
-            "&q=" +
-            encodeURIComponent(query) +
-            "&limit=24" +
-            "&rating=pg-13" +
-            "&lang=tr";
-
-        const response =
-            await fetch(url);
-
-        if(!response.ok){
-
-            throw new Error(
-                "HTTP " + response.status
-            );
-
-        }
-
-        const data =
-            await response.json();
-
-        if(
-            !data ||
-            !data.data ||
-            data.data.length === 0
-        ){
-
-            gifResults.innerHTML =
-                '<div class="gif-empty">😔 GIF bulunamadı</div>';
-
-            return;
-
-        }
-
-        gifResults.innerHTML = "";
-
-        data.data.forEach(
-        function(gif){
-
-            const images =
-                gif.images || {};
-
-            const previewUrl =
-                images.fixed_width?.webp ||
-                images.fixed_width?.url ||
-                images.fixed_height?.webp ||
-                images.preview_gif?.url ||
-                images.original?.url;
-
-            const originalUrl =
-                images.original?.url ||
-                images.fixed_height?.url ||
-                images.fixed_width?.url ||
-                previewUrl;
-
-            if(!previewUrl){
-                return;
-            }
-
-            const image =
-                document.createElement("img");
-
-            image.className =
-                "gif-result";
-
-            image.src =
-                previewUrl;
-
-            image.alt =
-                gif.title || "GIF";
-
-            image.loading =
-                "lazy";
-
-            image.onerror =
-            function(){
-
-                if(
-                    this.dataset.fallback !== "1" &&
-                    images.original?.url
-                ){
-
-                    this.dataset.fallback = "1";
-
-                    this.src =
-                        images.original.url;
-
-                }
-
-            };
-
-            image.onclick =
-            function(){
-
-                sendGIF(
-                    originalUrl,
-                    previewUrl
-                );
-
-                gifPanel.style.display = "none";
-
-            };
-
-            gifResults.appendChild(image);
-
-        });
-
-    }
-
-    catch(error){
-
-        console.error(
-            "GIPHY hatası:",
-            error
-        );
-
-        gifResults.innerHTML =
-            '<div class="gif-empty">❌ GIF yüklenemedi.<br><br>İnternet bağlantısını veya GIPHY erişimini kontrol edin.</div>';
-
-    }
-
+const query = gifSearchInput.value.trim();
+if(!query){gifResults.innerHTML = '<div class="gif-empty">🔎 Önce GIF adı yazın</div>';return;}
+gifResults.innerHTML = '<div class="gif-empty">⏳ GIF aranıyor...</div>';
+try{
+const url = "https://api.giphy.com/v1/gifs/search" + "?api_key=" + encodeURIComponent(GIPHY_API_KEY) + "&q=" + encodeURIComponent(query) + "&limit=24" + "&rating=pg-13" + "&lang=tr";
+const response = await fetch(url);
+if(!response.ok){throw new Error("HTTP " + response.status);}
+const data = await response.json();
+if(!data || !data.data || data.data.length === 0){gifResults.innerHTML = '<div class="gif-empty">😔 GIF bulunamadı</div>';return;}
+gifResults.innerHTML = "";
+data.data.forEach(function(gif){
+const images = gif.images || {};
+const previewUrl = images.fixed_width?.webp || images.fixed_width?.url || images.fixed_height?.webp || images.preview_gif?.url || images.original?.url;
+const originalUrl = images.original?.url || images.fixed_height?.url || images.fixed_width?.url || previewUrl;
+if(!previewUrl){return;}
+const image = document.createElement("img");
+image.className = "gif-result";
+image.src = previewUrl;
+image.alt = gif.title || "GIF";
+image.loading = "lazy";
+image.onerror = function(){if(this.dataset.fallback !== "1" && images.original?.url){this.dataset.fallback = "1";this.src = images.original.url;}};
+image.onclick = function(){sendGIF(originalUrl,previewUrl);gifPanel.style.display = "none";};
+gifResults.appendChild(image);
+});
+}catch(error){
+console.error("GIPHY hatası:",error);
+gifResults.innerHTML = '<div class="gif-empty">❌ GIF yüklenemedi.<br><br>İnternet bağlantısını veya GIPHY erişimini kontrol edin.</div>';
 }
-
-
-/* =========================================================
-   GIF GÖNDER
-========================================================= */
-
-function sendGIF(
-    gifUrl,
-    previewUrl
-){
-
-    if(!username){
-        return;
-    }
-
-    checkMessageLimit(
-    function(canSend){
-
-        if(!canSend){
-            return;
-        }
-
-        database
-        .ref("messages")
-        .push({
-
-            username:
-                username,
-
-            type:
-                "gif",
-
-            gif:
-                gifUrl,
-
-            preview:
-                previewUrl,
-
-            color:
-                selectedMessageColor,
-
-            timestamp:
-                Date.now()
-
-        });
-
-    });
-
 }
-
-
-/* =========================================================
-   MESAJ SINIRI
-========================================================= */
-
+function sendGIF(gifUrl,previewUrl){
+if(!username){return;}
+checkMessageLimit(function(canSend){
+if(!canSend){return;}
+database.ref("messages").push({username:username,type:"gif",gif:gifUrl,preview:previewUrl,color:selectedMessageColor,timestamp:Date.now()});
+});
+}
 function checkMessageLimit(callback){
-
-    database
-    .ref("messages")
-    .once(
-        "value",
-        function(snapshot){
-
-            const count =
-                snapshot.numChildren();
-
-            if(count >= MAX_MESSAGES){
-
-                alert(
-                    "⚠️ 20 sayfa doldu.\n\n" +
-                    "Toplam 160 mesaj sınırına ulaşıldı.\n\n" +
-                    "Eski mesajları silin veya 🗑️ Oda butonunu kullanarak odayı temizleyin."
-
-
-                );
-
-                callback(false);
-
-                return;
-            }
-
-            callback(true);
-
-        }
-    );
-
+database.ref("messages").once("value",function(snapshot){
+const count = snapshot.numChildren();
+if(count >= MAX_MESSAGES){
+alert("⚠️ 20 sayfa doldu.\n\nToplam 160 mesaj sınırına ulaşıldı.\n\nEski mesajları silin veya 🗑️ Oda butonunu kullanarak odayı temizleyin.");
+callback(false);
+return;
 }
-
-
-
-/* =========================================================
-   ÜYELİK, GİRİŞ VE YÖNETİCİ ONAYI
-========================================================= */
-
+callback(true);
+});
+}
 const ADMIN_UID = "zOQTI3PVjuYy20NADsZbNhbzW6T2";
-    
 let pendingMembersRef = null;
-
-function updatePendingMemberBadge(isAdmin) {
-    const badge = document.getElementById("pendingMemberBadge");
-
-    if (pendingMembersRef) {
-        pendingMembersRef.off("value");
-        pendingMembersRef = null;
-    }
-
-    if (!badge) return;
-
-    badge.style.display = "none";
-    badge.textContent = "0";
-
-    if (
-        !isAdmin ||
-        !auth.currentUser ||
-        auth.currentUser.uid !== ADMIN_UID
-    ) {
-        return;
-    }
-
-    pendingMembersRef = database.ref("members");
-
-    pendingMembersRef.on("value", function(snapshot) {
-        let count = 0;
-
-        snapshot.forEach(function(child) {
-            const member = child.val() || {};
-
-            if (
-                child.key !== ADMIN_UID &&
-                member.approved !== true &&
-                member.rejected !== true
-            ) {
-                count++;
-            }
-        });
-
-        badge.textContent = count > 99 ? "99+" : String(count);
-        badge.style.display = count > 0 ? "inline-flex" : "none";
-
-    }, function(error) {
-        console.error("Bekleyen üye sayısı alınamadı:", error);
-    });
+function updatePendingMemberBadge(isAdmin){
+const badge = document.getElementById("pendingMemberBadge");
+if(pendingMembersRef){pendingMembersRef.off("value");pendingMembersRef = null;}
+if(!badge){return;}
+badge.style.display = "none";
+badge.textContent = "0";
+if(!isAdmin || !auth.currentUser || auth.currentUser.uid !== ADMIN_UID){return;}
+pendingMembersRef = database.ref("members");
+pendingMembersRef.on("value",function(snapshot){
+let count = 0;
+snapshot.forEach(function(child){
+const member = child.val() || {};
+if(child.key !== ADMIN_UID && member.approved !== true && member.rejected !== true){count++;}
+});
+badge.textContent = count > 99 ? "99+" : String(count);
+badge.style.display = count > 0 ? "inline-flex" : "none";
+},function(error){console.error("Bekleyen üye sayısı alınamadı:",error);});
 }
-
-
-function authMessage(text, color = "#77736b") {
-    const status = document.getElementById("authStatus");
-    if (status) {
-        status.textContent = text;
-        status.style.color = color;
-    }
+function authMessage(text,color = "#77736b"){
+const status = document.getElementById("authStatus");
+if(status){status.textContent = text;status.style.color = color;}
 }
-
-function getLoginFields() {
-    return {
-        name: document.getElementById("usernameInput").value.trim(),
-        email: document.getElementById("emailInput").value.trim(),
-        password: document.getElementById("passwordInput").value
-    };
+function getLoginFields(){
+return {name:document.getElementById("usernameInput").value.trim(),email:document.getElementById("emailInput").value.trim(),password:document.getElementById("passwordInput").value};
 }
-
-function validateEmailPassword(email, password) {
-    if (!email || !password) {
-        authMessage("E-posta ve şifrenizi girin.", "#c72f42");
-        return false;
-    }
-
-    if (password.length < 6) {
-        authMessage("Şifre en az 6 karakter olmalı.", "#c72f42");
-        return false;
-    }
-
-    return true;
+function validateEmailPassword(email,password){
+if(!email || !password){authMessage("E-posta ve şifrenizi girin.","#c72f42");return false;}
+if(password.length < 6){authMessage("Şifre en az 6 karakter olmalı.","#c72f42");return false;}
+return true;
 }
-
-/* Yeni üyelik oluştur */
-async function registerMember() {
-    const { name, email, password } = getLoginFields();
-
-    if (!name) {
-        authMessage("Lütfen bir kullanıcı adı seçin.", "#c72f42");
-        return;
-    }
-
-    if (name.length > 20) {
-        authMessage("Kullanıcı adı en fazla 20 karakter olabilir.", "#c72f42");
-        return;
-    }
-
-    if (!validateEmailPassword(email, password)) return;
-
-    const button = document.getElementById("registerButton");
-    button.disabled = true;
-    authMessage("Üyelik oluşturuluyor...");
-
-    let createdUser = null;
-
-    try {
-        const credential = await auth.createUserWithEmailAndPassword(
-            email,
-            password
-        );
-
-        createdUser = credential.user;
-
-        await database.ref("members/" + createdUser.uid).set({
-            username: name,
-            email: email,
-            approved: false,
-            rejected: false,
-            role: "member",
-            createdAt: firebase.database.ServerValue.TIMESTAMP
-        });
-
-        await auth.signOut();
-
-        authMessage(
-            "Üyelik talebin alındı. Yönetici onayından sonra giriş yapabilirsin.",
-            "#08783f"
-        );
-
-        document.getElementById("passwordInput").value = "";
-    } catch (error) {
-        console.error("Üyelik oluşturma hatası:", error);
-
-        let message = error.message;
-
-        if (error.code === "auth/email-already-in-use") {
-            message = "Bu e-posta adresiyle zaten hesap var. Giriş yapmayı dene.";
-        } else if (error.code === "auth/invalid-email") {
-            message = "E-posta adresi geçerli görünmüyor.";
-        } else if (error.code === "auth/weak-password") {
-            message = "Daha güçlü bir şifre belirle.";
-        } else if (createdUser) {
-            message =
-                "Hesap oluşturuldu fakat üyelik kaydı tamamlanamadı. " +
-                "Tekrar tekrar kayıt oluşturma; yönetici veritabanını kontrol etmeli.";
-        }
-
-        authMessage(message, "#c72f42");
-    } finally {
-        button.disabled = false;
-    }
+async function registerMember(){
+const {name,email,password} = getLoginFields();
+if(!name){authMessage("Lütfen bir kullanıcı adı seçin.","#c72f42");return;}
+if(name.length > 20){authMessage("Kullanıcı adı en fazla 20 karakter olabilir.","#c72f42");return;}
+if(!validateEmailPassword(email,password)) return;
+const button = document.getElementById("registerButton");
+button.disabled = true;
+authMessage("Üyelik oluşturuluyor...");
+let createdUser = null;
+try{
+const credential = await auth.createUserWithEmailAndPassword(email,password);
+createdUser = credential.user;
+await database.ref("members/" + createdUser.uid).set({username:name,email:email,approved:false,rejected:false,role:"member",createdAt:firebase.database.ServerValue.TIMESTAMP});
+await auth.signOut();
+authMessage("Üyelik talebin alındı. Yönetici onayından sonra giriş yapabilirsin.","#08783f");
+document.getElementById("passwordInput").value = "";
+}catch(error){
+console.error("Üyelik oluşturma hatası:",error);
+let message = error.message;
+if(error.code === "auth/email-already-in-use"){message = "Bu e-posta adresiyle zaten hesap var. Giriş yapmayı dene.";}
+else if(error.code === "auth/invalid-email"){message = "E-posta adresi geçerli görünmüyor.";}
+else if(error.code === "auth/weak-password"){message = "Daha güçlü bir şifre belirle.";}
+else if(createdUser){message = "Hesap oluşturuldu fakat üyelik kaydı tamamlanamadı. Tekrar tekrar kayıt oluşturma; yönetici veritabanını kontrol etmeli.";}
+authMessage(message,"#c72f42");
+}finally{button.disabled = false;}
 }
-
-/* Mevcut hesabıyla giriş */
-async function enterChat() {
-    const { name, email, password } = getLoginFields();
-
-    if (!validateEmailPassword(email, password)) return;
-
-    const button = document.getElementById("loginButton");
-    button.disabled = true;
-    authMessage("Giriş kontrol ediliyor...");
-
-    try {
-        const credential = await auth.signInWithEmailAndPassword(
-            email,
-            password
-        );
-
-        const user = credential.user;
-
-        if (user.uid === ADMIN_UID) {
-            username = name || "Yönetici";
-            openChatPage(true);
-            return;
-        }
-
-        const memberSnapshot = await database
-            .ref("members/" + user.uid)
-            .once("value");
-
-        const member = memberSnapshot.val();
-
-        if (!member) {
-            await auth.signOut();
-            authMessage(
-                "Üyelik kaydın bulunamadı. Önce yeni üyelik oluştur.",
-                "#c72f42"
-            );
-            return;
-        }
-
-        if (member.rejected === true) {
-            await auth.signOut();
-            authMessage(
-                "Üyelik talebin reddedilmiş. Yöneticiyle iletişime geç.",
-                "#c72f42"
-            );
-            return;
-        }
-
-        if (member.approved !== true) {
-            await auth.signOut();
-            authMessage(
-                "Üyeliğin henüz onaylanmadı. Lütfen yönetici onayını bekle.",
-                "#9a6a00"
-        
-            );
-            return;
-        }
-
-        username = member.username || name;
-
-        openChatPage(false);
-    } catch (error) {
-        console.error("Giriş hatası:", error);
-
-        let message = error.message;
-
-        if (
-            error.code === "auth/invalid-credential" ||
-            error.code === "auth/wrong-password" ||
-            error.code === "auth/user-not-found"
-        ) {
-            message = "E-posta veya şifre hatalı.";
-        } else if (error.code === "auth/too-many-requests") {
-            message = "Çok fazla deneme yapıldı. Bir süre sonra tekrar dene.";
-        }
-
-        authMessage(message, "#c72f42");
-    } finally {
-        button.disabled = false;
-    }
+async function enterChat(){
+const {name,email,password} = getLoginFields();
+if(!validateEmailPassword(email,password)) return;
+const button = document.getElementById("loginButton");
+button.disabled = true;
+authMessage("Giriş kontrol ediliyor...");
+try{
+const credential = await auth.signInWithEmailAndPassword(email,password);
+const user = credential.user;
+if(user.uid === ADMIN_UID){
+username = name || "Yönetici";
+openChatPage(true);
+return;
 }
-
-/* Onaylı üyenin sohbet ekranını aç */
-function openChatPage(isAdmin) {
-    document.getElementById("login").style.display = "none";
-    document.getElementById("chatPage").style.display = "block";
-
-    document.getElementById("adminButton").style.display =
-        isAdmin ? "inline-block" : "none";
-
-    currentPage = 1;
-    loadMessages();
-    setOnline();
+const memberSnapshot = await database.ref("members/" + user.uid).once("value");
+const member = memberSnapshot.val();
+if(!member){
+await auth.signOut();
+authMessage("Üyelik kaydın bulunamadı. Önce yeni üyelik oluştur.","#c72f42");
+return;
 }
-
-/* Giriş düğmeleri */
+if(member.rejected === true){
+await auth.signOut();
+authMessage("Üyelik talebin reddedilmiş. Yöneticiyle iletişime geç.","#c72f42");
+return;
+}
+if(member.approved !== true){
+await auth.signOut();
+authMessage("Üyeliğin henüz onaylanmadı. Lütfen yönetici onayını bekle.","#9a6a00");
+return;
+}
+username = member.username || name;
+openChatPage(false);
+}catch(error){
+console.error("Giriş hatası:",error);
+let message = error.message;
+if(error.code === "auth/invalid-credential" || error.code === "auth/wrong-password" || error.code === "auth/user-not-found"){message = "E-posta veya şifre hatalı.";}
+else if(error.code === "auth/too-many-requests"){message = "Çok fazla deneme yapıldı. Bir süre sonra tekrar dene.";}
+authMessage(message,"#c72f42");
+}finally{button.disabled = false;}
+}
+function openChatPage(isAdmin){
+document.getElementById("login").style.display = "none";
+document.getElementById("chatPage").style.display = "block";
+document.getElementById("adminButton").style.display = isAdmin ? "inline-block" : "none";
+updatePendingMemberBadge(isAdmin);
+currentPage = 1;
+loadMessages();
+setOnline();
+}
 document.getElementById("loginButton").onclick = enterChat;
 document.getElementById("registerButton").onclick = registerMember;
-
-document.getElementById("passwordInput").onkeydown = function(event) {
-    if (event.key === "Enter") {
-        event.preventDefault();
-        enterChat();
-    }
-};
-
-
-
-document
-.getElementById("loginButton")
-.onclick =
-    enterChat;
-
-
-document
-.getElementById("usernameInput")
-.onkeydown =
-function(event){
-
-    if(event.key === "Enter"){
-
-        event.preventDefault();
-
-        enterChat();
-
-    }
-
-};
-
-
-/* =========================================================
-   YÖNETİCİ: ÜYELERİ ONAYLA / REDDET
-========================================================= */
-
+document.getElementById("passwordInput").onkeydown = function(event){if(event.key === "Enter"){event.preventDefault();enterChat();}};
+document.getElementById("loginButton").onclick = enterChat;
+document.getElementById("usernameInput").onkeydown = function(event){if(event.key === "Enter"){event.preventDefault();enterChat();}};
 const adminButton = document.getElementById("adminButton");
 const adminPanel = document.getElementById("adminPanel");
 const adminMembersList = document.getElementById("adminMembersList");
-
-adminButton.onclick = async function() {
-    if (!auth.currentUser || auth.currentUser.uid !== ADMIN_UID) {
-        alert("Bu alan sadece yöneticiye açıktır.");
-        return;
-    }
-
-    adminPanel.style.display =
-        adminPanel.style.display === "block" ? "none" : "block";
-
-    if (adminPanel.style.display === "block") {
-        await loadAdminMembers();
-    }
+adminButton.onclick = async function(){
+if(!auth.currentUser || auth.currentUser.uid !== ADMIN_UID){alert("Bu alan sadece yöneticiye açıktır.");return;}
+adminPanel.style.display = adminPanel.style.display === "block" ? "none" : "block";
+if(adminPanel.style.display === "block"){await loadAdminMembers();}
 };
-
-document.getElementById("closeAdminButton").onclick = function() {
-    adminPanel.style.display = "none";
+document.getElementById("closeAdminButton").onclick = function(){adminPanel.style.display = "none";};
+async function loadAdminMembers(){
+if(!auth.currentUser || auth.currentUser.uid !== ADMIN_UID){adminMembersList.textContent = "Yönetici yetkisi gerekli.";return;}
+adminMembersList.textContent = "Üyeler yükleniyor...";
+try{
+const snapshot = await database.ref("members").once("value");
+adminMembersList.innerHTML = "";
+let pendingCount = 0;
+snapshot.forEach(function(child){
+const member = child.val();
+const uid = child.key;
+if(!member || uid === ADMIN_UID) return;
+if(member.approved !== true && member.rejected !== true){
+pendingCount++;
+const card = document.createElement("div");
+card.style.cssText = "padding:12px;margin:10px 0;border:1px solid #ded9cf;border-radius:12px;background:#fff;overflow-wrap:anywhere;";
+const info = document.createElement("div");
+info.style.cssText = "margin-bottom:10px;font-size:13px;";
+const title = document.createElement("strong");
+title.textContent = member.username || "İsimsiz üye";
+const email = document.createElement("div");
+email.textContent = member.email || "E-posta yok";
+email.style.color = "#77736b";
+email.style.marginTop = "4px";
+info.appendChild(title);
+info.appendChild(email);
+const approve = document.createElement("button");
+approve.type = "button";
+approve.textContent = "✅ Onayla";
+approve.style.cssText = "padding:8px 10px;margin-right:6px;border:0;border-radius:8px;background:#d9f4e5;color:#08783f;cursor:pointer;";
+const reject = document.createElement("button");
+reject.type = "button";
+reject.textContent = "❌ Reddet";
+reject.style.cssText = "padding:8px 10px;border:0;border-radius:8px;background:#ffe1e4;color:#c72f42;cursor:pointer;";
+approve.onclick = async function(){
+if(!auth.currentUser || auth.currentUser.uid !== ADMIN_UID){alert("Yönetici oturumu bulunamadı.");return;}
+approve.disabled = true;
+try{await database.ref("members/" + uid).update({approved:true,rejected:false});await loadAdminMembers();}
+catch(error){console.error(error);alert("Üye onaylanamadı: " + error.message);approve.disabled = false;}
 };
-
-async function loadAdminMembers() {
-    if (!auth.currentUser || auth.currentUser.uid !== ADMIN_UID) {
-        adminMembersList.textContent = "Yönetici yetkisi gerekli.";
-        return;
-    }
-
-    adminMembersList.textContent = "Üyeler yükleniyor...";
-
-    try {
-        const snapshot = await database.ref("members").once("value");
-        adminMembersList.innerHTML = "";
-
-        let pendingCount = 0;
-
-        snapshot.forEach(function(child) {
-            const member = child.val();
-            const uid = child.key;
-
-            if (!member || uid === ADMIN_UID) return;
-
-            if (member.approved !== true && member.rejected !== true) {
-                pendingCount++;
-
-                const card = document.createElement("div");
-                card.style.cssText =
-                    "padding:12px;margin:10px 0;border:1px solid #ded9cf;" +
-                    "border-radius:12px;background:#fff;overflow-wrap:anywhere;";
-
-                const info = document.createElement("div");
-                info.style.cssText = "margin-bottom:10px;font-size:13px;";
-
-                const title = document.createElement("strong");
-                title.textContent = member.username || "İsimsiz üye";
-
-                const email = document.createElement("div");
-                email.textContent = member.email || "E-posta yok";
-                email.style.color = "#77736b";
-                email.style.marginTop = "4px";
-
-                info.appendChild(title);
-                info.appendChild(email);
-
-                const approve = document.createElement("button");
-                approve.type = "button";
-                approve.textContent = "✅ Onayla";
-                approve.style.cssText =
-                    "padding:8px 10px;margin-right:6px;border:0;" +
-                    "border-radius:8px;background:#d9f4e5;color:#08783f;cursor:pointer;";
-
-                const reject = document.createElement("button");
-                reject.type = "button";
-                reject.textContent = "❌ Reddet";
-                reject.style.cssText =
-                    "padding:8px 10px;border:0;border-radius:8px;" +
-                    "background:#ffe1e4;color:#c72f42;cursor:pointer;";
-
-                approve.onclick = async function() {
-                    if (!auth.currentUser || auth.currentUser.uid !== ADMIN_UID) {
-                        alert("Yönetici oturumu bulunamadı.");
-                        return;
-                    }
-
-                    approve.disabled = true;
-
-                    try {
-                        await database.ref("members/" + uid).update({
-                            approved: true,
-                            rejected: false
-                        });
-
-                        await loadAdminMembers();
-                    } catch (error) {
-                        console.error(error);
-                        alert("Üye onaylanamadı: " + error.message);
-                        approve.disabled = false;
-                    }
-                };
-
-                reject.onclick = async function() {
-                    if (!confirm(
-                        (member.username || "Bu üye") +
-                        " için üyelik talebini reddetmek istiyor musun?"
-                    )) return;
-
-                    reject.disabled = true;
-
-                    try {
-                        await database.ref("members/" + uid).update({
-                            approved: false,
-                            rejected: true
-                        });
-
-                        await loadAdminMembers();
-                    } catch (error) {
-                        console.error(error);
-                        alert("Üyelik reddedilemedi: " + error.message);
-                        reject.disabled = false;
-                    }
-                };
-
-                card.appendChild(info);
-                card.appendChild(approve);
-                card.appendChild(reject);
-                adminMembersList.appendChild(card);
-            }
-        });
-
-        if (pendingCount === 0) {
-            adminMembersList.textContent = "Onay bekleyen üye yok.";
-        }
-    } catch (error) {
-        console.error("Yönetici üye listesi hatası:", error);
-        adminMembersList.textContent =
-            "Üye listesi yüklenemedi: " + error.message;
-    }
+reject.onclick = async function(){
+if(!confirm((member.username || "Bu üye") + " için üyelik talebini reddetmek istiyor musun?")) return;
+reject.disabled = true;
+try{await database.ref("members/" + uid).update({approved:false,rejected:true});await loadAdminMembers();}
+catch(error){console.error(error);alert("Üyelik reddedilemedi: " + error.message);reject.disabled = false;}
+};
+card.appendChild(info);
+card.appendChild(approve);
+card.appendChild(reject);
+adminMembersList.appendChild(card);
 }
-
-    
-/* =========================================================
-   SAYFA NUMARALARI
-========================================================= */
-
+});
+if(pendingCount === 0){adminMembersList.textContent = "Onay bekleyen üye yok.";}
+}catch(error){console.error("Yönetici üye listesi hatası:",error);adminMembersList.textContent = "Üye listesi yüklenemedi: " + error.message;}
+}
 function updatePagination(totalMessages){
-
-    const pagination =
-        document.getElementById("pagination");
-
-    pagination.innerHTML = "";
-
-    const totalPages =
-        Math.min(
-            Math.max(
-                1,
-                Math.ceil(
-                    totalMessages /
-                    MESSAGES_PER_PAGE
-                )
-            ),
-            MAX_PAGES
-        );
-
-    if(currentPage > totalPages){
-
-        currentPage =
-            totalPages;
-
-    }
-
-    for(
-        let i = 1;
-        i <= totalPages;
-        i++
-    ){
-
-        const button =
-            document.createElement("button");
-
-        button.className =
-            "page-button";
-
-        button.textContent =
-            i;
-
-        if(i === currentPage){
-
-            button.classList.add("active");
-
-        }
-
-        button.onclick =
-        function(){
-
-            currentPage =
-                i;
-
-            renderCurrentPage(
-                window.allMessages || []
-            );
-
-        };
-
-        pagination.appendChild(button);
-
-    }
-
+const pagination = document.getElementById("pagination");
+pagination.innerHTML = "";
+const totalPages = Math.min(Math.max(1,Math.ceil(totalMessages / MESSAGES_PER_PAGE)),MAX_PAGES);
+if(currentPage > totalPages){currentPage = totalPages;}
+for(let i = 1;i <= totalPages;i++){
+const button = document.createElement("button");
+button.className = "page-button";
+button.textContent = i;
+if(i === currentPage){button.classList.add("active");}
+button.onclick = function(){currentPage = i;renderCurrentPage(window.allMessages || []);};
+pagination.appendChild(button);
 }
-
-
-/* =========================================================
-   SAYFA GÖSTER
-========================================================= */
- function renderCurrentPage(messages){
-
-    const chat =
-        document.getElementById("chat");
-
-    chat.innerHTML = "";
-
-
-    if(
-        !messages ||
-        !messages.length
-    ){
-
-        updatePagination(0);
-
-        return;
-
-    }
-
-
-    /*
-       messages şu sırada:
-
-       ESKİ
-       ↓
-       ALi  00:11 selam
-       Ben  00:11 selam
-       ALi  00:12 hg
-       Ben  00:12 hb
-       ALi  00:13 naber
-       Ben  00:13 iyidir
-       ↑
-       YENİ
-    */
-
-
-    const newestFirst =
-        [...messages].reverse();
-
-
-    /*
-       1. sayfa = en yeni 8 mesaj
-       2. sayfa = ondan önceki 8 mesaj
-       3. sayfa = daha eski 8 mesaj
-    */
-
-    const start =
-        (currentPage - 1) *
-        MESSAGES_PER_PAGE;
-
-
-    const pageMessages =
-        newestFirst.slice(
-            start,
-            start + MESSAGES_PER_PAGE
-        );
-
-
-    /*
-       EKRANDA:
-
-       EN YENİ
-       ↓
-
-       Ben  00:13 iyidir
-       ALi  00:13 naber
-       Ben  00:12 hb
-       ALi  00:12 hg
-       Ben  00:11 selam
-       ALi  00:11 selam
-
-       ↑
-       EN ESKİ
-    */
-
-    pageMessages.forEach(
-    function(item){
-
-        renderMessage(
-            item.message,
-            item.key
-        );
-
-    });
-
-
-    updatePagination(
-        messages.length
-    );
-
-
-    /*
-       Yeni sayfa açıldığında
-       her zaman mesaj listesinin
-       en üstünü göster.
-    */
-
-    chat.scrollTop = 0;
-
 }
-
-
-/* =========================================================
-   MESAJLARI YÜKLE
-========================================================= */
- function loadMessages(){
-
-    database
-    .ref("messages")
-    .orderByChild("timestamp")
-    .on(
-        "value",
-        function(snapshot){
-
-            const messages = [];
-
-            snapshot.forEach(
-            function(child){
-
-                const message =
-                    child.val();
-
-                if(message){
-
-                    messages.push({
-
-                        key:
-                            child.key,
-
-                        message:
-                            message
-
-                    });
-
-                }
-
-            });
-
-
-            /*
-               MESAJ SIRASI
-
-               Önce eski -> yeni sıralıyoruz.
-
-               Aynı milisaniyede gelen mesajlarda
-               Firebase kayıt anahtarını ikinci
-               sıralama ölçütü olarak kullanıyoruz.
-
-               Böylece mesajlar kullanıcı adına göre
-               kesinlikle gruplanmaz.
-            */
-
-            messages.sort(
-            function(a,b){
-
-                const timeA =
-                    Number(
-                        a.message.timestamp || 0
-                    );
-
-                const timeB =
-                    Number(
-                        b.message.timestamp || 0
-                    );
-
-
-                if(timeA !== timeB){
-
-                    return timeA - timeB;
-
-                }
-
-
-                /*
-                   Aynı timestamp durumunda
-                   Firebase kayıt sırasını kullan.
-                */
-
-                return a.key.localeCompare(
-                    b.key
-                );
-
-            });
-
-
-            window.allMessages =
-                messages;
-
-
-            renderCurrentPage(
-                messages
-            );
-
-        }
-    );
-
+function renderCurrentPage(messages){
+const chat = document.getElementById("chat");
+chat.innerHTML = "";
+if(!messages || !messages.length){updatePagination(0);return;}
+const newestFirst = [...messages].reverse();
+const start = (currentPage - 1) * MESSAGES_PER_PAGE;
+const pageMessages = newestFirst.slice(start,start + MESSAGES_PER_PAGE);
+pageMessages.forEach(function(item){renderMessage(item.message,item.key);});
+updatePagination(messages.length);
+chat.scrollTop = 0;
 }
-
-
-/* =========================================================
-   MESAJ OLUŞTUR
-========================================================= */
-
-function renderMessage(
-    message,
-    messageKey
-){
-
-    const chat =
-        document.getElementById("chat");
-
-    const box =
-        document.createElement("div");
-
-    box.className =
-        "message";
-
-    if(
-        message.username ===
-        username
-    ){
-
-        box.classList.add("my-message");
-
-    }
-
-
-    /* =====================================================
-       GIPHY GIF
-    ===================================================== */
-
-    if(
-        message.type === "gif" &&
-        message.gif
-    ){
-
-        const line =
-            document.createElement("div");
-
-        line.className =
-            "message-line";
-
-        const user =
-            createUserLine(
-                message,
-                messageKey
-            );
-
-        line.appendChild(user);
-
-        box.appendChild(line);
-
-
-        const gifBox =
-            document.createElement("div");
-
-        gifBox.className =
-            "gif-message";
-
-        const gifImage =
-            document.createElement("img");
-
-        gifImage.src =
-            message.gif;
-
-        gifImage.alt =
-            "GIF";
-
-        gifImage.onerror =
-        function(){
-
-            if(
-                message.preview &&
-                this.src !== message.preview
-            ){
-
-                this.src =
-                    message.preview;
-
-            }
-
-        };
-
-        gifImage.onclick =
-        function(){
-
-            window.open(
-                this.src,
-                "_blank"
-            );
-
-        };
-
-        gifBox.appendChild(
-            gifImage
-        );
-
-        box.appendChild(
-            gifBox
-        );
-
-        chat.appendChild(
-            box
-        );
-
-        return;
-    }
-
-
-    /* =====================================================
-       CİHAZDAN RESİM / GIF
-    ===================================================== */
-
-    if(
-        message.type === "image" &&
-        message.image
-    ){
-
-        const line =
-            document.createElement("div");
-
-        line.className =
-            "message-line";
-
-        line.appendChild(
-            createUserLine(
-                message,
-                messageKey
-            )
-        );
-
-        box.appendChild(line);
-
-
-        const imageBox =
-            document.createElement("div");
-
-        imageBox.className =
-            "image-message";
-
-        const image =
-            document.createElement("img");
-
-        image.src =
-            message.image;
-
-        image.alt =
-            message.filename ||
-            "Resim";
-
-        image.loading =
-            "lazy";
-
-        image.onclick =
-        function(){
-
-            const newWindow =
-                window.open();
-
-            if(newWindow){
-
-                newWindow.document.write(
-                    '<html><body style="margin:0;background:#000;display:flex;align-items:center;justify-content:center;min-height:100vh;">' +
-                    '<img src="' +
-                    message.image +
-                    '" style="max-width:100%;max-height:100vh;width:auto;height:auto;">' +
-                    '</body></html>'
-                );
-
-                newWindow.document.close();
-
-            }
-
-        };
-
-        imageBox.appendChild(
-            image
-        );
-
-        box.appendChild(
-            imageBox
-        );
-
-        chat.appendChild(
-            box
-        );
-
-        return;
-    }
-
-
-    /* =====================================================
-       NORMAL MESAJ
-    ===================================================== */
-
-    const line =
-        document.createElement("div");
-
-    line.className =
-        "message-line";
-
-
-    /* Kullanıcı adı */
-
-    const user =
-        document.createElement("span");
-
-    user.className =
-        "username";
-
-    user.textContent =
-        message.username ||
-        "Kullanıcı";
-
-
-    /* Saat */
-
-    if(message.timestamp){
-
-        const time =
-            document.createElement("span");
-
-        time.className =
-            "time";
-
-        time.textContent =
-            new Date(
-                message.timestamp
-            ).toLocaleTimeString(
-                "tr-TR",
-                {
-                    hour:"2-digit",
-                    minute:"2-digit"
-                }
-            );
-
-        user.appendChild(
-            time
-        );
-
-    }
-
-
-    line.appendChild(
-        user
-    );
-
-
-    /* Sil */
-
-    if(
-        message.username ===
-        username
-    ){
-
-        const deleteButton =
-            document.createElement("button");
-
-        deleteButton.className =
-            "delete";
-
-        deleteButton.textContent =
-            "Sil";
-
-        deleteButton.onclick =
-        function(){
-
-            if(
-                confirm(
-                    "Bu mesajı silmek istiyor musunuz?"
-                )
-            ){
-
-                database
-                .ref(
-                    "messages/" +
-                    messageKey
-                )
-                .remove();
-
-            }
-
-        };
-
-        line.appendChild(
-            deleteButton
-        );
-
-    }
-
-
-    /* Mesaj */
-
-    const bubble =
-        document.createElement("span");
-
-    bubble.className =
-        "bubble";
-
-    bubble.textContent =
-        message.text ||
-        "";
-
-    if(message.color){
-
-        bubble.style.color =
-            message.color;
-
-    }
-
-
-    line.appendChild(
-        bubble
-    );
-
-
-    box.appendChild(
-        line
-    );
-
-    chat.appendChild(
-        box
-    );
-
+function loadMessages(){
+database.ref("messages").orderByChild("timestamp").on("value",function(snapshot){
+const messages = [];
+snapshot.forEach(function(child){
+const message = child.val();
+if(message){messages.push({key:child.key,message:message});}
+});
+messages.sort(function(a,b){
+const timeA = Number(a.message.timestamp || 0);
+const timeB = Number(b.message.timestamp || 0);
+if(timeA !== timeB){return timeA - timeB;}
+return a.key.localeCompare(b.key);
+});
+window.allMessages = messages;
+renderCurrentPage(messages);
+});
 }
-
-
-/* =========================================================
-   KULLANICI + SAAT + SİL
-========================================================= */
-
-function createUserLine(
-    message,
-    messageKey
-){
-
-    const wrapper =
-        document.createElement("span");
-
-    wrapper.className =
-        "username";
-
-    wrapper.textContent =
-        message.username ||
-        "Kullanıcı";
-
-
-    if(message.timestamp){
-
-        const time =
-            document.createElement("span");
-
-        time.className =
-            "time";
-
-        time.textContent =
-            new Date(
-                message.timestamp
-            ).toLocaleTimeString(
-                "tr-TR",
-                {
-                    hour:"2-digit",
-                    minute:"2-digit"
-                }
-            );
-
-        wrapper.appendChild(
-            time
-        );
-
-    }
-
-
-    if(
-        message.username ===
-        username
-    ){
-
-        const deleteButton =
-            document.createElement("button");
-
-        deleteButton.className =
-            "delete";
-
-        deleteButton.textContent =
-            "Sil";
-
-        deleteButton.onclick =
-        function(){
-
-            if(
-                confirm(
-                    "Bu mesajı silmek istiyor musunuz?"
-                )
-            ){
-
-                database
-                .ref(
-                    "messages/" +
-                    messageKey
-                )
-                .remove();
-
-            }
-
-        };
-
-        wrapper.appendChild(
-            deleteButton
-        );
-
-    }
-
-
-    return wrapper;
-
+function renderMessage(message,messageKey){
+const chat = document.getElementById("chat");
+const box = document.createElement("div");
+box.className = "message";
+if(message.username === username){box.classList.add("my-message");}
+if(message.type === "gif" && message.gif){
+const line = document.createElement("div");
+line.className = "message-line";
+line.appendChild(createUserLine(message,messageKey));
+box.appendChild(line);
+const gifBox = document.createElement("div");
+gifBox.className = "gif-message";
+const gifImage = document.createElement("img");
+gifImage.src = message.gif;
+gifImage.alt = "GIF";
+gifImage.onerror = function(){if(message.preview && this.src !== message.preview){this.src = message.preview;}};
+gifImage.onclick = function(){window.open(this.src,"_blank");};
+gifBox.appendChild(gifImage);
+box.appendChild(gifBox);
+chat.appendChild(box);
+return;
 }
-
-
-/* =========================================================
-   MESAJ GÖNDER
-========================================================= */
-
+if(message.type === "image" && message.image){
+const line = document.createElement("div");
+line.className = "message-line";
+line.appendChild(createUserLine(message,messageKey));
+box.appendChild(line);
+const imageBox = document.createElement("div");
+imageBox.className = "image-message";
+const image = document.createElement("img");
+image.src = message.image;
+image.alt = message.filename || "Resim";
+image.loading = "lazy";
+image.onclick = function(){
+const newWindow = window.open();
+if(newWindow){
+newWindow.document.write('<html><body style="margin:0;background:#000;display:flex;align-items:center;justify-content:center;min-height:100vh;"><img src="' + message.image + '" style="max-width:100%;max-height:100vh;width:auto;height:auto;"></body></html>');
+newWindow.document.close();
+}
+};
+imageBox.appendChild(image);
+box.appendChild(imageBox);
+chat.appendChild(box);
+return;
+}
+const line = document.createElement("div");
+line.className = "message-line";
+const user = document.createElement("span");
+user.className = "username";
+user.textContent = message.username || "Kullanıcı";
+if(message.timestamp){
+const time = document.createElement("span");
+time.className = "time";
+time.textContent = new Date(message.timestamp).toLocaleTimeString("tr-TR",{hour:"2-digit",minute:"2-digit"});
+user.appendChild(time);
+}
+line.appendChild(user);
+if(message.username === username){
+const deleteButton = document.createElement("button");
+deleteButton.className = "delete";
+deleteButton.textContent = "Sil";
+deleteButton.onclick = function(){if(confirm("Bu mesajı silmek istiyor musunuz?")){database.ref("messages/" + messageKey).remove();}};
+line.appendChild(deleteButton);
+}
+const bubble = document.createElement("span");
+bubble.className = "bubble";
+bubble.textContent = message.text || "";
+if(message.color){bubble.style.color = message.color;}
+line.appendChild(bubble);
+box.appendChild(line);
+chat.appendChild(box);
+}
+function createUserLine(message,messageKey){
+const wrapper = document.createElement("span");
+wrapper.className = "username";
+wrapper.textContent = message.username || "Kullanıcı";
+if(message.timestamp){
+const time = document.createElement("span");
+time.className = "time";
+time.textContent = new Date(message.timestamp).toLocaleTimeString("tr-TR",{hour:"2-digit",minute:"2-digit"});
+wrapper.appendChild(time);
+}
+if(message.username === username){
+const deleteButton = document.createElement("button");
+deleteButton.className = "delete";
+deleteButton.textContent = "Sil";
+deleteButton.onclick = function(){if(confirm("Bu mesajı silmek istiyor musunuz?")){database.ref("messages/" + messageKey).remove();}};
+wrapper.appendChild(deleteButton);
+}
+return wrapper;
+}
 function sendMessage(){
-
-    const input =
-        document.getElementById("messageInput");
-
-    const text =
-        input.value.trim();
-
-    if(
-        !text ||
-        !username
-    ){
-
-        return;
-    }
-
-    checkMessageLimit(
-    function(canSend){
-
-        if(!canSend){
-            return;
-        }
-
-        database
-        .ref("messages")
-        .push({
-
-            username:
-                username,
-
-            text:
-                text,
-
-            color:
-                selectedMessageColor,
-
-            type:
-                "text",
-
-            timestamp:
-                Date.now()
-
-        })
-        .then(
-        function(){
-
-            input.value = "";
-
-            input.focus();
-
-        })
-        .catch(
-        function(error){
-
-            console.error(error);
-
-            alert(
-                "Mesaj gönderilemedi.\n\n" +
-                error.message
-            );
-
-        });
-
-    });
-
+const input = document.getElementById("messageInput");
+const text = input.value.trim();
+if(!text || !username){return;}
+checkMessageLimit(function(canSend){
+if(!canSend){return;}
+database.ref("messages").push({username:username,text:text,color:selectedMessageColor,type:"text",timestamp:Date.now()}).then(function(){input.value = "";input.focus();}).catch(function(error){console.error(error);alert("Mesaj gönderilemedi.\n\n" + error.message);});
+});
 }
-
-
-document
-.getElementById("sendButton")
-.onclick =
-    sendMessage;
-
-
-document
-.getElementById("messageInput")
-.onkeydown =
-function(event){
-
-    if(event.key === "Enter"){
-
-        event.preventDefault();
-
-        sendMessage();
-
-    }
-
+document.getElementById("sendButton").onclick = sendMessage;
+document.getElementById("messageInput").onkeydown = function(event){if(event.key === "Enter"){event.preventDefault();sendMessage();}};
+document.getElementById("roomDeleteButton").onclick = async function(){
+const confirmed = confirm("⚠️ DİKKAT!\n\nSohbet odasındaki TÜM mesajlar, resimler ve GIF kayıtları silinecek.\n\nBu işlem geri alınamaz.\n\nOdayı tamamen temizlemek istiyor musunuz?");
+if(!confirmed){return;}
+try{await database.ref("messages").remove();currentPage = 1;alert("✅ Sohbet odası temizlendi.");}
+catch(error){console.error("Oda silme hatası:",error);alert("❌ Oda silinemedi.\n\n" + error.message);}
 };
-
-
-/* =========================================================
-   ODAYI SİL
-========================================================= */
-
-document
-.getElementById("roomDeleteButton")
-.onclick =
-async function(){
-
-    const confirmed =
-        confirm(
-            "⚠️ DİKKAT!\n\n" +
-            "Sohbet odasındaki TÜM mesajlar, resimler ve GIF kayıtları silinecek.\n\n" +
-            "Bu işlem geri alınamaz.\n\n" +
-            "Odayı tamamen temizlemek istiyor musunuz?"
-        );
-
-    if(!confirmed){
-        return;
-    }
-
-    try{
-
-        await database
-        .ref("messages")
-        .remove();
-
-        currentPage = 1;
-
-        alert(
-            "✅ Sohbet odası temizlendi."
-        );
-
-    }
-
-    catch(error){
-
-        console.error(
-            "Oda silme hatası:",
-            error
-        );
-
-        alert(
-            "❌ Oda silinemedi.\n\n" +
-            error.message
-        );
-
-    }
-
-};
-
-
-/* =========================================================
-   ÇEVRİMİÇİ KULLANICILAR
-========================================================= */
-
 function setOnline(){
-
-    const ref =
-        database
-        .ref("onlineUsers")
-        .push();
-
-    userKey =
-        ref.key;
-
-    ref.set({
-
-        username:
-            username,
-
-        timestamp:
-            firebase.database.ServerValue.TIMESTAMP
-
-    });
-
-    ref.onDisconnect().remove();
-
-    database
-    .ref("onlineUsers")
-    .on(
-        "value",
-        function(snapshot){
-
-            const count =
-                snapshot.numChildren();
-
-            document
-            .getElementById("onlineText")
-            .textContent =
-                "🟢 " +
-                count +
-                " kişi çevrimiçi";
-
-
-            const names = [];
-
-            snapshot.forEach(
-            function(child){
-
-                const user =
-                    child.val();
-
-                if(
-                    user &&
-                    user.username
-                ){
-
-                    names.push(
-                        user.username
-                    );
-
-                }
-
-            });
-
-
-            document
-            .getElementById("onlineUsersText")
-            .textContent =
-                names.length
-                ? "👥 " + names.join(", ")
-                : "👥 Kimse yok";
-
-        }
-    );
-
+const ref = database.ref("onlineUsers").push();
+userKey = ref.key;
+ref.set({username:username,timestamp:firebase.database.ServerValue.TIMESTAMP});
+ref.onDisconnect().remove();
+database.ref("onlineUsers").on("value",function(snapshot){
+const count = snapshot.numChildren();
+document.getElementById("onlineText").textContent = "🟢 " + count + " kişi çevrimiçi";
+const names = [];
+snapshot.forEach(function(child){
+const user = child.val();
+if(user && user.username){names.push(user.username);}
+});
+document.getElementById("onlineUsersText").textContent = names.length ? "👥 " + names.join(", ") : "👥 Kimse yok";
+});
 }
-
-
-/* =========================================================
-   SES DURUMU
-========================================================= */
-
 function showVoiceStatus(text){
-
-    const status =
-        document.getElementById("voiceStatus");
-
-    status.textContent =
-        text;
-
-    status.style.display =
-        "block";
-
+const status = document.getElementById("voiceStatus");
+status.textContent = text;
+status.style.display = "block";
 }
-
-
-function hideVoiceStatus(){
-
-    document
-    .getElementById("voiceStatus")
-    .style.display =
-        "none";
-
-}
-
-
-/* =========================================================
-   MİKROFON
-========================================================= */
-
+function hideVoiceStatus(){document.getElementById("voiceStatus").style.display = "none";}
 async function startVoiceChat(){
-
-    try{
-
-        showVoiceStatus(
-            "🎤 Mikrofon açılıyor..."
-        );
-
-        if(
-            !navigator.mediaDevices ||
-            !navigator.mediaDevices.getUserMedia
-        ){
-
-            throw new Error(
-                "Tarayıcınız mikrofon erişimini desteklemiyor."
-            );
-
-        }
-
-        localStream =
-            await navigator
-            .mediaDevices
-            .getUserMedia({
-
-                audio:true,
-                video:false
-
-            });
-
-        voiceActive =
-            true;
-
-        const button =
-            document.getElementById(
-                "voiceButton"
-            );
-
-        button.textContent =
-            "🔴 Sesi Kapat";
-
-        button.classList.add("active");
-
-        startVoiceListener();
-
-        showVoiceStatus(
-            "🎤 Sesli sohbet aktif"
-        );
-
-
-        const callsSnapshot =
-            await database
-            .ref("calls")
-            .once("value");
-
-        let foundCall =
-            false;
-
-        callsSnapshot.forEach(
-        function(child){
-
-            const call =
-                child.val();
-
-            if(
-                call &&
-                call.receiver ===
-                username
-            ){
-
-                foundCall =
-                    true;
-
-                answerCall(
-                    child.key,
-                    call
-                );
-
-            }
-
-        });
-
-
-        if(!foundCall){
-
-            await createCall();
-
-        }
-
-    }
-
-    catch(error){
-
-        console.error(
-            "Mikrofon hatası:",
-            error
-        );
-
-        voiceActive =
-            false;
-
-        alert(
-            "Mikrofon açılamadı.\n\n" +
-            error.name +
-            "\n" +
-            error.message
-        );
-
-    }
-
+try{
+showVoiceStatus("🎤 Mikrofon açılıyor...");
+if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){throw new Error("Tarayıcınız mikrofon erişimini desteklemiyor.");}
+localStream = await navigator.mediaDevices.getUserMedia({audio:true,video:false});
+voiceActive = true;
+const button = document.getElementById("voiceButton");
+button.textContent = "🔴 Sesi Kapat";
+button.classList.add("active");
+startVoiceListener();
+showVoiceStatus("🎤 Sesli sohbet aktif");
+const callsSnapshot = await database.ref("calls").once("value");
+let foundCall = false;
+callsSnapshot.forEach(function(child){
+const call = child.val();
+if(call && call.receiver === username){foundCall = true;answerCall(child.key,call);}
+});
+if(!foundCall){await createCall();}
+}catch(error){
+console.error("Mikrofon hatası:",error);
+voiceActive = false;
+alert("Mikrofon açılamadı.\n\n" + error.name + "\n" + error.message);
 }
-
-
-/* =========================================================
-   SES BUTONU
-========================================================= */
-
-document
-.getElementById("voiceButton")
-.onclick =
-async function(){
-
-    if(voiceActive){
-
-        stopVoiceChat();
-
-    }
-    else{
-
-        await startVoiceChat();
-
-    }
-
-};
-
-
-/* =========================================================
-   ÇAĞRI DİNLE
-========================================================= */
-
+}
+document.getElementById("voiceButton").onclick = async function(){if(voiceActive){stopVoiceChat();}else{await startVoiceChat();}};
 function startVoiceListener(){
-
-    if(voiceListenerStarted){
-        return;
-    }
-
-    voiceListenerStarted =
-        true;
-
-    database
-    .ref("calls")
-    .on(
-        "child_added",
-        async function(snapshot){
-
-            const call =
-                snapshot.val();
-
-            const callId =
-                snapshot.key;
-
-            if(!call){
-                return;
-            }
-
-            if(
-                call.caller ===
-                username
-            ){
-                return;
-            }
-
-            if(
-                call.receiver !==
-                username
-            ){
-                return;
-            }
-
-            if(
-                peerConnections[callId]
-            ){
-                return;
-            }
-
-            if(!voiceActive){
-                return;
-            }
-
-            try{
-
-                await answerCall(
-                    callId,
-                    call
-                );
-
-            }
-
-            catch(error){
-
-                console.error(
-                    "Çağrı cevaplama hatası:",
-                    error
-                );
-
-            }
-
-        }
-    );
-
+if(voiceListenerStarted){return;}
+voiceListenerStarted = true;
+database.ref("calls").on("child_added",async function(snapshot){
+const call = snapshot.val();
+const callId = snapshot.key;
+if(!call){return;}
+if(call.caller === username){return;}
+if(call.receiver !== username){return;}
+if(peerConnections[callId]){return;}
+if(!voiceActive){return;}
+try{await answerCall(callId,call);}
+catch(error){console.error("Çağrı cevaplama hatası:",error);}
+});
 }
-
-
-/* =========================================================
-   ÇAĞRI BAŞLAT
-========================================================= */
-
 async function createCall(){
-
-    if(!localStream){
-        return;
-    }
-
-    const usersSnapshot =
-        await database
-        .ref("onlineUsers")
-        .once("value");
-
-    let otherUser =
-        null;
-
-    usersSnapshot.forEach(
-    function(child){
-
-        const user =
-            child.val();
-
-        if(
-            user &&
-            user.username &&
-            user.username !== username &&
-            !otherUser
-        ){
-
-            otherUser =
-                user.username;
-
-        }
-
-    });
-
-
-    if(!otherUser){
-
-        showVoiceStatus(
-            "🎤 Mikrofon açık - başka kullanıcı bekleniyor"
-        );
-
-        return;
-    }
-
-
-    const callRef =
-        database
-        .ref("calls")
-        .push();
-
-    const callId =
-        callRef.key;
-
-
-    const pc =
-        new RTCPeerConnection(
-            rtcConfig
-        );
-
-    peerConnections[callId] =
-        pc;
-
-
-    localStream
-    .getTracks()
-    .forEach(
-    function(track){
-
-        pc.addTrack(
-            track,
-            localStream
-        );
-
-    });
-
-
-    pc.ontrack =
-    function(event){
-
-        const audio =
-            document.getElementById(
-                "remoteAudio"
-            );
-
-        audio.srcObject =
-            event.streams[0];
-
-        audio.play()
-        .catch(
-        function(error){
-
-            console.log(
-                "Ses oynatma hatası:",
-                error
-            );
-
-        });
-
-        showVoiceStatus(
-            "🔊 Ses bağlantısı aktif"
-        );
-
-    };
-
-
-    pc.onicecandidate =
-    function(event){
-
-        if(event.candidate){
-
-            database
-            .ref(
-                "calls/" +
-                callId +
-                "/callerCandidates"
-            )
-            .push(
-                event.candidate.toJSON()
-            );
-
-        }
-
-    };
-
-
-    const offer =
-        await pc.createOffer();
-
-    await pc.setLocalDescription(
-        offer
-    );
-
-
-    await callRef.set({
-
-        caller:
-            username,
-
-        receiver:
-            otherUser,
-
-        offer:{
-
-            type:
-                offer.type,
-
-            sdp:
-                offer.sdp
-
-        },
-
-        created:
-            Date.now()
-
-    });
-
-
-    database
-    .ref(
-        "calls/" +
-        callId +
-        "/answer"
-    )
-    .on(
-        "value",
-        async function(snapshot){
-
-            const answer =
-                snapshot.val();
-
-            if(
-                answer &&
-                !pc.currentRemoteDescription
-            ){
-
-                await pc.setRemoteDescription(
-                    new RTCSessionDescription(
-                        answer
-                    )
-                );
-
-            }
-
-        }
-    );
-
-
-    database
-    .ref(
-        "calls/" +
-        callId +
-        "/receiverCandidates"
-    )
-    .on(
-        "child_added",
-        async function(snapshot){
-
-            const candidate =
-                snapshot.val();
-
-            if(candidate){
-
-                try{
-
-                    await pc.addIceCandidate(
-                        new RTCIceCandidate(
-                            candidate
-                        )
-                    );
-
-                }
-
-                catch(error){
-
-                    console.log(error);
-
-                }
-
-            }
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   ÇAĞRI CEVAPLA
-========================================================= */
-
-async function answerCall(
-    callId,
-    call
-){
-
-    if(
-        !localStream ||
-        !voiceActive
-    ){
-        return;
-    }
-
-    const pc =
-        new RTCPeerConnection(
-            rtcConfig
-        );
-
-    peerConnections[callId] =
-        pc;
-
-
-    localStream
-    .getTracks()
-    .forEach(
-    function(track){
-
-        pc.addTrack(
-            track,
-            localStream
-        );
-
-    });
-
-
-    pc.ontrack =
-    function(event){
-
-        const audio =
-            document.getElementById(
-                "remoteAudio"
-            );
-
-        audio.srcObject =
-            event.streams[0];
-
-        audio.play()
-        .catch(
-        function(error){
-
-            console.log(error);
-
-        });
-
-        showVoiceStatus(
-            "🔊 Ses bağlantısı aktif"
-        );
-
-    };
-
-
-    pc.onicecandidate =
-    function(event){
-
-        if(event.candidate){
-
-            database
-            .ref(
-                "calls/" +
-                callId +
-                "/receiverCandidates"
-            )
-            .push(
-                event.candidate.toJSON()
-            );
-
-        }
-
-    };
-
-
-    await pc.setRemoteDescription(
-        new RTCSessionDescription(
-            call.offer
-        )
-    );
-
-
-    const answer =
-        await pc.createAnswer();
-
-    await pc.setLocalDescription(
-        answer
-    );
-
-
-    await database
-    .ref(
-        "calls/" +
-        callId +
-        "/answer"
-    )
-    .set({
-
-        type:
-            answer.type,
-
-        sdp:
-            answer.sdp
-
-    });
-
-
-    database
-    .ref(
-        "calls/" +
-        callId +
-        "/callerCandidates"
-    )
-    .on(
-        "child_added",
-        async function(snapshot){
-
-            const candidate =
-                snapshot.val();
-
-            if(candidate){
-
-                try{
-
-                    await pc.addIceCandidate(
-                        new RTCIceCandidate(
-                            candidate
-                        )
-                    );
-
-                }
-
-                catch(error){
-
-                    console.log(error);
-
-                }
-
-            }
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   SESİ KAPAT
-========================================================= */
-
-function stopVoiceChat(){
-
-    voiceActive =
-        false;
-
-    if(localStream){
-
-        localStream
-        .getTracks()
-        .forEach(
-        function(track){
-
-            track.stop();
-
-        });
-
-        localStream =
-            null;
-
-    }
-
-
-    Object
-    .keys(peerConnections)
-    .forEach(
-    function(id){
-
-        try{
-
-            peerConnections[id].close();
-
-        }
-
-        catch(error){
-
-            console.log(error);
-
-        }
-
-    });
-
-
-    peerConnections =
-        {};
-
-
-    const audio =
-        document.getElementById(
-            "remoteAudio"
-        );
-
-    audio.srcObject =
-        null;
-
-
-    const button =
-        document.getElementById(
-            "voiceButton"
-        );
-
-    button.textContent =
-        "🎤 Sesli Sohbet";
-
-    button.classList.remove(
-        "active"
-    );
-
-    hideVoiceStatus();
-
-
-    database
-    .ref("calls")
-    .once(
-        "value",
-        function(snapshot){
-
-            snapshot.forEach(
-            function(child){
-
-                const call =
-                    child.val();
-
-                if(
-                    call &&
-                    (
-                        call.caller === username ||
-                        call.receiver === username
-                    )
-                ){
-
-                    child.ref.remove();
-
-                }
-
-            });
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   ÇIKIŞ
-========================================================= */
-
- 
-document.getElementById("logoutButton").onclick = async function() {
-    stopVoiceChat();
-
-    try {
-        if (userKey) {
-            await database.ref("onlineUsers/" + userKey).remove();
-            userKey = "";
-        }
-
-        await auth.signOut();
-        location.reload();
-    } catch (error) {
-        console.error("Çıkış hatası:", error);
-        alert("Çıkış sırasında hata oluştu: " + error.message);
-    }
+if(!localStream){return;}
+const usersSnapshot = await database.ref("onlineUsers").once("value");
+let otherUser = null;
+usersSnapshot.forEach(function(child){
+const user = child.val();
+if(user && user.username && user.username !== username && !otherUser){otherUser = user.username;}
+});
+if(!otherUser){showVoiceStatus("🎤 Mikrofon açık - başka kullanıcı bekleniyor");return;}
+const callRef = database.ref("calls").push();
+const callId = callRef.key;
+const pc = new RTCPeerConnection(rtcConfig);
+peerConnections[callId] = pc;
+localStream.getTracks().forEach(function(track){pc.addTrack(track,localStream);});
+pc.ontrack = function(event){
+const audio = document.getElementById("remoteAudio");
+audio.srcObject = event.streams[0];
+audio.play().catch(function(error){console.log("Ses oynatma hatası:",error);});
+showVoiceStatus("🔊 Ses bağlantısı aktif");
 };
-
-
-
-/* =========================================================
-   DIŞARI TIKLAMA
-========================================================= */
-
-document.addEventListener(
-    "click",
-    function(event){
-
-        if(
-            !emojiPanel.contains(event.target) &&
-            event.target !== emojiButton
-        ){
-
-            emojiPanel.style.display =
-                "none";
-
-        }
-
-
-        if(
-            !gifPanel.contains(event.target) &&
-            event.target !== gifButton
-        ){
-
-            gifPanel.style.display =
-                "none";
-
-        }
-
-
-        if(
-            !colorPanel.contains(event.target) &&
-            event.target !== colorButton
-        ){
-
-            colorPanel.classList.remove(
-                "show"
-            );
-
-        }
-
-    }
-);
-
-
-/* =========================================================
-   TELEFON KLAVYESİ
-========================================================= */
-
-if(window.visualViewport){
-
-    window.visualViewport.addEventListener(
-        "resize",
-        function(){
-
-            setTimeout(
-            function(){
-
-                const chat =
-                    document.getElementById(
-                        "chat"
-                    );
-
-                if(chat){
-
-                    chat.scrollTop = 0;
-
-                }
-
-            },100);
-
-        }
-    );
-
+pc.onicecandidate = function(event){if(event.candidate){database.ref("calls/" + callId + "/callerCandidates").push(event.candidate.toJSON());}};
+const offer = await pc.createOffer();
+await pc.setLocalDescription(offer);
+await callRef.set({caller:username,receiver:otherUser,offer:{type:offer.type,sdp:offer.sdp},created:Date.now()});
+database.ref("calls/" + callId + "/answer").on("value",async function(snapshot){
+const answer = snapshot.val();
+if(answer && !pc.currentRemoteDescription){await pc.setRemoteDescription(new RTCSessionDescription(answer));}
+});
+database.ref("calls/" + callId + "/receiverCandidates").on("child_added",async function(snapshot){
+const candidate = snapshot.val();
+if(candidate){try{await pc.addIceCandidate(new RTCIceCandidate(candidate));}catch(error){console.log(error);}}
+});
 }
-
+async function answerCall(callId,call){
+if(!localStream || !voiceActive){return;}
+const pc = new RTCPeerConnection(rtcConfig);
+peerConnections[callId] = pc;
+localStream.getTracks().forEach(function(track){pc.addTrack(track,localStream);});
+pc.ontrack = function(event){
+const audio = document.getElementById("remoteAudio");
+audio.srcObject = event.streams[0];
+audio.play().catch(function(error){console.log(error);});
+showVoiceStatus("🔊 Ses bağlantısı aktif");
+};
+pc.onicecandidate = function(event){if(event.candidate){database.ref("calls/" + callId + "/receiverCandidates").push(event.candidate.toJSON());}};
+await pc.setRemoteDescription(new RTCSessionDescription(call.offer));
+const answer = await pc.createAnswer();
+await pc.setLocalDescription(answer);
+await database.ref("calls/" + callId + "/answer").set({type:answer.type,sdp:answer.sdp});
+database.ref("calls/" + callId + "/callerCandidates").on("child_added",async function(snapshot){
+const candidate = snapshot.val();
+if(candidate){try{await pc.addIceCandidate(new RTCIceCandidate(candidate));}catch(error){console.log(error);}}
+});
+}
+function stopVoiceChat(){
+voiceActive = false;
+if(localStream){localStream.getTracks().forEach(function(track){track.stop();});localStream = null;}
+Object.keys(peerConnections).forEach(function(id){try{peerConnections[id].close();}catch(error){console.log(error);}});
+peerConnections = {};
+const audio = document.getElementById("remoteAudio");
+audio.srcObject = null;
+const button = document.getElementById("voiceButton");
+button.textContent = "🎤 Sesli Sohbet";
+button.classList.remove("active");
+hideVoiceStatus();
+database.ref("calls").once("value",function(snapshot){
+snapshot.forEach(function(child){
+const call = child.val();
+if(call && (call.caller === username || call.receiver === username)){child.ref.remove();}
+});
+});
+}
+document.getElementById("logoutButton").onclick = async function(){
+stopVoiceChat();
+try{
+if(userKey){await database.ref("onlineUsers/" + userKey).remove();userKey = "";}
+await auth.signOut();
+location.reload();
+}catch(error){console.error("Çıkış hatası:",error);alert("Çıkış sırasında hata oluştu: " + error.message);}
+};
+document.addEventListener("click",function(event){
+if(!emojiPanel.contains(event.target) && event.target !== emojiButton){emojiPanel.style.display = "none";}
+if(!gifPanel.contains(event.target) && event.target !== gifButton){gifPanel.style.display = "none";}
+if(!colorPanel.contains(event.target) && event.target !== colorButton){colorPanel.classList.remove("show");}
+});
+if(window.visualViewport){
+window.visualViewport.addEventListener("resize",function(){
+setTimeout(function(){const chat = document.getElementById("chat");if(chat){chat.scrollTop = 0;}},100);
+});
+}
 </script>
-
 </body>
 </html>
