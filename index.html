@@ -833,4 +833,350 @@ setTimeout(function(){const chat = document.getElementById("chat");if(chat){chat
 }
 </script>
 </body>
+<script>
+/* RITMIX SOHBET - KALICI BAN MODÜLÜ */
+const RITMIX_BAN_ADMIN_UID = "zOQTI3PVjuYy20NADsZbNhbzW6T2";
+let ritmixActiveBanRef = null;
+
+/* Yönetici sayacında banlı üyeleri bekleyen üye sayma */
+updatePendingMemberBadge = function(isAdmin) {
+    const badge = document.getElementById("pendingMemberBadge");
+
+    if (typeof pendingMembersRef !== "undefined" && pendingMembersRef) {
+        pendingMembersRef.off("value");
+        pendingMembersRef = null;
+    }
+
+    if (!badge) return;
+    badge.style.display = "none";
+    badge.textContent = "0";
+
+    if (!isAdmin || !auth.currentUser ||
+        auth.currentUser.uid !== RITMIX_BAN_ADMIN_UID) return;
+
+    pendingMembersRef = database.ref("members");
+    pendingMembersRef.on("value", function(snapshot) {
+        let count = 0;
+
+        snapshot.forEach(function(child) {
+            const member = child.val() || {};
+            if (child.key !== RITMIX_BAN_ADMIN_UID &&
+                member.approved !== true &&
+                member.rejected !== true &&
+                member.banned !== true) {
+                count++;
+            }
+        });
+
+        badge.textContent = count > 99 ? "99+" : String(count);
+        badge.style.display = count > 0 ? "inline-flex" : "none";
+    }, function(error) {
+        console.error("Bekleyen üye sayısı okunamadı:", error);
+    });
+};
+
+/* Giriş kontrolü: banlı üyeyi içeri alma */
+async function ritmixBanAwareEnterChat() {
+    const fields = getLoginFields();
+    const name = fields.name;
+    const email = fields.email;
+    const password = fields.password;
+
+    if (!validateEmailPassword(email, password)) return;
+
+    const button = document.getElementById("loginButton");
+    button.disabled = true;
+    authMessage("Giriş kontrol ediliyor...");
+
+    try {
+        const credential = await auth.signInWithEmailAndPassword(email, password);
+        const user = credential.user;
+
+        if (user.uid === RITMIX_BAN_ADMIN_UID) {
+            username = name || "Yönetici";
+            openChatPage(true);
+            return;
+        }
+
+        const snapshot = await database.ref("members/" + user.uid).once("value");
+        const member = snapshot.val();
+
+        if (!member) {
+            await auth.signOut();
+            authMessage("Üyelik kaydın bulunamadı.", "#c72f42");
+            return;
+        }
+
+        if (member.banned === true) {
+            await auth.signOut();
+            authMessage("🚫 Bu üyelik yönetici tarafından kalıcı olarak banlandı.", "#c72f42");
+            return;
+        }
+
+        if (member.rejected === true) {
+            await auth.signOut();
+            authMessage("Üyelik talebin reddedilmiş.", "#c72f42");
+            return;
+        }
+
+        if (member.approved !== true) {
+            await auth.signOut();
+            authMessage("Üyeliğin henüz yönetici tarafından onaylanmadı.", "#9a6a00");
+            return;
+        }
+
+        username = member.username || name;
+        openChatPage(false);
+
+    } catch (error) {
+        console.error("Giriş hatası:", error);
+        let message = "Giriş yapılamadı. E-posta ve şifreni kontrol et.";
+
+        if (error.code === "auth/too-many-requests") {
+            message = "Çok fazla deneme yapıldı. Daha sonra tekrar dene.";
+        }
+
+        authMessage(message, "#c72f42");
+    } finally {
+        button.disabled = false;
+    }
+}
+
+document.getElementById("loginButton").onclick = ritmixBanAwareEnterChat;
+document.getElementById("usernameInput").onkeydown = function(event) {
+    if (event.key === "Enter") {
+        event.preventDefault();
+        ritmixBanAwareEnterChat();
+    }
+};
+document.getElementById("passwordInput").onkeydown = function(event) {
+    if (event.key === "Enter") {
+        event.preventDefault();
+        ritmixBanAwareEnterChat();
+    }
+};
+
+/* Sohbet ekranındaki üyeyi banlanırsa anında çıkar */
+const ritmixOriginalOpenChatPage = openChatPage;
+openChatPage = function(isAdmin) {
+    if (ritmixActiveBanRef) {
+        ritmixActiveBanRef.off();
+        ritmixActiveBanRef = null;
+    }
+
+    ritmixOriginalOpenChatPage(isAdmin);
+
+    if (isAdmin || !auth.currentUser) return;
+
+    const uid = auth.currentUser.uid;
+    ritmixActiveBanRef = database.ref("members/" + uid + "/banned");
+
+    ritmixActiveBanRef.on("value", async function(snapshot) {
+        if (snapshot.val() !== true ||
+            !auth.currentUser ||
+            auth.currentUser.uid !== uid) return;
+
+        alert("🚫 Yönetici seni kalıcı olarak banladı. Oturumun kapatılacak.");
+
+        try {
+            if (typeof userKey !== "undefined" && userKey) {
+                await database.ref("onlineUsers/" + userKey).remove();
+                userKey = "";
+            }
+            if (typeof stopVoiceChat === "function") stopVoiceChat();
+            await auth.signOut();
+        } catch (error) {
+            console.error("Ban sonrası çıkış hatası:", error);
+        }
+
+        location.reload();
+    }, function(error) {
+        console.error("Ban durumu kontrol edilemedi:", error);
+    });
+};
+
+/* Yönetici panelinde tüm üyeleri göster; banla ve ban kaldır */
+const ritmixAdminButton = document.getElementById("adminButton");
+const ritmixAdminPanel = document.getElementById("adminPanel");
+const ritmixAdminList = document.getElementById("adminMembersList");
+
+ritmixAdminButton.onclick = async function() {
+    if (!auth.currentUser ||
+        auth.currentUser.uid !== RITMIX_BAN_ADMIN_UID) {
+        alert("Bu işlem yalnızca yöneticiye açıktır.");
+        return;
+    }
+
+    ritmixAdminPanel.style.display =
+        ritmixAdminPanel.style.display === "block" ? "none" : "block";
+
+    if (ritmixAdminPanel.style.display === "block") {
+        await ritmixLoadAdminMembers();
+    }
+};
+
+document.getElementById("closeAdminButton").onclick = function() {
+    ritmixAdminPanel.style.display = "none";
+};
+
+async function ritmixLoadAdminMembers() {
+    if (!auth.currentUser ||
+        auth.currentUser.uid !== RITMIX_BAN_ADMIN_UID) {
+        ritmixAdminList.textContent = "Yönetici yetkisi gerekli.";
+        return;
+    }
+
+    ritmixAdminList.textContent = "Üyeler yükleniyor...";
+
+    try {
+        const snapshot = await database.ref("members").once("value");
+        ritmixAdminList.innerHTML = "";
+        let count = 0;
+
+        snapshot.forEach(function(child) {
+            const member = child.val() || {};
+            const uid = child.key;
+
+            if (!uid || uid === RITMIX_BAN_ADMIN_UID) return;
+            count++;
+
+            const banned = member.banned === true;
+            const pending = member.approved !== true &&
+                member.rejected !== true && !banned;
+
+            const card = document.createElement("div");
+            card.style.cssText =
+                "padding:12px;margin:10px 0;border:1px solid #ded9cf;" +
+                "border-radius:12px;background:#fff;overflow-wrap:anywhere;";
+
+            const title = document.createElement("strong");
+            title.textContent = member.username || "İsimsiz üye";
+            card.appendChild(title);
+
+            const email = document.createElement("div");
+            email.textContent = member.email || "E-posta yok";
+            email.style.cssText = "margin:4px 0 8px;color:#77736b;font-size:13px;";
+            card.appendChild(email);
+
+            const status = document.createElement("div");
+            status.style.cssText = "margin-bottom:10px;font-size:12px;font-weight:bold;";
+
+            if (banned) {
+                status.textContent = "🚫 KALICI BANLI";
+                status.style.color = "#c72f42";
+            } else if (member.approved === true) {
+                status.textContent = "✅ Onaylı üye";
+                status.style.color = "#08783f";
+            } else if (member.rejected === true) {
+                status.textContent = "❌ Reddedilmiş üyelik";
+                status.style.color = "#c72f42";
+            } else {
+                status.textContent = "⏳ Onay bekliyor";
+                status.style.color = "#9a6a00";
+            }
+            card.appendChild(status);
+
+            const style =
+                "padding:8px 10px;margin:0 6px 6px 0;border:0;" +
+                "border-radius:8px;cursor:pointer;font-weight:bold;";
+
+            if (pending) {
+                const approve = document.createElement("button");
+                approve.type = "button";
+                approve.textContent = "✅ Onayla";
+                approve.style.cssText = style + "background:#d9f4e5;color:#08783f;";
+                approve.onclick = async function() {
+                    if (!auth.currentUser ||
+                        auth.currentUser.uid !== RITMIX_BAN_ADMIN_UID) return;
+
+                    approve.disabled = true;
+                    try {
+                        await database.ref("members/" + uid).update({
+                            approved: true,
+                            rejected: false
+                        });
+                        await ritmixLoadAdminMembers();
+                    } catch (error) {
+                        alert("Üye onaylanamadı: " + error.message);
+                        approve.disabled = false;
+                    }
+                };
+                card.appendChild(approve);
+
+                const reject = document.createElement("button");
+                reject.type = "button";
+                reject.textContent = "❌ Reddet";
+                reject.style.cssText = style + "background:#ffe1e4;color:#c72f42;";
+                reject.onclick = async function() {
+                    if (!confirm("Bu üyelik talebini reddetmek istiyor musun?")) return;
+                    reject.disabled = true;
+                    try {
+                        await database.ref("members/" + uid).update({
+                            approved: false,
+                            rejected: true
+                        });
+                        await ritmixLoadAdminMembers();
+                    } catch (error) {
+                        alert("Üyelik reddedilemedi: " + error.message);
+                        reject.disabled = false;
+                    }
+                };
+                card.appendChild(reject);
+            }
+
+            const ban = document.createElement("button");
+            ban.type = "button";
+            ban.textContent = banned ? "♻️ Banı Kaldır" : "🚫 Kalıcı Banla";
+            ban.style.cssText = style + (
+                banned
+                    ? "background:#d9f4e5;color:#08783f;"
+                    : "background:#ffe1e4;color:#c72f42;"
+            );
+
+            ban.onclick = async function() {
+                if (!auth.currentUser ||
+                    auth.currentUser.uid !== RITMIX_BAN_ADMIN_UID) {
+                    alert("Bu işlem yalnızca yöneticiye açıktır.");
+                    return;
+                }
+
+                if (banned) {
+                    if (!confirm("Bu üyenin banını kaldırmak istiyor musun?")) return;
+                } else {
+                    if (!confirm(
+                        (member.username || "Bu üye") +
+                        " kalıcı olarak banlansın mı? Banı sen kaldırana kadar giriş yapamaz."
+                    )) return;
+                }
+
+                ban.disabled = true;
+                try {
+                    await database.ref("members/" + uid).update({
+                        banned: !banned
+                    });
+                    await ritmixLoadAdminMembers();
+                } catch (error) {
+                    console.error(error);
+                    alert("İşlem yapılamadı: " + error.message);
+                    ban.disabled = false;
+                }
+            };
+
+            card.appendChild(ban);
+            ritmixAdminList.appendChild(card);
+        });
+
+        if (count === 0) {
+            ritmixAdminList.textContent = "Henüz üye bulunmuyor.";
+        }
+    } catch (error) {
+        console.error("Üye listesi yüklenemedi:", error);
+        ritmixAdminList.textContent = "Üye listesi yüklenemedi: " + error.message;
+    }
+}
+
+/* Mevcut yönetici paneli bu fonksiyonu kullanabilsin */
+loadAdminMembers = ritmixLoadAdminMembers;
+</script>
+
 </html>
