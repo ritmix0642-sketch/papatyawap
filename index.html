@@ -2230,6 +2230,11 @@ async function enterChat(){
             setLoginMessage("Üyelik kaydın bulunamadı. Lütfen yeniden üye ol.", true);
             return;
         }
+        if(member.banned === true){
+            await auth.signOut();
+            setLoginMessage("Hesabın yönetici tarafından banlanmış. Sohbete giriş yapamazsın.", true);
+            return;
+        }
         if(member.rejected === true){
             await auth.signOut();
             setLoginMessage("Üyeliğin yönetici tarafından reddedilmiş. Sohbete giriş yapamazsın.", true);
@@ -2331,7 +2336,9 @@ function openAdminPanel(){
     loadAdminMembers("pending");
 }
 
+let currentAdminMode = "pending";
 async function loadAdminMembers(mode){
+    currentAdminMode = mode;
     const list = document.getElementById("adminMembersList");
     const status = document.getElementById("adminStatus");
     list.innerHTML = "";
@@ -2346,6 +2353,7 @@ async function loadAdminMembers(mode){
             if(uid === ADMIN_UID) return;
             const approved = member.approved === true;
             const rejected = member.rejected === true;
+            const banned = member.banned === true;
             if(mode === "pending" && (approved || rejected)) return;
             if(mode === "approved" && !approved) return;
             count++;
@@ -2357,7 +2365,7 @@ async function loadAdminMembers(mode){
             const detail = document.createElement("div");
             detail.style.fontSize = "12px";
             detail.style.color = "#77736b";
-            detail.textContent = (member.email || "E-posta yok") + " · " + (approved ? "Onaylı" : rejected ? "Reddedildi" : "Onay bekliyor");
+            detail.textContent = (member.email || "E-posta yok") + " · " + (banned ? "BANLI" : approved ? "Onaylı" : rejected ? "Reddedildi" : "Onay bekliyor");
             info.appendChild(title);
             info.appendChild(detail);
             row.appendChild(info);
@@ -2378,6 +2386,12 @@ async function loadAdminMembers(mode){
                 reject.onclick = function(){ updateMemberApproval(uid, false); };
                 actions.appendChild(reject);
             }
+            const banButton = document.createElement("button");
+            banButton.className = "reject";
+            banButton.textContent = banned ? "💚 Affet" : "🚫 Banla";
+            banButton.onclick = function(){ updateMemberBan(uid, !banned); };
+            actions.appendChild(banButton);
+
             row.appendChild(actions);
             list.appendChild(row);
         });
@@ -2407,6 +2421,27 @@ async function updateMemberApproval(uid, approved){
     }catch(error){
         console.error("Üyelik güncelleme hatası:", error);
         alert("İşlem yapılamadı. Firebase güvenlik kurallarını kontrol et.\n" + error.message);
+    }
+}
+
+async function updateMemberBan(uid, banned){
+    if(!auth.currentUser || auth.currentUser.uid !== ADMIN_UID){
+        alert("Yönetici yetkisi gerekli.");
+        return;
+    }
+    if(uid === ADMIN_UID) return;
+    if(!confirm(banned ? "Bu üyeyi banlamak istiyor musun?" : "Bu üyenin banını kaldırmak istiyor musun?")) return;
+    try{
+        await database.ref("members/" + uid).update({
+            banned: banned,
+            banUpdatedAt: firebase.database.ServerValue.TIMESTAMP,
+            banUpdatedBy: ADMIN_UID
+        });
+        loadAdminMembers(currentAdminMode);
+        alert(banned ? "Üye banlandı. Bir sonraki giriş denemesinde odaya alınmayacak." : "Üyenin banı kaldırıldı.");
+    }catch(error){
+        console.error("Üye ban işlemi hatası:", error);
+        alert("Ban işlemi yapılamadı. Firebase güvenlik kurallarını kontrol et.\\n" + error.message);
     }
 }
 
