@@ -2180,10 +2180,26 @@ function checkMessageLimit(callback){
 
 }
 
-
+ 
 /* =========================================================
-   GİRİŞ
+   GİRİŞ VE KAYIT - DÜZELTİLMİŞ
 ========================================================= */
+
+const ADMIN_UID = "zOQTI3PVjuYy20NADsZbNhbzW6T2";
+const ADMIN_USERNAME = "ali";
+const ADMIN_EMAIL = "ritmix0642@gmail.com";
+
+// Yeni üyeler için kullanıcı adına bağlı giriş e-postası.
+// Gerçek e-posta adresi üyelik kaydında saklanır.
+function makeLoginEmail(name){
+    const normalized = name.trim().toLocaleLowerCase("tr-TR");
+
+    if(!/^[a-z0-9._-]{2,20}$/.test(normalized)){
+        throw new Error("Kullanıcı adı 2-20 karakter olmalı; İngilizce harf, rakam, nokta, tire veya alt çizgi kullan.");
+    }
+
+    return "rtmx-" + normalized + "@papatyawap.firebaseapp.com";
+}
 
 function setLoginMessage(message, isError){
     const box = document.getElementById("loginMessage");
@@ -2200,144 +2216,264 @@ function getLoginFields(){
 
 function showAuthForm(which){
     const registering = which === "register";
-    document.getElementById("loginForm").style.display = registering ? "none" : "block";
-    document.getElementById("registerForm").style.display = registering ? "block" : "none";
-    document.getElementById("authSubtitle").textContent = registering
+
+    document.getElementById("loginForm").style.display =
+        registering ? "none" : "block";
+
+    document.getElementById("registerForm").style.display =
+        registering ? "block" : "none";
+
+    document.getElementById("authSubtitle").textContent =
+        registering
         ? "Yeni üyelik için e-posta, kullanıcı adı ve şifreni gir."
         : "Sohbete katılmak için kullanıcı adın ve şifrenle giriş yap.";
+
     setLoginMessage("", false);
 }
-document.getElementById("showRegisterButton").onclick = () => showAuthForm("register");
-document.getElementById("showLoginButton").onclick = () => showAuthForm("login");
+
+document.getElementById("showRegisterButton").onclick =
+    () => showAuthForm("register");
+
+document.getElementById("showLoginButton").onclick =
+    () => showAuthForm("login");
+
 
 function showChatForUser(name){
     username = name;
+
     document.getElementById("login").style.display = "none";
     document.getElementById("chatPage").style.display = "block";
+
     document.getElementById("adminButton").style.display =
-        auth.currentUser && auth.currentUser.uid === ADMIN_UID ? "inline-block" : "none";
+        auth.currentUser && auth.currentUser.uid === ADMIN_UID
+        ? "inline-block"
+        : "none";
+
     currentPage = 1;
     loadMessages();
     setOnline();
 }
 
-async function findMemberByUsername(name){
-    const wanted = name.trim().toLocaleLowerCase("tr-TR");
-    if(!wanted) return null;
-    // Yeni kayıtlar usernameLower alanıyla hızlı bulunur.
-    try{
-        const query = await database.ref("members").orderByChild("usernameLower").equalTo(wanted).once("value");
-        if(query.exists()){
-            const entries = query.val();
-            const uid = Object.keys(entries)[0];
-            return {uid:uid, ...entries[uid]};
-        }
-    }catch(error){ console.warn("Kullanıcı adı sorgusu:", error); }
-    // Önceden açılmış üyeliklerde usernameLower olmayabilir; eski kayıtları da tara.
-    const all = await database.ref("members").once("value");
-    const members = all.val() || {};
-    for(const uid of Object.keys(members)){
-        const member = members[uid];
-        if(member && String(member.username || "").trim().toLocaleLowerCase("tr-TR") === wanted){
-            return {uid:uid, ...member};
-        }
-    }
-    return null;
-}
 
 async function enterChat(){
     const fields = getLoginFields();
+
     if(!fields.name || !fields.password){
         setLoginMessage("Lütfen kullanıcı adını ve şifreni gir.", true);
         return;
     }
+
+    let loginEmail;
+
     try{
-        setLoginMessage("Üyelik kontrol ediliyor...");
-        const member = await findMemberByUsername(fields.name);
-        if(!member || !member.email){
-            setLoginMessage("Bu kullanıcı adıyla üyelik bulunamadı.", true);
-            return;
+        // Admin hesabı mevcut gerçek e-posta adresiyle giriş yapar.
+        if(fields.name.toLocaleLowerCase("tr-TR") === ADMIN_USERNAME){
+            loginEmail = ADMIN_EMAIL;
+        }else{
+            loginEmail = makeLoginEmail(fields.name);
         }
-        const credential = await auth.signInWithEmailAndPassword(member.email, fields.password);
+
+        setLoginMessage("Giriş yapılıyor...");
+
+        const credential =
+            await auth.signInWithEmailAndPassword(
+                loginEmail,
+                fields.password
+            );
+
         const user = credential.user;
+
+        // Admin hesabı: UID kontrolü yapılır.
         if(user.uid === ADMIN_UID){
-            showChatForUser(member.username || fields.name);
+            showChatForUser("ALi");
             return;
         }
-        const snap = await database.ref("members/" + user.uid).once("value");
+
+        // Admin dışındaki kullanıcı yalnızca kendi kaydını okuyabilir.
+        const snap = await database
+            .ref("members/" + user.uid)
+            .once("value");
+
         const currentMember = snap.val();
+
         if(!currentMember){
             await auth.signOut();
-            setLoginMessage("Üyelik kaydın bulunamadı. Lütfen yeniden üye ol.", true);
+            setLoginMessage("Üyelik kaydın bulunamadı. Yöneticiyle iletişime geç.", true);
             return;
         }
+
+        if(
+            String(currentMember.username || "")
+            .trim()
+            .toLocaleLowerCase("tr-TR") !==
+            fields.name.toLocaleLowerCase("tr-TR")
+        ){
+            await auth.signOut();
+            setLoginMessage("Kullanıcı adı üyelik kaydıyla eşleşmiyor.", true);
+            return;
+        }
+
         if(currentMember.banned === true){
             await auth.signOut();
             setLoginMessage("Bu üyelik kalıcı olarak yasaklanmış.", true);
             return;
         }
+
         if(currentMember.rejected === true){
             await auth.signOut();
-            setLoginMessage("Üyeliğin yönetici tarafından reddedilmiş. Sohbete giriş yapamazsın.", true);
+            setLoginMessage("Üyeliğin yönetici tarafından reddedilmiş.", true);
             return;
         }
+
         if(currentMember.approved !== true){
             await auth.signOut();
             setLoginMessage("Üyeliğin oluşturuldu ancak henüz yönetici onayı verilmedi.", true);
             return;
         }
+
         showChatForUser(currentMember.username || fields.name);
+
     }catch(error){
         console.error("Giriş hatası:", error);
+
+        try{
+            if(auth.currentUser && auth.currentUser.uid !== ADMIN_UID){
+                await auth.signOut();
+            }
+        }catch(ignore){}
+
         setLoginMessage(firebaseAuthErrorText(error), true);
     }
 }
 
+
 async function registerMember(){
-    const name = document.getElementById("registerUsernameInput").value.trim();
-    const email = document.getElementById("emailInput").value.trim().toLowerCase();
-    const password = document.getElementById("registerPasswordInput").value;
-    if(!name){ setLoginMessage("Lütfen bir kullanıcı adı belirle.", true); return; }
-    if(name.length > 20){ setLoginMessage("Kullanıcı adı en fazla 20 karakter olabilir.", true); return; }
-    if(!email || !password){ setLoginMessage("Lütfen e-posta adresini ve şifreni gir.", true); return; }
-    if(password.length < 6){ setLoginMessage("Şifre en az 6 karakter olmalı.", true); return; }
+    const name =
+        document.getElementById("registerUsernameInput").value.trim();
+
+    const email =
+        document.getElementById("emailInput").value.trim().toLowerCase();
+
+    const password =
+        document.getElementById("registerPasswordInput").value;
+
+    if(!name){
+        setLoginMessage("Lütfen bir kullanıcı adı belirle.", true);
+        return;
+    }
+
+    if(name.length > 20){
+        setLoginMessage("Kullanıcı adı en fazla 20 karakter olabilir.", true);
+        return;
+    }
+
+    if(name.toLocaleLowerCase("tr-TR") === ADMIN_USERNAME){
+        setLoginMessage("Bu kullanıcı adı yöneticiye ayrılmış. Başka bir ad seç.", true);
+        return;
+    }
+
+    if(!email || !password){
+        setLoginMessage("Lütfen e-posta adresini ve şifreni gir.", true);
+        return;
+    }
+
+    if(password.length < 6){
+        setLoginMessage("Şifre en az 6 karakter olmalı.", true);
+        return;
+    }
+
+    let loginEmail;
+
     try{
-        const existing = await findMemberByUsername(name);
-        if(existing){ setLoginMessage("Bu kullanıcı adı zaten alınmış. Başka bir ad seç.", true); return; }
+        loginEmail = makeLoginEmail(name);
+
         setLoginMessage("Üyelik oluşturuluyor...");
-        const credential = await auth.createUserWithEmailAndPassword(email, password);
+
+        // Kullanıcı adı zaten kullanılıyorsa Firebase bu işlemi reddeder.
+        const credential =
+            await auth.createUserWithEmailAndPassword(
+                loginEmail,
+                password
+            );
+
         const createdUser = credential.user;
+
+        // Gerçek e-posta adresi sadece üye kaydında saklanır.
         await database.ref("members/" + createdUser.uid).set({
-            username:name,
-            usernameLower:name.toLocaleLowerCase("tr-TR"),
-            email:email,
-            approved:false,
-            rejected:false,
-            role:"member",
-            createdAt:firebase.database.ServerValue.TIMESTAMP
+            username: name,
+            usernameLower: name.toLocaleLowerCase("tr-TR"),
+            email: email,
+            approved: false,
+            rejected: false,
+            role: "member",
+            createdAt: firebase.database.ServerValue.TIMESTAMP
         });
+
         await auth.signOut();
+
         document.getElementById("registerPasswordInput").value = "";
         document.getElementById("usernameInput").value = name;
+
         showAuthForm("login");
-        setLoginMessage("Üyeliğin oluşturuldu! Yönetici onayından sonra kullanıcı adın ve şifrenle giriş yapabilirsin.", false);
+
+        setLoginMessage(
+            "Üyeliğin oluşturuldu! Yönetici onayından sonra kullanıcı adın ve şifrenle giriş yapabilirsin.",
+            false
+        );
+
     }catch(error){
         console.error("Üyelik oluşturma hatası:", error);
+
         setLoginMessage(firebaseAuthErrorText(error), true);
-        try{ if(auth.currentUser) await auth.signOut(); }catch(ignore){}
+
+        try{
+            if(auth.currentUser){
+                await auth.signOut();
+            }
+        }catch(ignore){}
     }
 }
+
 
 document.getElementById("loginButton").onclick = enterChat;
 document.getElementById("registerButton").onclick = registerMember;
-document.getElementById("passwordInput").onkeydown = function(event){
-    if(event.key === "Enter"){ event.preventDefault(); enterChat(); }
-};
-document.getElementById("registerPasswordInput").onkeydown = function(event){
-    if(event.key === "Enter"){ event.preventDefault(); registerMember(); }
+
+document.getElementById("passwordInput").onkeydown =
+function(event){
+    if(event.key === "Enter"){
+        event.preventDefault();
+        enterChat();
+    }
 };
 
+document.getElementById("registerPasswordInput").onkeydown =
+function(event){
+    if(event.key === "Enter"){
+        event.preventDefault();
+        registerMember();
+    }
+};
+
+
 function firebaseAuthErrorText(error){
+    const code = error && error.code ? error.code : "";
+
+    const messages = {
+        "auth/invalid-email": "Giriş e-posta bilgisi geçersiz.",
+        "auth/user-not-found": "Bu kullanıcı adıyla kayıt bulunamadı.",
+        "auth/wrong-password": "Şifre hatalı.",
+        "auth/invalid-credential": "Kullanıcı adı veya şifre hatalı.",
+        "auth/email-already-in-use": "Bu kullanıcı adı zaten alınmış. Başka bir ad seç.",
+        "auth/weak-password": "Şifre en az 6 karakter olmalı.",
+        "auth/too-many-requests": "Çok fazla deneme yapıldı. Bir süre sonra tekrar dene.",
+        "auth/network-request-failed": "İnternet bağlantısını kontrol et.",
+        "PERMISSION_DENIED": "Firebase veritabanı kuralları izin vermedi. Güvenlik kurallarını kontrol et."
+    };
+
+    return messages[code] ||
+        (error && error.message ? error.message : "İşlem tamamlanamadı.");
+}
+
     const code = error && error.code ? error.code : "";
     const messages = {
         "auth/invalid-email": "E-posta adresi geçerli görünmüyor.",
