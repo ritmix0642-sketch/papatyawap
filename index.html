@@ -11,7 +11,21 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 
 <style>
-
+.admin-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 5px;
+    margin-left: 4px;
+    border-radius: 50px;
+    background: #e34b5f;
+    color: #fff;
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 20px;
+}
 *{
     box-sizing:border-box;
     -webkit-tap-highlight-color:transparent;
@@ -67,9 +81,7 @@ body{
     font-size:14px;
 }
 
-#usernameInput,
-#emailInput,
-#passwordInput{
+#usernameInput{
     width:100%;
     height:52px;
     padding:0 17px;
@@ -81,120 +93,6 @@ body{
     font-size:16px;
 }
 
-#loginButton,
-#registerButton{
-    width:100%;
-    min-height:50px;
-    margin-top:10px;
-    border:0;
-    border-radius:15px;
-    background:#333;
-    color:white;
-    font-size:15px;
-    font-weight:bold;
-    cursor:pointer;
-}
-
-#registerButton{
-    background:#2878d4;
-}
-
-.auth-switch{
-    width:100%;
-    margin-top:12px;
-    padding:10px;
-    border:0;
-    background:transparent;
-    color:#2878d4;
-    font-size:14px;
-    font-weight:bold;
-    cursor:pointer;
-}
-
-.auth-note{
-    margin-top:14px;
-    color:#77736b;
-    font-size:12px;
-    line-height:1.5;
-}
-
-#loginMessage{
-    margin-top:12px;
-    font-size:13px;
-    line-height:1.4;
-    overflow-wrap:anywhere;
-}
-
-.admin-panel{
-    display:none;
-    position:fixed;
-    z-index:9999;
-    inset:0;
-    overflow:auto;
-    padding:20px;
-    background:rgba(0,0,0,.55);
-}
-
-.admin-card{
-    width:100%;
-    max-width:760px;
-    margin:30px auto;
-    padding:20px;
-    border:1px solid #e5dfd2;
-    border-radius:18px;
-    background:#fffdf7;
-    color:#222;
-}
-
-.admin-row{
-    display:flex;
-    flex-wrap:wrap;
-    align-items:center;
-    justify-content:space-between;
-    gap:10px;
-    padding:12px 0;
-    border-bottom:1px solid #e5dfd2;
-}
-
-.admin-row button{
-    padding:9px 12px;
-    border:0;
-    border-radius:9px;
-    color:#fff;
-    background:#2878d4;
-    cursor:pointer;
-}
-
-.admin-row button.reject{
-    background:#b83232;
-}
-
-.admin-top-buttons{
-    display:flex;
-    flex-wrap:wrap;
-    gap:8px;
-    margin:12px 0;
-}
-
-.admin-top-buttons button{
-    padding:10px 12px;
-    border:1px solid #d8d3c8;
-    border-radius:10px;
-    background:#fff;
-    cursor:pointer;
-}
-
-#adminButton{
-    display:none;
-    min-height:40px;
-    border:1px solid #d8d3c8;
-    padding:8px 10px;
-    border-radius:10px;
-    background:#fff;
-    cursor:pointer;
-}
-
-/* Original login button style retained by shared selector */
 #loginButton{
     width:100%;
     height:52px;
@@ -1233,37 +1131,58 @@ body{
 </head>
 
 <body>
-
+ 
 <div id="login">
-
     <div class="login-box">
-
         <h1>Ritmix Sohbet</h1>
 
-        <div class="subtitle" id="authSubtitle">
-            Sohbete katılmak için kullanıcı adın ve şifrenle giriş yap.
+        <div class="subtitle">
+            Üye ol veya hesabınla giriş yap
         </div>
 
-        <div id="loginForm">
-            <input id="usernameInput" maxlength="20" placeholder="Kullanıcı adın" autocomplete="username">
-            <input id="passwordInput" type="password" placeholder="Şifren" autocomplete="current-password" style="margin-top:10px">
-            <button id="loginButton">GİRİŞ YAP</button>
-            <button type="button" id="showRegisterButton" class="auth-switch">Hesabın yok mu? Üye Ol</button>
-        </div>
+        <input
+            id="usernameInput"
+            maxlength="20"
+            placeholder="Kullanıcı adın..."
+            autocomplete="username"
+        >
 
-        <div id="registerForm" style="display:none">
-            <input id="registerUsernameInput" maxlength="20" placeholder="Odadaki kullanıcı adın" autocomplete="nickname">
-            <input id="emailInput" type="email" placeholder="E-posta adresin (yalnızca üyelik için)" autocomplete="email" style="margin-top:10px">
-            <input id="registerPasswordInput" type="password" placeholder="Şifre (en az 6 karakter)" autocomplete="new-password" style="margin-top:10px">
-            <button id="registerButton">ÜYELİK OLUŞTUR</button>
-            <button type="button" id="showLoginButton" class="auth-switch">Zaten üye misin? Giriş Yap</button>
-        </div>
-        <div id="loginMessage" role="status"></div>
-        <div class="auth-note">E-posta adresin yalnızca ilk üyelik oluşturulurken istenir. Sonraki girişlerde kullanıcı adı ve şifre yeterlidir. Yeni üyeler yönetici onayı bekler.</div>
+        <input
+            id="emailInput"
+            type="email"
+            placeholder="E-posta adresin"
+            autocomplete="email"
+            style="width:100%;height:52px;margin-top:12px;padding:0 17px;border:1px solid #d8d3c8;border-radius:15px;font-size:16px;"
+        >
 
+        <input
+            id="passwordInput"
+            type="password"
+            placeholder="Şifren (en az 6 karakter)"
+            autocomplete="current-password"
+            style="width:100%;height:52px;margin-top:12px;padding:0 17px;border:1px solid #d8d3c8;border-radius:15px;font-size:16px;"
+        >
+
+        <button id="loginButton" type="button">
+            GİRİŞ YAP
+        </button>
+
+        <button
+            id="registerButton"
+            type="button"
+            style="width:100%;height:52px;margin-top:10px;border:1px solid #d8d3c8;border-radius:15px;background:#d9f4e5;color:#08783f;font-size:15px;font-weight:bold;cursor:pointer;"
+        >
+            YENİ ÜYELİK OLUŞTUR
+        </button>
+
+        <div
+            id="authStatus"
+            role="status"
+            style="margin-top:15px;font-size:13px;line-height:1.5;color:#77736b;"
+        ></div>
     </div>
-
 </div>
+
 
 
 <div id="chatPage">
@@ -1288,6 +1207,26 @@ body{
 
         <div class="header-buttons">
 
+<div
+    id="adminPanel"
+    style="display:none;position:fixed;z-index:120;top:80px;right:10px;width:min(420px,calc(100vw - 20px));max-height:75vh;overflow:auto;padding:16px;background:#fffdf7;border:1px solid #d8d3c8;border-radius:16px;box-shadow:0 12px 35px rgba(0,0,0,.22);"
+>
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
+         <button id="adminButton" type="button">
+    👑 Üye Yönetimi
+    <span id="pendingMemberBadge" class="admin-badge" style="display:none">0</span>
+</button>
+    </div>
+
+    <p style="font-size:13px;color:#77736b;">
+        Onay bekleyen üyeler burada görünecek.
+    </p>
+
+    <div id="adminMembersList">
+        Üyeler yükleniyor...
+    </div>
+</div>
+
             <button
                 class="voice-button"
                 id="voiceButton"
@@ -1303,15 +1242,19 @@ body{
                 🗑️ Oda
             </button>
 
-            <button id="adminButton" type="button">👑 Yönetici</button>
-
-            <button
-                class="logout"
-                id="logoutButton"
-            >
-                Çıkış
-            </button>
-
+<button
+    class="room-delete admin-header-button"
+    id="adminButton"
+    type="button"
+    style="display:none;"
+>
+    👑 Üye Yönetimi
+    <span
+        id="pendingMemberBadge"
+        class="admin-badge"
+        style="display:none;"
+    >0</span>
+</button>
         </div>
 
     </div>
@@ -1546,21 +1489,6 @@ body{
 ></audio>
 
 
-
-<div id="adminPanel" class="admin-panel" aria-modal="true" role="dialog">
-    <div class="admin-card">
-        <h2 style="margin-top:0">👑 Ritmix Sohbet — Yönetici Paneli</h2>
-        <p>Üyelikleri buradan onaylayabilir veya reddedebilirsin.</p>
-        <div class="admin-top-buttons">
-            <button type="button" id="showPendingButton">⏳ Bekleyenler</button>
-            <button type="button" id="showApprovedButton">✅ Onaylananlar</button>
-            <button type="button" id="closeAdminButton">Kapat</button>
-        </div>
-        <div id="adminStatus" role="status"></div>
-        <div id="adminMembersList"></div>
-    </div>
-</div>
-
 <script>
 
 /* =========================================================
@@ -1597,9 +1525,6 @@ firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 
 const auth = firebase.auth();
-
-// Yalnızca bu Firebase UID'si yönetici olabilir.
-const ADMIN_UID = "zOQTI3PVjuYy20NADsZbNhbzW6T2";
 
 
 /* =========================================================
@@ -2166,6 +2091,8 @@ function checkMessageLimit(callback){
                     "⚠️ 20 sayfa doldu.\n\n" +
                     "Toplam 160 mesaj sınırına ulaşıldı.\n\n" +
                     "Eski mesajları silin veya 🗑️ Oda butonunu kullanarak odayı temizleyin."
+
+
                 );
 
                 callback(false);
@@ -2180,228 +2107,125 @@ function checkMessageLimit(callback){
 
 }
 
- 
+
+
 /* =========================================================
-   GİRİŞ VE KAYIT - DÜZELTİLMİŞ
+   ÜYELİK, GİRİŞ VE YÖNETİCİ ONAYI
 ========================================================= */
 
 const ADMIN_UID = "zOQTI3PVjuYy20NADsZbNhbzW6T2";
-const ADMIN_USERNAME = "ali";
-const ADMIN_EMAIL = "ritmix0642@gmail.com";
+    
+let pendingMembersRef = null;
 
-// Yeni üyeler için kullanıcı adına bağlı giriş e-postası.
-// Gerçek e-posta adresi üyelik kaydında saklanır.
-function makeLoginEmail(name){
-    const normalized = name.trim().toLocaleLowerCase("tr-TR");
+function updatePendingMemberBadge(isAdmin) {
+    const badge = document.getElementById("pendingMemberBadge");
 
-    if(!/^[a-z0-9._-]{2,20}$/.test(normalized)){
-        throw new Error("Kullanıcı adı 2-20 karakter olmalı; İngilizce harf, rakam, nokta, tire veya alt çizgi kullan.");
+    if (pendingMembersRef) {
+        pendingMembersRef.off("value");
+        pendingMembersRef = null;
     }
 
-    return "rtmx-" + normalized + "@papatyawap.firebaseapp.com";
+    if (!badge) return;
+
+    badge.style.display = "none";
+    badge.textContent = "0";
+
+    if (
+        !isAdmin ||
+        !auth.currentUser ||
+        auth.currentUser.uid !== ADMIN_UID
+    ) {
+        return;
+    }
+
+    pendingMembersRef = database.ref("members");
+
+    pendingMembersRef.on("value", function(snapshot) {
+        let count = 0;
+
+        snapshot.forEach(function(child) {
+            const member = child.val() || {};
+
+            if (
+                child.key !== ADMIN_UID &&
+                member.approved !== true &&
+                member.rejected !== true
+            ) {
+                count++;
+            }
+        });
+
+        badge.textContent = count > 99 ? "99+" : String(count);
+        badge.style.display = count > 0 ? "inline-flex" : "none";
+
+    }, function(error) {
+        console.error("Bekleyen üye sayısı alınamadı:", error);
+    });
 }
 
-function setLoginMessage(message, isError){
-    const box = document.getElementById("loginMessage");
-    box.textContent = message || "";
-    box.style.color = isError ? "#b83232" : "#287044";
+
+function authMessage(text, color = "#77736b") {
+    const status = document.getElementById("authStatus");
+    if (status) {
+        status.textContent = text;
+        status.style.color = color;
+    }
 }
 
-function getLoginFields(){
+function getLoginFields() {
     return {
         name: document.getElementById("usernameInput").value.trim(),
+        email: document.getElementById("emailInput").value.trim(),
         password: document.getElementById("passwordInput").value
     };
 }
 
-function showAuthForm(which){
-    const registering = which === "register";
+function validateEmailPassword(email, password) {
+    if (!email || !password) {
+        authMessage("E-posta ve şifrenizi girin.", "#c72f42");
+        return false;
+    }
 
-    document.getElementById("loginForm").style.display =
-        registering ? "none" : "block";
+    if (password.length < 6) {
+        authMessage("Şifre en az 6 karakter olmalı.", "#c72f42");
+        return false;
+    }
 
-    document.getElementById("registerForm").style.display =
-        registering ? "block" : "none";
-
-    document.getElementById("authSubtitle").textContent =
-        registering
-        ? "Yeni üyelik için e-posta, kullanıcı adı ve şifreni gir."
-        : "Sohbete katılmak için kullanıcı adın ve şifrenle giriş yap.";
-
-    setLoginMessage("", false);
+    return true;
 }
 
-document.getElementById("showRegisterButton").onclick =
-    () => showAuthForm("register");
+/* Yeni üyelik oluştur */
+async function registerMember() {
+    const { name, email, password } = getLoginFields();
 
-document.getElementById("showLoginButton").onclick =
-    () => showAuthForm("login");
-
-
-function showChatForUser(name){
-    username = name;
-
-    document.getElementById("login").style.display = "none";
-    document.getElementById("chatPage").style.display = "block";
-
-    document.getElementById("adminButton").style.display =
-        auth.currentUser && auth.currentUser.uid === ADMIN_UID
-        ? "inline-block"
-        : "none";
-
-    currentPage = 1;
-    loadMessages();
-    setOnline();
-}
-
-
-async function enterChat(){
-    const fields = getLoginFields();
-
-    if(!fields.name || !fields.password){
-        setLoginMessage("Lütfen kullanıcı adını ve şifreni gir.", true);
+    if (!name) {
+        authMessage("Lütfen bir kullanıcı adı seçin.", "#c72f42");
         return;
     }
 
-    let loginEmail;
-
-    try{
-        // Admin hesabı mevcut gerçek e-posta adresiyle giriş yapar.
-        if(fields.name.toLocaleLowerCase("tr-TR") === ADMIN_USERNAME){
-            loginEmail = ADMIN_EMAIL;
-        }else{
-            loginEmail = makeLoginEmail(fields.name);
-        }
-
-        setLoginMessage("Giriş yapılıyor...");
-
-        const credential =
-            await auth.signInWithEmailAndPassword(
-                loginEmail,
-                fields.password
-            );
-
-        const user = credential.user;
-
-        // Admin hesabı: UID kontrolü yapılır.
-        if(user.uid === ADMIN_UID){
-            showChatForUser("ALi");
-            return;
-        }
-
-        // Admin dışındaki kullanıcı yalnızca kendi kaydını okuyabilir.
-        const snap = await database
-            .ref("members/" + user.uid)
-            .once("value");
-
-        const currentMember = snap.val();
-
-        if(!currentMember){
-            await auth.signOut();
-            setLoginMessage("Üyelik kaydın bulunamadı. Yöneticiyle iletişime geç.", true);
-            return;
-        }
-
-        if(
-            String(currentMember.username || "")
-            .trim()
-            .toLocaleLowerCase("tr-TR") !==
-            fields.name.toLocaleLowerCase("tr-TR")
-        ){
-            await auth.signOut();
-            setLoginMessage("Kullanıcı adı üyelik kaydıyla eşleşmiyor.", true);
-            return;
-        }
-
-        if(currentMember.banned === true){
-            await auth.signOut();
-            setLoginMessage("Bu üyelik kalıcı olarak yasaklanmış.", true);
-            return;
-        }
-
-        if(currentMember.rejected === true){
-            await auth.signOut();
-            setLoginMessage("Üyeliğin yönetici tarafından reddedilmiş.", true);
-            return;
-        }
-
-        if(currentMember.approved !== true){
-            await auth.signOut();
-            setLoginMessage("Üyeliğin oluşturuldu ancak henüz yönetici onayı verilmedi.", true);
-            return;
-        }
-
-        showChatForUser(currentMember.username || fields.name);
-
-    }catch(error){
-        console.error("Giriş hatası:", error);
-
-        try{
-            if(auth.currentUser && auth.currentUser.uid !== ADMIN_UID){
-                await auth.signOut();
-            }
-        }catch(ignore){}
-
-        setLoginMessage(firebaseAuthErrorText(error), true);
-    }
-}
-
-
-async function registerMember(){
-    const name =
-        document.getElementById("registerUsernameInput").value.trim();
-
-    const email =
-        document.getElementById("emailInput").value.trim().toLowerCase();
-
-    const password =
-        document.getElementById("registerPasswordInput").value;
-
-    if(!name){
-        setLoginMessage("Lütfen bir kullanıcı adı belirle.", true);
+    if (name.length > 20) {
+        authMessage("Kullanıcı adı en fazla 20 karakter olabilir.", "#c72f42");
         return;
     }
 
-    if(name.length > 20){
-        setLoginMessage("Kullanıcı adı en fazla 20 karakter olabilir.", true);
-        return;
-    }
+    if (!validateEmailPassword(email, password)) return;
 
-    if(name.toLocaleLowerCase("tr-TR") === ADMIN_USERNAME){
-        setLoginMessage("Bu kullanıcı adı yöneticiye ayrılmış. Başka bir ad seç.", true);
-        return;
-    }
+    const button = document.getElementById("registerButton");
+    button.disabled = true;
+    authMessage("Üyelik oluşturuluyor...");
 
-    if(!email || !password){
-        setLoginMessage("Lütfen e-posta adresini ve şifreni gir.", true);
-        return;
-    }
+    let createdUser = null;
 
-    if(password.length < 6){
-        setLoginMessage("Şifre en az 6 karakter olmalı.", true);
-        return;
-    }
+    try {
+        const credential = await auth.createUserWithEmailAndPassword(
+            email,
+            password
+        );
 
-    let loginEmail;
+        createdUser = credential.user;
 
-    try{
-        loginEmail = makeLoginEmail(name);
-
-        setLoginMessage("Üyelik oluşturuluyor...");
-
-        // Kullanıcı adı zaten kullanılıyorsa Firebase bu işlemi reddeder.
-        const credential =
-            await auth.createUserWithEmailAndPassword(
-                loginEmail,
-                password
-            );
-
-        const createdUser = credential.user;
-
-        // Gerçek e-posta adresi sadece üye kaydında saklanır.
         await database.ref("members/" + createdUser.uid).set({
             username: name,
-            usernameLower: name.toLocaleLowerCase("tr-TR"),
             email: email,
             approved: false,
             rejected: false,
@@ -2411,182 +2235,304 @@ async function registerMember(){
 
         await auth.signOut();
 
-        document.getElementById("registerPasswordInput").value = "";
-        document.getElementById("usernameInput").value = name;
-
-        showAuthForm("login");
-
-        setLoginMessage(
-            "Üyeliğin oluşturuldu! Yönetici onayından sonra kullanıcı adın ve şifrenle giriş yapabilirsin.",
-            false
+        authMessage(
+            "Üyelik talebin alındı. Yönetici onayından sonra giriş yapabilirsin.",
+            "#08783f"
         );
 
-    }catch(error){
+        document.getElementById("passwordInput").value = "";
+    } catch (error) {
         console.error("Üyelik oluşturma hatası:", error);
 
-        setLoginMessage(firebaseAuthErrorText(error), true);
+        let message = error.message;
 
-        try{
-            if(auth.currentUser){
-                await auth.signOut();
-            }
-        }catch(ignore){}
+        if (error.code === "auth/email-already-in-use") {
+            message = "Bu e-posta adresiyle zaten hesap var. Giriş yapmayı dene.";
+        } else if (error.code === "auth/invalid-email") {
+            message = "E-posta adresi geçerli görünmüyor.";
+        } else if (error.code === "auth/weak-password") {
+            message = "Daha güçlü bir şifre belirle.";
+        } else if (createdUser) {
+            message =
+                "Hesap oluşturuldu fakat üyelik kaydı tamamlanamadı. " +
+                "Tekrar tekrar kayıt oluşturma; yönetici veritabanını kontrol etmeli.";
+        }
+
+        authMessage(message, "#c72f42");
+    } finally {
+        button.disabled = false;
     }
 }
 
+/* Mevcut hesabıyla giriş */
+async function enterChat() {
+    const { name, email, password } = getLoginFields();
 
+    if (!validateEmailPassword(email, password)) return;
+
+    const button = document.getElementById("loginButton");
+    button.disabled = true;
+    authMessage("Giriş kontrol ediliyor...");
+
+    try {
+        const credential = await auth.signInWithEmailAndPassword(
+            email,
+            password
+        );
+
+        const user = credential.user;
+
+        if (user.uid === ADMIN_UID) {
+            username = name || "Yönetici";
+            openChatPage(true);
+            return;
+        }
+
+        const memberSnapshot = await database
+            .ref("members/" + user.uid)
+            .once("value");
+
+        const member = memberSnapshot.val();
+
+        if (!member) {
+            await auth.signOut();
+            authMessage(
+                "Üyelik kaydın bulunamadı. Önce yeni üyelik oluştur.",
+                "#c72f42"
+            );
+            return;
+        }
+
+        if (member.rejected === true) {
+            await auth.signOut();
+            authMessage(
+                "Üyelik talebin reddedilmiş. Yöneticiyle iletişime geç.",
+                "#c72f42"
+            );
+            return;
+        }
+
+        if (member.approved !== true) {
+            await auth.signOut();
+            authMessage(
+                "Üyeliğin henüz onaylanmadı. Lütfen yönetici onayını bekle.",
+                "#9a6a00"
+        
+            );
+            return;
+        }
+
+        username = member.username || name;
+
+        openChatPage(false);
+    } catch (error) {
+        console.error("Giriş hatası:", error);
+
+        let message = error.message;
+
+        if (
+            error.code === "auth/invalid-credential" ||
+            error.code === "auth/wrong-password" ||
+            error.code === "auth/user-not-found"
+        ) {
+            message = "E-posta veya şifre hatalı.";
+        } else if (error.code === "auth/too-many-requests") {
+            message = "Çok fazla deneme yapıldı. Bir süre sonra tekrar dene.";
+        }
+
+        authMessage(message, "#c72f42");
+    } finally {
+        button.disabled = false;
+    }
+}
+
+/* Onaylı üyenin sohbet ekranını aç */
+function openChatPage(isAdmin) {
+    document.getElementById("login").style.display = "none";
+    document.getElementById("chatPage").style.display = "block";
+
+    document.getElementById("adminButton").style.display =
+        isAdmin ? "inline-block" : "none";
+
+    currentPage = 1;
+    loadMessages();
+    setOnline();
+}
+
+/* Giriş düğmeleri */
 document.getElementById("loginButton").onclick = enterChat;
 document.getElementById("registerButton").onclick = registerMember;
 
-document.getElementById("passwordInput").onkeydown =
-function(event){
-    if(event.key === "Enter"){
+document.getElementById("passwordInput").onkeydown = function(event) {
+    if (event.key === "Enter") {
         event.preventDefault();
         enterChat();
     }
 };
 
-document.getElementById("registerPasswordInput").onkeydown =
+
+
+
+document
+.getElementById("usernameInput")
+.onkeydown =
 function(event){
+
     if(event.key === "Enter"){
+
         event.preventDefault();
-        registerMember();
+
+        enterChat();
+
     }
+
 };
 
 
-function firebaseAuthErrorText(error){
-    const code = error && error.code ? error.code : "";
+/* =========================================================
+   YÖNETİCİ: ÜYELERİ ONAYLA / REDDET
+========================================================= */
 
-    const messages = {
-        "auth/invalid-email": "Giriş e-posta bilgisi geçersiz.",
-        "auth/user-not-found": "Bu kullanıcı adıyla kayıt bulunamadı.",
-        "auth/wrong-password": "Şifre hatalı.",
-        "auth/invalid-credential": "Kullanıcı adı veya şifre hatalı.",
-        "auth/email-already-in-use": "Bu kullanıcı adı zaten alınmış. Başka bir ad seç.",
-        "auth/weak-password": "Şifre en az 6 karakter olmalı.",
-        "auth/too-many-requests": "Çok fazla deneme yapıldı. Bir süre sonra tekrar dene.",
-        "auth/network-request-failed": "İnternet bağlantısını kontrol et.",
-        "PERMISSION_DENIED": "Firebase veritabanı kuralları izin vermedi. Güvenlik kurallarını kontrol et."
-    };
+const adminButton = document.getElementById("adminButton");
+const adminPanel = document.getElementById("adminPanel");
+const adminMembersList = document.getElementById("adminMembersList");
 
-    return messages[code] ||
-        (error && error.message ? error.message : "İşlem tamamlanamadı.");
-}
-
-    const code = error && error.code ? error.code : "";
-    const messages = {
-        "auth/invalid-email": "E-posta adresi geçerli görünmüyor.",
-        "auth/user-not-found": "Bu e-posta ile kayıt bulunamadı.",
-        "auth/wrong-password": "Şifre hatalı.",
-        "auth/invalid-credential": "E-posta veya şifre hatalı.",
-        "auth/email-already-in-use": "Bu e-posta ile zaten üyelik oluşturulmuş.",
-        "auth/weak-password": "Şifre çok zayıf. En az 6 karakter kullan.",
-        "auth/too-many-requests": "Çok fazla deneme yapıldı. Bir süre sonra tekrar dene.",
-        "auth/network-request-failed": "İnternet bağlantısını kontrol et.",
-        "PERMISSION_DENIED": "Firebase veritabanı kuralları izin vermedi. Güvenlik kurallarını kontrol et."
-    };
-    return messages[code] || ((error && error.message) ? error.message : "İşlem tamamlanamadı.");
-}
-
-
-function openAdminPanel(){
-    if(!auth.currentUser || auth.currentUser.uid !== ADMIN_UID){
-        alert("Bu panel yalnızca yöneticiye açıktır.");
+adminButton.onclick = async function() {
+    if (!auth.currentUser || auth.currentUser.uid !== ADMIN_UID) {
+        alert("Bu alan sadece yöneticiye açıktır.");
         return;
     }
-    document.getElementById("adminPanel").style.display = "block";
-    loadAdminMembers("pending");
-}
 
-async function loadAdminMembers(mode){
-    const list = document.getElementById("adminMembersList");
-    const status = document.getElementById("adminStatus");
-    list.innerHTML = "";
-    status.textContent = "Üyeler yükleniyor...";
-    try{
-        const snap = await database.ref("members").once("value");
-        list.innerHTML = "";
-        let count = 0;
-        snap.forEach(function(child){
-            const member = child.val() || {};
+    adminPanel.style.display =
+        adminPanel.style.display === "block" ? "none" : "block";
+
+    if (adminPanel.style.display === "block") {
+        await loadAdminMembers();
+    }
+};
+
+document.getElementById("closeAdminButton").onclick = function() {
+    adminPanel.style.display = "none";
+};
+
+async function loadAdminMembers() {
+    if (!auth.currentUser || auth.currentUser.uid !== ADMIN_UID) {
+        adminMembersList.textContent = "Yönetici yetkisi gerekli.";
+        return;
+    }
+
+    adminMembersList.textContent = "Üyeler yükleniyor...";
+
+    try {
+        const snapshot = await database.ref("members").once("value");
+        adminMembersList.innerHTML = "";
+
+        let pendingCount = 0;
+
+        snapshot.forEach(function(child) {
+            const member = child.val();
             const uid = child.key;
-            if(uid === ADMIN_UID) return;
-            const approved = member.approved === true;
-            const rejected = member.rejected === true;
-            if(mode === "pending" && (approved || rejected)) return;
-            if(mode === "approved" && !approved) return;
-            count++;
-            const row = document.createElement("div");
-            row.className = "admin-row";
-            const info = document.createElement("div");
-            const title = document.createElement("strong");
-            title.textContent = member.username || "İsimsiz üye";
-            const detail = document.createElement("div");
-            detail.style.fontSize = "12px";
-            detail.style.color = "#77736b";
-            detail.textContent = (member.email || "E-posta yok") + " · " + (approved ? "Onaylı" : rejected ? "Reddedildi" : "Onay bekliyor");
-            info.appendChild(title);
-            info.appendChild(detail);
-            row.appendChild(info);
-            const actions = document.createElement("div");
-            actions.style.display = "flex";
-            actions.style.flexWrap = "wrap";
-            actions.style.gap = "7px";
-            if(!approved){
+
+            if (!member || uid === ADMIN_UID) return;
+
+            if (member.approved !== true && member.rejected !== true) {
+                pendingCount++;
+
+                const card = document.createElement("div");
+                card.style.cssText =
+                    "padding:12px;margin:10px 0;border:1px solid #ded9cf;" +
+                    "border-radius:12px;background:#fff;overflow-wrap:anywhere;";
+
+                const info = document.createElement("div");
+                info.style.cssText = "margin-bottom:10px;font-size:13px;";
+
+                const title = document.createElement("strong");
+                title.textContent = member.username || "İsimsiz üye";
+
+                const email = document.createElement("div");
+                email.textContent = member.email || "E-posta yok";
+                email.style.color = "#77736b";
+                email.style.marginTop = "4px";
+
+                info.appendChild(title);
+                info.appendChild(email);
+
                 const approve = document.createElement("button");
-                approve.textContent = "Onayla";
-                approve.onclick = function(){ updateMemberApproval(uid, true); };
-                actions.appendChild(approve);
-            }
-            if(approved || !rejected){
+                approve.type = "button";
+                approve.textContent = "✅ Onayla";
+                approve.style.cssText =
+                    "padding:8px 10px;margin-right:6px;border:0;" +
+                    "border-radius:8px;background:#d9f4e5;color:#08783f;cursor:pointer;";
+
                 const reject = document.createElement("button");
-                reject.className = "reject";
-                reject.textContent = approved ? "Erişimi kaldır" : "Reddet";
-                reject.onclick = function(){ updateMemberApproval(uid, false); };
-                actions.appendChild(reject);
+                reject.type = "button";
+                reject.textContent = "❌ Reddet";
+                reject.style.cssText =
+                    "padding:8px 10px;border:0;border-radius:8px;" +
+                    "background:#ffe1e4;color:#c72f42;cursor:pointer;";
+
+                approve.onclick = async function() {
+                    if (!auth.currentUser || auth.currentUser.uid !== ADMIN_UID) {
+                        alert("Yönetici oturumu bulunamadı.");
+                        return;
+                    }
+
+                    approve.disabled = true;
+
+                    try {
+                        await database.ref("members/" + uid).update({
+                            approved: true,
+                            rejected: false
+                        });
+
+                        await loadAdminMembers();
+                    } catch (error) {
+                        console.error(error);
+                        alert("Üye onaylanamadı: " + error.message);
+                        approve.disabled = false;
+                    }
+                };
+
+                reject.onclick = async function() {
+                    if (!confirm(
+                        (member.username || "Bu üye") +
+                        " için üyelik talebini reddetmek istiyor musun?"
+                    )) return;
+
+                    reject.disabled = true;
+
+                    try {
+                        await database.ref("members/" + uid).update({
+                            approved: false,
+                            rejected: true
+                        });
+
+                        await loadAdminMembers();
+                    } catch (error) {
+                        console.error(error);
+                        alert("Üyelik reddedilemedi: " + error.message);
+                        reject.disabled = false;
+                    }
+                };
+
+                card.appendChild(info);
+                card.appendChild(approve);
+                card.appendChild(reject);
+                adminMembersList.appendChild(card);
             }
-            row.appendChild(actions);
-            list.appendChild(row);
         });
-        status.textContent = count ? (count + " üye listelendi.") : "Bu bölümde üye bulunmuyor.";
-    }catch(error){
-        console.error("Yönetici üyeleri yükleme hatası:", error);
-        status.textContent = "Üyeler yüklenemedi. Firebase veritabanı kurallarını kontrol et.";
+
+        if (pendingCount === 0) {
+            adminMembersList.textContent = "Onay bekleyen üye yok.";
+        }
+    } catch (error) {
+        console.error("Yönetici üye listesi hatası:", error);
+        adminMembersList.textContent =
+            "Üye listesi yüklenemedi: " + error.message;
     }
 }
 
-async function updateMemberApproval(uid, approved){
-    if(!auth.currentUser || auth.currentUser.uid !== ADMIN_UID){
-        alert("Yönetici yetkisi gerekli.");
-        return;
-    }
-    const promptText = approved ? "Bu üyeliği onaylamak istiyor musun?" : "Bu üyenin erişimini reddetmek/kaldırmak istiyor musun?";
-    if(!confirm(promptText)) return;
-    try{
-        await database.ref("members/" + uid).update({
-            approved: approved,
-            rejected: !approved,
-            reviewedAt: firebase.database.ServerValue.TIMESTAMP,
-            reviewedBy: ADMIN_UID
-        });
-        loadAdminMembers(approved ? "pending" : "pending");
-        alert(approved ? "Üyelik onaylandı." : "Üyenin erişimi kaldırıldı.");
-    }catch(error){
-        console.error("Üyelik güncelleme hatası:", error);
-        alert("İşlem yapılamadı. Firebase güvenlik kurallarını kontrol et.\n" + error.message);
-    }
-}
-
-document.getElementById("adminButton").onclick = openAdminPanel;
-document.getElementById("closeAdminButton").onclick = function(){
-    document.getElementById("adminPanel").style.display = "none";
-};
-document.getElementById("showPendingButton").onclick = function(){ loadAdminMembers("pending"); };
-document.getElementById("showApprovedButton").onclick = function(){ loadAdminMembers("approved"); };
-
-
-
+    
 /* =========================================================
    SAYFA NUMARALARI
 ========================================================= */
@@ -4242,29 +4188,24 @@ function stopVoiceChat(){
    ÇIKIŞ
 ========================================================= */
 
-document
-.getElementById("logoutButton")
-.onclick =
-function(){
-
+ 
+document.getElementById("logoutButton").onclick = async function() {
     stopVoiceChat();
 
-    if(userKey){
+    try {
+        if (userKey) {
+            await database.ref("onlineUsers/" + userKey).remove();
+            userKey = "";
+        }
 
-        database
-        .ref(
-            "onlineUsers/" +
-            userKey
-        )
-        .remove();
-
-    }
-
-    auth.signOut().finally(function(){
+        await auth.signOut();
         location.reload();
-    });
-
+    } catch (error) {
+        console.error("Çıkış hatası:", error);
+        alert("Çıkış sırasında hata oluştu: " + error.message);
+    }
 };
+
 
 
 /* =========================================================
