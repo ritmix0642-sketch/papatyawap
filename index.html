@@ -3620,227 +3620,97 @@ function startVoiceListener(){
 
 async function createCall(){
 
-    if(!localStream){
+    if(!localStream || !voiceActive){
         return;
     }
 
-    const usersSnapshot =
-        await database
-        .ref("onlineUsers")
-        .once("value");
+    const usersSnapshot = await database.ref("onlineUsers").once("value");
+    let otherUser = null;
 
-    let otherUser =
-        null;
-
-    usersSnapshot.forEach(
-    function(child){
-
-        const user =
-            child.val();
-
-        if(
-            user &&
-            user.username &&
-            user.username !== username &&
-            !otherUser
-        ){
-
-            otherUser =
-                user.username;
-
+    usersSnapshot.forEach(function(child){
+        const user = child.val();
+        if(user && user.username && user.username !== username && !otherUser){
+            otherUser = user.username;
         }
-
     });
-
 
     if(!otherUser){
-
-        showVoiceStatus(
-            "🎤 Mikrofon açık - başka kullanıcı bekleniyor"
-        );
-
+        showVoiceStatus("🎤 Mikrofon açık - başka kullanıcı bekleniyor");
         return;
     }
 
+    const callRef = database.ref("calls").push();
+    const callId = callRef.key;
 
-    const callRef =
-        database
-        .ref("calls")
-        .push();
-
-    const callId =
-        callRef.key;
-
-
-    const pc =
-        new RTCPeerConnection(
-            rtcConfig
-        );
-
-    peerConnections[callId] =
-        pc;
-
-
-    localStream
-    .getTracks()
-    .forEach(
-    function(track){
-
-        pc.addTrack(
-            track,
-            localStream
-        );
-
-    });
-
-
-    pc.ontrack =
-    function(event){
-
-        const audio =
-            document.getElementById(
-                "remoteAudio"
-            );
-
-        audio.srcObject =
-            event.streams[0];
-
-        audio.play()
-        .catch(
-        function(error){
-
-            console.log(
-                "Ses oynatma hatası:",
-                error
-            );
-
-        });
-
-        showVoiceStatus(
-            "🔊 Ses bağlantısı aktif"
-        );
-
-    };
-
-
-    pc.onicecandidate =
-    function(event){
-
-        if(event.candidate){
-
-            database
-            .ref(
-                "calls/" +
-                callId +
-                "/callerCandidates"
-            )
-            .push(
-                event.candidate.toJSON()
-            );
-
-        }
-
-    };
-
-
-    const offer =
-        await pc.createOffer();
-
-    await pc.setLocalDescription(
-        offer
-    );
-
-
+    // Çağrı kaydını adaylar üretilmeden önce oluşturuyoruz.
+    // Daha sonra update kullanmak, ICE adaylarının üzerine yazılmasını önler.
     await callRef.set({
-
-        caller:
-            username,
-
-        receiver:
-            otherUser,
-
-        offer:{
-
-            type:
-                offer.type,
-
-            sdp:
-                offer.sdp
-
-        },
-
-        created:
-            Date.now()
-
+        caller: username,
+        receiver: otherUser,
+        created: Date.now()
     });
 
+    const pc = new RTCPeerConnection(rtcConfig);
+    peerConnections[callId] = pc;
+    const pendingCandidates = [];
 
-    database
-    .ref(
-        "calls/" +
-        callId +
-        "/answer"
-    )
-    .on(
-        "value",
-        async function(snapshot){
-
-            const answer =
-                snapshot.val();
-
-            if(
-                answer &&
-                !pc.currentRemoteDescription
-            ){
-
-                await pc.setRemoteDescription(
-                    new RTCSessionDescription(
-                        answer
-                    )
-                );
-
-            }
-
+    async function addRemoteCandidate(candidate){
+        if(!candidate) return;
+        const iceCandidate = new RTCIceCandidate(candidate);
+        if(pc.remoteDescription && pc.remoteDescription.type){
+            await pc.addIceCandidate(iceCandidate);
+        } else {
+            pendingCandidates.push(iceCandidate);
         }
-    );
+    }
 
-
-    database
-    .ref(
-        "calls/" +
-        callId +
-        "/receiverCandidates"
-    )
-    .on(
-        "child_added",
-        async function(snapshot){
-
-            const candidate =
-                snapshot.val();
-
-            if(candidate){
-
-                try{
-
-                    await pc.addIceCandidate(
-                        new RTCIceCandidate(
-                            candidate
-                        )
-                    );
-
-                }
-
-                catch(error){
-
-                    console.log(error);
-
-                }
-
-            }
-
+    async function flushRemoteCandidates(){
+        while(pendingCandidates.length && pc.remoteDescription && pc.remoteDescription.type){
+            await pc.addIceCandidate(pendingCandidates.shift());
         }
-    );
+    }
 
+    localStream.getTracks().forEach(function(track){
+        pc.addTrack(track, localStream);
+    });
+
+    pc.ontrack = function(event){
+        const audio = document.getElementById("remoteAudio");
+        audio.srcObject = event.streams[0];
+        audio.play().catch(function(error){ console.log("Ses oynatma hatası:", error); });
+        showVoiceStatus("🔊 Ses bağlantısı aktif");
+    };
+
+    pc.onicecandidate = function(event){
+        if(event.candidate){
+            callRef.child("callerCandidates").push(event.candidate.toJSON())
+                .catch(function(error){ console.error("ICE adayı kaydedilemedi:", error); });
+        }
+    };
+
+    callRef.child("receiverCandidates").on("child_added", function(snapshot){
+        addRemoteCandidate(snapshot.val()).catch(function(error){
+            console.error("Karşı tarafın ICE adayı eklenemedi:", error);
+        });
+    });
+
+    callRef.child("answer").on("value", async function(snapshot){
+        const answer = snapshot.val();
+        if(answer && !pc.currentRemoteDescription){
+            try{
+                await pc.setRemoteDescription(new RTCSessionDescription(answer));
+                await flushRemoteCandidates();
+            } catch(error){
+                console.error("Yanıt bağlantıya eklenemedi:", error);
+            }
+        }
+    });
+
+    const offer = await pc.createOffer();
+    await pc.setLocalDescription(offer);
+    await callRef.update({
+        offer: { type: offer.type, sdp: offer.sdp }
+    });
 }
 
 
@@ -3848,154 +3718,77 @@ async function createCall(){
    ÇAĞRI CEVAPLA
 ========================================================= */
 
-async function answerCall(
-    callId,
-    call
-){
+async function answerCall(callId, call){
 
-    if(
-        !localStream ||
-        !voiceActive
-    ){
+    if(!localStream || !voiceActive || peerConnections[callId]){
         return;
     }
 
-    const pc =
-        new RTCPeerConnection(
-            rtcConfig
-        );
+    const pc = new RTCPeerConnection(rtcConfig);
+    // İlk await işleminden önce kaydet: aynı çağrının iki kez cevaplanmasını önler.
+    peerConnections[callId] = pc;
+    const pendingCandidates = [];
 
-    peerConnections[callId] =
-        pc;
+    async function addRemoteCandidate(candidate){
+        if(!candidate) return;
+        const iceCandidate = new RTCIceCandidate(candidate);
+        if(pc.remoteDescription && pc.remoteDescription.type){
+            await pc.addIceCandidate(iceCandidate);
+        } else {
+            pendingCandidates.push(iceCandidate);
+        }
+    }
 
+    async function flushRemoteCandidates(){
+        while(pendingCandidates.length && pc.remoteDescription && pc.remoteDescription.type){
+            await pc.addIceCandidate(pendingCandidates.shift());
+        }
+    }
 
-    localStream
-    .getTracks()
-    .forEach(
-    function(track){
-
-        pc.addTrack(
-            track,
-            localStream
-        );
-
+    localStream.getTracks().forEach(function(track){
+        pc.addTrack(track, localStream);
     });
 
+    pc.ontrack = function(event){
+        const audio = document.getElementById("remoteAudio");
+        audio.srcObject = event.streams[0];
+        audio.play().catch(function(error){ console.log("Ses oynatma hatası:", error); });
+        showVoiceStatus("🔊 Ses bağlantısı aktif");
+    };
 
-    pc.ontrack =
-    function(event){
+    pc.onicecandidate = function(event){
+        if(event.candidate){
+            database.ref("calls/" + callId + "/receiverCandidates")
+                .push(event.candidate.toJSON())
+                .catch(function(error){ console.error("ICE adayı kaydedilemedi:", error); });
+        }
+    };
 
-        const audio =
-            document.getElementById(
-                "remoteAudio"
-            );
+    try{
+        await pc.setRemoteDescription(new RTCSessionDescription(call.offer));
+        await flushRemoteCandidates();
 
-        audio.srcObject =
-            event.streams[0];
+        const answer = await pc.createAnswer();
+        await pc.setLocalDescription(answer);
 
-        audio.play()
-        .catch(
-        function(error){
-
-            console.log(error);
-
+        await database.ref("calls/" + callId + "/answer").set({
+            type: answer.type,
+            sdp: answer.sdp
         });
 
-        showVoiceStatus(
-            "🔊 Ses bağlantısı aktif"
-        );
-
-    };
-
-
-    pc.onicecandidate =
-    function(event){
-
-        if(event.candidate){
-
-            database
-            .ref(
-                "calls/" +
-                callId +
-                "/receiverCandidates"
-            )
-            .push(
-                event.candidate.toJSON()
-            );
-
+        database.ref("calls/" + callId + "/callerCandidates").on("child_added", function(snapshot){
+            addRemoteCandidate(snapshot.val()).catch(function(error){
+                console.error("Arayanın ICE adayı eklenemedi:", error);
+            });
+        });
+    } catch(error){
+        console.error("Çağrı cevaplanamadı:", error);
+        if(peerConnections[callId] === pc){
+            delete peerConnections[callId];
         }
-
-    };
-
-
-    await pc.setRemoteDescription(
-        new RTCSessionDescription(
-            call.offer
-        )
-    );
-
-
-    const answer =
-        await pc.createAnswer();
-
-    await pc.setLocalDescription(
-        answer
-    );
-
-
-    await database
-    .ref(
-        "calls/" +
-        callId +
-        "/answer"
-    )
-    .set({
-
-        type:
-            answer.type,
-
-        sdp:
-            answer.sdp
-
-    });
-
-
-    database
-    .ref(
-        "calls/" +
-        callId +
-        "/callerCandidates"
-    )
-    .on(
-        "child_added",
-        async function(snapshot){
-
-            const candidate =
-                snapshot.val();
-
-            if(candidate){
-
-                try{
-
-                    await pc.addIceCandidate(
-                        new RTCIceCandidate(
-                            candidate
-                        )
-                    );
-
-                }
-
-                catch(error){
-
-                    console.log(error);
-
-                }
-
-            }
-
-        }
-    );
-
+        pc.close();
+        throw error;
+    }
 }
 
 
