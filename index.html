@@ -3467,18 +3467,13 @@ async function startVoiceChat(){
 
             if(
                 call &&
-                call.receiver ===
-                username
+                call.receiver === username &&
+                call.offer
             ){
-
-                foundCall =
-                    true;
-
-                answerCall(
-                    child.key,
-                    call
-                );
-
+                foundCall = true;
+                answerCall(child.key, call).catch(function(error){
+                    console.error("Mevcut çağrı cevaplanamadı:", error);
+                });
             }
 
         });
@@ -3547,70 +3542,38 @@ function startVoiceListener(){
         return;
     }
 
-    voiceListenerStarted =
-        true;
+    voiceListenerStarted = true;
 
-    database
-    .ref("calls")
-    .on(
-        "child_added",
-        async function(snapshot){
+    // Çağrı kaydı ilk oluştuğunda offer henüz eklenmemiş olabilir.
+    // Offer sonradan eklendiğinde child_changed olayıyla tekrar kontrol edilir.
+    async function handleIncomingVoiceCall(snapshot){
 
-            const call =
-                snapshot.val();
+        const call = snapshot.val();
+        const callId = snapshot.key;
 
-            const callId =
-                snapshot.key;
-
-            if(!call){
-                return;
-            }
-
-            if(
-                call.caller ===
-                username
-            ){
-                return;
-            }
-
-            if(
-                call.receiver !==
-                username
-            ){
-                return;
-            }
-
-            if(
-                peerConnections[callId]
-            ){
-                return;
-            }
-
-            if(!voiceActive){
-                return;
-            }
-
-            try{
-
-                await answerCall(
-                    callId,
-                    call
-                );
-
-            }
-
-            catch(error){
-
-                console.error(
-                    "Çağrı cevaplama hatası:",
-                    error
-                );
-
-            }
-
+        if(!call || !call.offer){
+            return;
         }
-    );
 
+        if(call.caller === username || call.receiver !== username){
+            return;
+        }
+
+        if(!voiceActive || peerConnections[callId]){
+            return;
+        }
+
+        try{
+            await answerCall(callId, call);
+        }
+        catch(error){
+            console.error("Çağrı cevaplama hatası:", error);
+            showVoiceStatus("⚠️ Ses bağlantısı kurulamadı. Tarayıcı konsolunu kontrol edin.");
+        }
+    }
+
+    database.ref("calls").on("child_added", handleIncomingVoiceCall);
+    database.ref("calls").on("child_changed", handleIncomingVoiceCall);
 }
 
 
